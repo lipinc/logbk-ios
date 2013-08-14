@@ -611,7 +611,7 @@ static Slash7 *sharedInstance = nil;
 
 - (NSString *)filePathForData:(NSString *)data
 {
-    NSString *filename = [NSString stringWithFormat:@"mixpanel-%@-%@.plist", self.apiToken, data];
+    NSString *filename = [NSString stringWithFormat:@"slash7-%@-%@.plist", self.apiToken, data];
     return [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject]
             stringByAppendingPathComponent:filename];
 }
