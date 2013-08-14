@@ -382,7 +382,7 @@ static Slash7 *sharedInstance = nil;
 
         [Slash7 assertPropertyTypes:properties];
 
-        NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:event, @"event", [NSDictionary dictionaryWithDictionary:p], @"properties", nil];
+        NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:event, @"_event_name", [NSDictionary dictionaryWithDictionary:p], @"properties", nil];
         Slash7Log(@"%@ queueing event: %@", self, e);
         [self.eventsQueue addObject:e];
         if ([Slash7 inBackground]) {

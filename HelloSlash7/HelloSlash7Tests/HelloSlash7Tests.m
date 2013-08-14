@@ -147,7 +147,7 @@
     [self.slash7 track:@"Something Happened"];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
-    STAssertEquals([e objectForKey:@"event"], @"Something Happened", @"incorrect event name");
+    STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     NSDictionary *p = [e objectForKey:@"properties"];
     STAssertTrue(p.count == 16, @"incorrect number of properties");
 
@@ -179,7 +179,7 @@
     [self.slash7 track:@"Something Happened" withParams:p];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
-    STAssertEquals([e objectForKey:@"event"], @"Something Happened", @"incorrect event name");
+    STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     p = [e objectForKey:@"properties"];
     STAssertTrue(p.count == 19, @"incorrect number of properties");
     STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");
@@ -330,7 +330,7 @@
 
     // legacy behavior
     STAssertTrue(self.slash7.eventsQueue.count == 2, @"track with nil should create mp_event event");
-    STAssertEqualObjects([self.slash7.eventsQueue.lastObject objectForKey:@"event"], @"_empty", @"track with nil should create _empty event");
+    STAssertEqualObjects([self.slash7.eventsQueue.lastObject objectForKey:@"_event_name"], @"_empty", @"track with nil should create _empty event");
     STAssertNotNil([self.slash7 currentSuperProperties], @"setting super properties to nil should have no effect");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"setting super properties to nil should have no effect");
 
