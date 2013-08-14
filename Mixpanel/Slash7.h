@@ -2,8 +2,8 @@
 // Slash7.h
 // Slash7
 //
-// Copyright 2012 Mixpanel
 // Copyright 2013 pLucky, Inc.
+// Copyright 2012 Mixpanel
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -154,7 +154,7 @@
  </pre>
  
  If you are going to use this singleton approach,
- <code>sharedInstanceWithToken:</code> <b>must be the first call</b> to the
+ <code>sharedInstanceWithCode:</code> <b>must be the first call</b> to the
  <code>Slash7</code> class, since it performs important initializations to
  the API.
  
@@ -169,7 +169,7 @@
  Returns the previously instantiated singleton instance of the API.
  
  @discussion
- The API must be initialized with <code>sharedInstanceWithToken:</code> before
+ The API must be initialized with <code>sharedInstanceWithCode:</code> before
  calling this class method.
  */
 + (instancetype)sharedInstance;
@@ -184,7 +184,7 @@
  Returns the a new API object. This allows you to create more than one instance
  of the API object, which is convenient if you'd like to send data to more than
  one Slash7 project from a single app. If you only need to send data to one
- project, consider using <code>sharedInstanceWithToken:</code>.
+ project, consider using <code>sharedInstanceWithCode:</code>.
  
  @param trackingCode        your project tracking code
  @param startFlushTimer whether to start the background flush timer
@@ -257,7 +257,7 @@
  @method
  
  @abstract
- Convenience method for setting a single property in Slash7 People.
+ Convenience method for setting a single property in Slash7.
  
  @discussion
  Property keys must be <code>NSString</code> objects and values must be
@@ -268,7 +268,9 @@
  @param name        property name
  @param object          property value
  */
-- (void)setUserAttribute:(NSString *)attribute to:(id)object;
+- (void)setUserAttributes:(NSString *)attribute to:(id)object;
+
+- (NSDictionary *)currentSuperProperties;
 
 /*!
  @method

@@ -16,7 +16,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import "Mixpanel.h"
+#import "Slash7.h"
 
 #import "AppDelegate.h"
 
@@ -42,16 +42,13 @@
     // Override point for customization after application launch.
     
     // Initialize the MixpanelAPI object
-    self.mixpanel = [Mixpanel sharedInstanceWithToken:MIXPANEL_TOKEN];
+    self.mixpanel = [Slash7 sharedInstanceWithCode:MIXPANEL_TOKEN];
 
     // Set the upload interval to 20 seconds for demonstration purposes. This would be overkill for most applications.
     self.mixpanel.flushInterval = 20; // defaults to 60 seconds
 
-    // Name a user in Mixpanel Streams
-    self.mixpanel.nameTag = @"Walter Sobchak";
-    
     // Set some super properties, which will be added to every tracked event
-    [self.mixpanel registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:@"Premium", @"Plan", nil]];
+    [self.mixpanel setUserAttributes:[NSDictionary dictionaryWithObjectsAndKeys:@"Premium", @"Plan", nil]];
     
     self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
     self.window.rootViewController = self.viewController;
@@ -65,7 +62,6 @@
 #pragma mark * Push notifications
 
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
-    [self.mixpanel.people addPushDeviceToken:devToken];
 }
 
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
@@ -100,7 +96,7 @@
 {
     NSLog(@"%@ will resign active", self);
     NSNumber *seconds = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:self.startTime]];
-    [[Mixpanel sharedInstance] track:@"Session" properties:[NSDictionary dictionaryWithObject:seconds forKey:@"Length"]];
+    [[Slash7 sharedInstance] track:@"Session" withParams:[NSDictionary dictionaryWithObject:seconds forKey:@"Length"]];
 }
 
 #pragma mark * Background task tracking test
@@ -120,10 +116,9 @@
         NSLog(@"%@ starting background task %u", self, self.bgTask);
 
         // track some events and set some people properties
-        Mixpanel *mixpanel = [Mixpanel sharedInstance];
-        [mixpanel registerSuperProperties:[NSDictionary dictionaryWithObject:@"Hi!" forKey:@"Background Super Property"]];
+        Slash7 *mixpanel = [Slash7 sharedInstance];
+        [mixpanel setUserAttributes:[NSDictionary dictionaryWithObject:@"Hi!" forKey:@"Background Super Property"]];
         [mixpanel track:@"Background Event"];
-        [mixpanel.people set:@"Background Property" to:[NSDate date]];
 
         NSLog(@"%@ ending background task %u", self, self.bgTask);
         [application endBackgroundTask:self.bgTask];

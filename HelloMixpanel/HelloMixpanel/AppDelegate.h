@@ -19,7 +19,7 @@
 #import <UIKit/UIKit.h>
 
 @class ViewController;
-@class Mixpanel;
+@class Slash7;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -27,7 +27,7 @@
 
 @property (strong, nonatomic) ViewController *viewController;
 
-@property (strong, nonatomic) Mixpanel *mixpanel;
+@property (strong, nonatomic) Slash7 *mixpanel;
 
 @property (strong, nonatomic, retain) NSDate *startTime;
 
