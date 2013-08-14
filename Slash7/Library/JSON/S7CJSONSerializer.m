@@ -27,11 +27,11 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "MPCJSONSerializer.h"
+#import "S7CJSONSerializer.h"
 
-#import "MPCJSONDataSerializer.h"
+#import "S7CJSONDataSerializer.h"
 
-@implementation MPCJSONSerializer
+@implementation S7CJSONSerializer
 
 + (id)serializer
 {
@@ -42,7 +42,7 @@ return([[[self alloc] init] autorelease]);
 {
 if ((self = [super init]) != NULL)
 	{
-	serializer = [[MPCJSONDataSerializer alloc] init];
+	serializer = [[S7CJSONDataSerializer alloc] init];
 	}
 return(self);
 }

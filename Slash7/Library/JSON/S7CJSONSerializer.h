@@ -29,11 +29,11 @@
 
 #import <Foundation/Foundation.h>
 
-@class MPCJSONDataSerializer;
+@class S7CJSONDataSerializer;
 
 /// Serialize JSON compatible objects (NSNull, NSNumber, NSString, NSArray, NSDictionary) into a JSON formatted string. Note this class is just a wrapper around CJSONDataSerializer which you really should be using instead.
-@interface MPCJSONSerializer : NSObject {
-	MPCJSONDataSerializer *serializer;
+@interface S7CJSONSerializer : NSObject {
+	S7CJSONDataSerializer *serializer;
 }
 
 + (id)serializer;

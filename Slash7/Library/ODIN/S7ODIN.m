@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-#import "ODIN.h"
+#import "S7ODIN.h"
 #import <CommonCrypto/CommonDigest.h>
 
 #include <sys/socket.h>
@@ -24,7 +24,7 @@
 
 
 
-NSString * ODIN1(){
+NSString * S7ODIN1(){
     
 // Step 1: Get MAC address
     

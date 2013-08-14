@@ -12,7 +12,7 @@
 //  appreciated but not required.
 //
 
-#import "NSData+MPBase64.h"
+#import "NSData+S7Base64.h"
 
 //
 // Mapping from 6 bit pattern to ASCII character.
@@ -67,7 +67,7 @@ static unsigned char base64DecodeLookup[256] =
 // returns the decoded buffer. Must be free'd by caller. Length is given by
 //	outputLength.
 //
-void *MP_NewBase64Decode(
+void *S7_NewBase64Decode(
 	const char *inputBuffer,
 	size_t length,
 	size_t *outputLength)
@@ -136,7 +136,7 @@ void *MP_NewBase64Decode(
 // returns the encoded buffer. Must be free'd by caller. Length is given by
 //	outputLength.
 //
-char *MP_NewBase64Encode(
+char *S7_NewBase64Encode(
 	const void *buffer,
 	size_t length,
 	bool separateLines,
@@ -247,7 +247,7 @@ char *MP_NewBase64Encode(
 	return outputBuffer;
 }
 
-@implementation NSData (MP_Base64)
+@implementation NSData (S7_Base64)
 
 //
 // dataFromBase64String:
@@ -260,11 +260,11 @@ char *MP_NewBase64Encode(
 //
 // returns the autoreleased NSData representation of the base64 string
 //
-+ (NSData *)mp_dataFromBase64String:(NSString *)aString
++ (NSData *)s7_dataFromBase64String:(NSString *)aString
 {
 	NSData *data = [aString dataUsingEncoding:NSASCIIStringEncoding];
 	size_t outputLength;
-	void *outputBuffer = MP_NewBase64Decode([data bytes], [data length], &outputLength);
+	void *outputBuffer = S7_NewBase64Decode([data bytes], [data length], &outputLength);
 	NSData *result = [NSData dataWithBytes:outputBuffer length:outputLength];
 	free(outputBuffer);
 	return result;
@@ -279,11 +279,11 @@ char *MP_NewBase64Encode(
 // returns an autoreleased NSString being the base 64 representation of the
 //	receiver.
 //
-- (NSString *)mp_base64EncodedString
+- (NSString *)s7_base64EncodedString
 {
 	size_t outputLength = 0;
 	char *outputBuffer =
-		MP_NewBase64Encode([self bytes], [self length], false, &outputLength);
+		S7_NewBase64Encode([self bytes], [self length], false, &outputLength);
 	
 	NSString *result =
 		[[[NSString alloc]

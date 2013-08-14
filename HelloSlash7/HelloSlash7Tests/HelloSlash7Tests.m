@@ -19,7 +19,7 @@
 #import "HelloSlash7Tests.h"
 
 #import "Slash7.h"
-#import "MPCJSONSerializer.h"
+#import "S7CJSONSerializer.h"
 
 #define TEST_TOKEN @"abc123"
 

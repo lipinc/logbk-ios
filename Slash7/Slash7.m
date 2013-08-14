@@ -29,10 +29,10 @@
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
-#import "MPCJSONDataSerializer.h"
+#import "S7CJSONDataSerializer.h"
 #import "Slash7.h"
-#import "NSData+MPBase64.h"
-#import "ODIN.h"
+#import "NSData+S7Base64.h"
+#import "S7ODIN.h"
 
 #define VERSION @"2.0.0"
 
@@ -180,7 +180,7 @@ static Slash7 *sharedInstance = nil;
 {
     id coercedObj = [Slash7 JSONSerializableObjectForObject:obj];
 
-    MPCJSONDataSerializer *serializer = [MPCJSONDataSerializer serializer];
+    S7CJSONDataSerializer *serializer = [S7CJSONDataSerializer serializer];
     NSError *error = nil;
     NSData *data = nil;
     @try {
@@ -251,7 +251,7 @@ static Slash7 *sharedInstance = nil;
     NSString *b64String = @"";
     NSData *data = [Slash7 JSONSerializeObject:array];
     if (data) {
-        b64String = [data mp_base64EncodedString];
+        b64String = [data s7_base64EncodedString];
         b64String = (id)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
                                                                 (CFStringRef)b64String,
                                                                 NULL,
@@ -348,7 +348,7 @@ static Slash7 *sharedInstance = nil;
         distinctId = ASIdentifierManager.sharedManager.advertisingIdentifier.UUIDString;
     }
     if (!distinctId) {
-        distinctId = ODIN1();
+        distinctId = S7ODIN1();
     }
     if (!distinctId) {
         NSLog(@"%@ error getting default distinct id: both iOS IFA and ODIN1 failed", self);

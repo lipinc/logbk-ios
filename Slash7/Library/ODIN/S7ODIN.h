@@ -16,5 +16,5 @@
 
 #import <Foundation/Foundation.h>
 
-NSString * ODIN1(void);
+NSString * S7ODIN1(void);
 

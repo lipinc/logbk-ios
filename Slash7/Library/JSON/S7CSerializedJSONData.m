@@ -27,9 +27,9 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "MPCSerializedJSONData.h"
+#import "S7CSerializedJSONData.h"
 
-@implementation MPCSerializedJSONData
+@implementation S7CSerializedJSONData
 
 @synthesize data;
 

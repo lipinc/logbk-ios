@@ -14,20 +14,20 @@
 
 #import <Foundation/Foundation.h>
 
-void *MP_NewBase64Decode(
+void *S7_NewBase64Decode(
 	const char *inputBuffer,
 	size_t length,
 	size_t *outputLength);
 
-char *MP_NewBase64Encode(
+char *S7_NewBase64Encode(
 	const void *inputBuffer,
 	size_t length,
 	bool separateLines,
 	size_t *outputLength);
 
-@interface NSData (MP_Base64)
+@interface NSData (S7_Base64)
 
-+ (NSData *)mp_dataFromBase64String:(NSString *)aString;
-- (NSString *)mp_base64EncodedString;
++ (NSData *)s7_dataFromBase64String:(NSString *)aString;
+- (NSString *)s7_base64EncodedString;
 
 @end
