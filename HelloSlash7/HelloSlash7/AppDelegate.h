@@ -1,6 +1,6 @@
 //
 // AppDelegate.h
-// HelloMixpanel
+// HelloSlash7
 //
 // Copyright 2012 Mixpanel
 //

@@ -1,6 +1,6 @@
 //
-//  HelloMixpanelTests.h
-//  HelloMixpanelTests
+//  HelloSlash7Tests.h
+//  HelloSlash7Tests
 //
 // Copyright 2012 Mixpanel
 //
@@ -18,6 +18,6 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-@interface HelloMixpanelTests : SenTestCase
+@interface HelloSlash7Tests : SenTestCase
 
 @end

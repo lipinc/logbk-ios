@@ -20,7 +20,6 @@
 		2808F9B51610EFE4005772B7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2808F9931610EFE3005772B7 /* Foundation.framework */; };
 		2808F9BD1610EFE4005772B7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2808F9BB1610EFE4005772B7 /* InfoPlist.strings */; };
 		2808F9CA1610F0D0005772B7 /* grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 2808F9C91610F0D0005772B7 /* grid.png */; };
-		2808F9CC1610F0DE005772B7 /* logo_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 2808F9CB1610F0DE005772B7 /* logo_white.png */; };
 		283CEC53171F5E2800ACACB5 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 283CEC52171F5E2800ACACB5 /* AdSupport.framework */; };
 		28537E8E16168C000032FE06 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 28537E8D16168C000032FE06 /* Default-568h@2x.png */; };
 		285EC8351611970A0087AE27 /* HelloSlash7Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */; };
@@ -68,7 +67,6 @@
 		2808F9BE1610EFE4005772B7 /* HelloSlash7Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloSlash7Tests.h; sourceTree = "<group>"; };
 		2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloSlash7Tests.m; sourceTree = "<group>"; };
 		2808F9C91610F0D0005772B7 /* grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grid.png; sourceTree = "<group>"; };
-		2808F9CB1610F0DE005772B7 /* logo_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_white.png; sourceTree = "<group>"; };
 		283CEC52171F5E2800ACACB5 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		28537E8D16168C000032FE06 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		286760B01611982600B1BEC8 /* MPCJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONDataSerializer.h; sourceTree = "<group>"; };
@@ -171,7 +169,6 @@
 				28C7E66A1615317400F78E49 /* Icon-72.png */,
 				28C7E6681615311100F78E49 /* Icon.png */,
 				28C7E666161530BF00F78E49 /* Icon@2x.png */,
-				2808F9CB1610F0DE005772B7 /* logo_white.png */,
 				2808F9C91610F0D0005772B7 /* grid.png */,
 				2808F9991610EFE3005772B7 /* HelloSlash7-Info.plist */,
 				2808F99A1610EFE3005772B7 /* InfoPlist.strings */,
@@ -326,7 +323,6 @@
 				2808F99C1610EFE3005772B7 /* InfoPlist.strings in Resources */,
 				2808F9A81610EFE3005772B7 /* ViewController.xib in Resources */,
 				2808F9CA1610F0D0005772B7 /* grid.png in Resources */,
-				2808F9CC1610F0DE005772B7 /* logo_white.png in Resources */,
 				28C7E667161530BF00F78E49 /* Icon@2x.png in Resources */,
 				28C7E6691615311100F78E49 /* Icon.png in Resources */,
 				28C7E66B1615317400F78E49 /* Icon-72.png in Resources */,

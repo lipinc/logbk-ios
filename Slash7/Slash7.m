@@ -904,7 +904,7 @@ static Slash7 *sharedInstance = nil;
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<Mixpanel: %p %@>", self, self.apiToken];
+    return [NSString stringWithFormat:@"<Slash7: %p %@>", self, self.apiToken];
 }
 
 - (void)dealloc

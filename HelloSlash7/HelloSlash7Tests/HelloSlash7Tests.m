@@ -1,6 +1,6 @@
 //
-//  HelloMixpanelTests.m
-//  HelloMixpanelTests
+//  HelloSlash7Tests.m
+//  HelloSlash7Tests
 //
 // Copyright 2012 Mixpanel
 //
@@ -16,7 +16,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import "HelloMixpanelTests.h"
+#import "HelloSlash7Tests.h"
 
 #import "Slash7.h"
 #import "MPCJSONSerializer.h"
@@ -38,13 +38,13 @@
 
 @end
 
-@interface HelloMixpanelTests ()  <Slash7Delegate>
+@interface HelloSlash7Tests ()  <Slash7Delegate>
 
 @property(nonatomic,retain) Slash7 *mixpanel;
 
 @end
 
-@implementation HelloMixpanelTests
+@implementation HelloSlash7Tests
 
 - (void)setUp
 {
