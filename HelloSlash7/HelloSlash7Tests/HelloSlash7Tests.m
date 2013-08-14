@@ -2,6 +2,7 @@
 //  HelloSlash7Tests.m
 //  HelloSlash7Tests
 //
+// Copyright 2013 pLucky, Inc.
 // Copyright 2012 Mixpanel
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +41,7 @@
 
 @interface HelloSlash7Tests ()  <Slash7Delegate>
 
-@property(nonatomic,retain) Slash7 *mixpanel;
+@property(nonatomic,retain) Slash7 *slash7;
 
 @end
 
@@ -49,14 +50,14 @@
 - (void)setUp
 {
     [super setUp];
-    self.mixpanel = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    [self.mixpanel reset];
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    [self.slash7 reset];
 }
 
 - (void)tearDown
 {
     [super tearDown];
-    self.mixpanel = nil;
+    self.slash7 = nil;
 }
 
 - (BOOL)mixpanelWillFlush:(Slash7 *)mixpanel
@@ -128,24 +129,24 @@
 
         NSString *distinctId = @"d1";
         // try this for IFA, ODIN and nil
-        STAssertEqualObjects(self.mixpanel.distinctId, self.mixpanel.defaultDistinctId, @"mixpanel identify failed to set default distinct id");
-        [self.mixpanel track:@"e1"];
-        STAssertTrue(self.mixpanel.eventsQueue.count == 1, @"events should be sent right away with default distinct id");
-        STAssertEqualObjects(self.mixpanel.eventsQueue.lastObject[@"properties"][@"distinct_id"], self.mixpanel.defaultDistinctId, @"events should use default distinct id if none set");
+        STAssertEqualObjects(self.slash7.distinctId, self.slash7.defaultDistinctId, @"mixpanel identify failed to set default distinct id");
+        [self.slash7 track:@"e1"];
+        STAssertTrue(self.slash7.eventsQueue.count == 1, @"events should be sent right away with default distinct id");
+        STAssertEqualObjects(self.slash7.eventsQueue.lastObject[@"properties"][@"distinct_id"], self.slash7.defaultDistinctId, @"events should use default distinct id if none set");
 
-        [self.mixpanel identify:distinctId];
-        STAssertEqualObjects(self.mixpanel.distinctId, distinctId, @"mixpanel identify failed to set distinct id");
-        [self.mixpanel track:@"e2"];
-        STAssertEquals(self.mixpanel.eventsQueue.lastObject[@"properties"][@"distinct_id"], distinctId, @"events should use new distinct id after identify:");
-        [self.mixpanel reset];
+        [self.slash7 identify:distinctId];
+        STAssertEqualObjects(self.slash7.distinctId, distinctId, @"mixpanel identify failed to set distinct id");
+        [self.slash7 track:@"e2"];
+        STAssertEquals(self.slash7.eventsQueue.lastObject[@"properties"][@"distinct_id"], distinctId, @"events should use new distinct id after identify:");
+        [self.slash7 reset];
     }
 }
 
 - (void)testTrack
 {
-    [self.mixpanel track:@"Something Happened"];
-    STAssertTrue(self.mixpanel.eventsQueue.count == 1, @"event not queued");
-    NSDictionary *e = self.mixpanel.eventsQueue.lastObject;
+    [self.slash7 track:@"Something Happened"];
+    STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
+    NSDictionary *e = self.slash7.eventsQueue.lastObject;
     STAssertEquals([e objectForKey:@"event"], @"Something Happened", @"incorrect event name");
     NSDictionary *p = [e objectForKey:@"properties"];
     STAssertTrue(p.count == 16, @"incorrect number of properties");
@@ -175,9 +176,9 @@
                        [NSDate date],              @"date",
                        @"override",                @"$app_version",
                        nil];
-    [self.mixpanel track:@"Something Happened" withParams:p];
-    STAssertTrue(self.mixpanel.eventsQueue.count == 1, @"event not queued");
-    NSDictionary *e = self.mixpanel.eventsQueue.lastObject;
+    [self.slash7 track:@"Something Happened" withParams:p];
+    STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
+    NSDictionary *e = self.slash7.eventsQueue.lastObject;
     STAssertEquals([e objectForKey:@"event"], @"Something Happened", @"incorrect event name");
     p = [e objectForKey:@"properties"];
     STAssertTrue(p.count == 19, @"incorrect number of properties");
@@ -190,9 +191,9 @@
                        @"t1",                      @"token",
                        @"d1",                      @"distinct_id",
                        nil];
-    [self.mixpanel track:@"e1" withParams:p];
-    NSString *trackToken = [[self.mixpanel.eventsQueue.lastObject objectForKey:@"properties"] objectForKey:@"token"];
-    NSString *trackDistinctId = [[self.mixpanel.eventsQueue.lastObject objectForKey:@"properties"] objectForKey:@"distinct_id"];
+    [self.slash7 track:@"e1" withParams:p];
+    NSString *trackToken = [[self.slash7.eventsQueue.lastObject objectForKey:@"properties"] objectForKey:@"token"];
+    NSString *trackDistinctId = [[self.slash7.eventsQueue.lastObject objectForKey:@"properties"] objectForKey:@"distinct_id"];
     STAssertEqualObjects(trackToken, @"t1", @"user-defined distinct id not used in track. got: %@", trackToken);
     STAssertEqualObjects(trackDistinctId, @"d1", @"user-defined distinct id not used in track. got: %@", trackDistinctId);
 }
@@ -205,135 +206,135 @@
                        [NSDate date],              @"p2",
                        nil];
 
-    [self.mixpanel setUserAttributes:p];
-    STAssertEqualObjects([self.mixpanel currentSuperProperties], p, @"register super properties failed");
+    [self.slash7 setUserAttributes:p];
+    STAssertEqualObjects([self.slash7 currentSuperProperties], p, @"register super properties failed");
     p = [NSDictionary dictionaryWithObject:@"b" forKey:@"p1"];
-    [self.mixpanel setUserAttributes:p];
-    STAssertEqualObjects([[self.mixpanel currentSuperProperties] objectForKey:@"p1"], @"b",
+    [self.slash7 setUserAttributes:p];
+    STAssertEqualObjects([[self.slash7 currentSuperProperties] objectForKey:@"p1"], @"b",
                          @"register super properties failed to overwrite existing value");
 }
 
 - (void)testAssertPropertyTypes
 {
     NSDictionary *p = [NSDictionary dictionaryWithObject:[NSData data] forKey:@"data"];
-    STAssertThrows([self.mixpanel track:@"e1" withParams:p], @"property type should not be allowed");
-    STAssertThrows([self.mixpanel setUserAttributes:p], @"property type should not be allowed");
+    STAssertThrows([self.slash7 track:@"e1" withParams:p], @"property type should not be allowed");
+    STAssertThrows([self.slash7 setUserAttributes:p], @"property type should not be allowed");
     p = [self allPropertyTypes];
-    STAssertNoThrow([self.mixpanel track:@"e1" withParams:p], @"property type should be allowed");
-    STAssertNoThrow([self.mixpanel setUserAttributes:p], @"property type should be allowed");
+    STAssertNoThrow([self.slash7 track:@"e1" withParams:p], @"property type should be allowed");
+    STAssertNoThrow([self.slash7 setUserAttributes:p], @"property type should be allowed");
 }
 
 - (void)testReset
 {
     NSDictionary *p = [NSDictionary dictionaryWithObject:@"a" forKey:@"p1"];
-    [self.mixpanel identify:@"d1"];
-    [self.mixpanel setUserAttributes:p];
-    [self.mixpanel track:@"e1"];
-    [self.mixpanel archive];
+    [self.slash7 identify:@"d1"];
+    [self.slash7 setUserAttributes:p];
+    [self.slash7 track:@"e1"];
+    [self.slash7 archive];
 
-    [self.mixpanel reset];
-    STAssertEqualObjects(self.mixpanel.distinctId, [self.mixpanel defaultDistinctId], @"distinct id failed to reset");
-    STAssertTrue([[self.mixpanel currentSuperProperties] count] == 0, @"super properties failed to reset");
-    STAssertTrue(self.mixpanel.eventsQueue.count == 0, @"events queue failed to reset");
+    [self.slash7 reset];
+    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"distinct id failed to reset");
+    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"super properties failed to reset");
+    STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset");
     
-    self.mixpanel = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.mixpanel.distinctId, [self.mixpanel defaultDistinctId], @"distinct id failed to reset after archive");
-    STAssertTrue([[self.mixpanel currentSuperProperties] count] == 0, @"super properties failed to reset after archive");
-    STAssertTrue(self.mixpanel.eventsQueue.count == 0, @"events queue failed to reset after archive");
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"distinct id failed to reset after archive");
+    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"super properties failed to reset after archive");
+    STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset after archive");
 }
 
 - (void)testFlushTimer
 {
-    self.mixpanel = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertNil(self.mixpanel.timer, @"intializing with a flush interval of 0 still started timer");
-    self.mixpanel = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:60] autorelease];
-    STAssertNotNil(self.mixpanel.timer, @"intializing with a flush interval of 60 did not start timer");
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    STAssertNil(self.slash7.timer, @"intializing with a flush interval of 0 still started timer");
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:60] autorelease];
+    STAssertNotNil(self.slash7.timer, @"intializing with a flush interval of 60 did not start timer");
 }
 
 - (void)testArchive
 {
-    [self.mixpanel archive];
-    self.mixpanel = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    [self.slash7 archive];
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
 
-    STAssertEqualObjects(self.mixpanel.distinctId, [self.mixpanel defaultDistinctId], @"default distinct id archive failed");
-    STAssertTrue([[self.mixpanel currentSuperProperties] count] == 0, @"default super properties archive failed");
-    STAssertTrue(self.mixpanel.eventsQueue.count == 0, @"default events queue archive failed");
+    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id archive failed");
+    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties archive failed");
+    STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue archive failed");
 
     NSDictionary *p = [NSDictionary dictionaryWithObject:@"a" forKey:@"p1"];
-    [self.mixpanel identify:@"d1"];
-    [self.mixpanel setUserAttributes:p];
-    [self.mixpanel track:@"e1"];
+    [self.slash7 identify:@"d1"];
+    [self.slash7 setUserAttributes:p];
+    [self.slash7 track:@"e1"];
 
-    [self.mixpanel archive];
-    self.mixpanel = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    [self.slash7 archive];
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
 
-    STAssertEqualObjects(self.mixpanel.distinctId, @"d1", @"custom distinct archive failed");
-    STAssertTrue([[self.mixpanel currentSuperProperties] count] == 1, @"custom super properties archive failed");
-    STAssertTrue(self.mixpanel.eventsQueue.count == 1, @"pending events queue archive failed");
+    STAssertEqualObjects(self.slash7.distinctId, @"d1", @"custom distinct archive failed");
+    STAssertTrue([[self.slash7 currentSuperProperties] count] == 1, @"custom super properties archive failed");
+    STAssertTrue(self.slash7.eventsQueue.count == 1, @"pending events queue archive failed");
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
-    STAssertTrue([fileManager fileExistsAtPath:[self.mixpanel eventsFilePath]], @"events archive file not found");
-    STAssertTrue([fileManager fileExistsAtPath:[self.mixpanel peopleFilePath]], @"people archive file not found");
-    STAssertTrue([fileManager fileExistsAtPath:[self.mixpanel propertiesFilePath]], @"properties archive file not found");
+    STAssertTrue([fileManager fileExistsAtPath:[self.slash7 eventsFilePath]], @"events archive file not found");
+    STAssertTrue([fileManager fileExistsAtPath:[self.slash7 peopleFilePath]], @"people archive file not found");
+    STAssertTrue([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"properties archive file not found");
 
     // no existing file
 
-    [fileManager removeItemAtPath:[self.mixpanel eventsFilePath] error:NULL];
-    [fileManager removeItemAtPath:[self.mixpanel peopleFilePath] error:NULL];
-    [fileManager removeItemAtPath:[self.mixpanel propertiesFilePath] error:NULL];
+    [fileManager removeItemAtPath:[self.slash7 eventsFilePath] error:NULL];
+    [fileManager removeItemAtPath:[self.slash7 peopleFilePath] error:NULL];
+    [fileManager removeItemAtPath:[self.slash7 propertiesFilePath] error:NULL];
 
-    STAssertFalse([fileManager fileExistsAtPath:[self.mixpanel eventsFilePath]], @"events archive file not removed");
-    STAssertFalse([fileManager fileExistsAtPath:[self.mixpanel peopleFilePath]], @"people archive file not removed");
-    STAssertFalse([fileManager fileExistsAtPath:[self.mixpanel propertiesFilePath]], @"properties archive file not removed");
+    STAssertFalse([fileManager fileExistsAtPath:[self.slash7 eventsFilePath]], @"events archive file not removed");
+    STAssertFalse([fileManager fileExistsAtPath:[self.slash7 peopleFilePath]], @"people archive file not removed");
+    STAssertFalse([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"properties archive file not removed");
 
-    self.mixpanel = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.mixpanel.distinctId, [self.mixpanel defaultDistinctId], @"default distinct id from no file failed");
-    STAssertTrue([[self.mixpanel currentSuperProperties] count] == 0, @"default super properties from no file failed");
-    STAssertNotNil(self.mixpanel.eventsQueue, @"default events queue from no file is nil");
-    STAssertTrue(self.mixpanel.eventsQueue.count == 0, @"default events queue from no file not empty");
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id from no file failed");
+    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties from no file failed");
+    STAssertNotNil(self.slash7.eventsQueue, @"default events queue from no file is nil");
+    STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from no file not empty");
 
     // corrupt file
 
     NSData *garbage = [@"garbage" dataUsingEncoding:NSUTF8StringEncoding];
-    [garbage writeToFile:[self.mixpanel eventsFilePath] atomically:NO];
-    [garbage writeToFile:[self.mixpanel peopleFilePath] atomically:NO];
-    [garbage writeToFile:[self.mixpanel propertiesFilePath] atomically:NO];
+    [garbage writeToFile:[self.slash7 eventsFilePath] atomically:NO];
+    [garbage writeToFile:[self.slash7 peopleFilePath] atomically:NO];
+    [garbage writeToFile:[self.slash7 propertiesFilePath] atomically:NO];
 
-    STAssertTrue([fileManager fileExistsAtPath:[self.mixpanel eventsFilePath]], @"garbage events archive file not found");
-    STAssertTrue([fileManager fileExistsAtPath:[self.mixpanel peopleFilePath]], @"garbage people archive file not found");
-    STAssertTrue([fileManager fileExistsAtPath:[self.mixpanel propertiesFilePath]], @"garbage properties archive file not found");
+    STAssertTrue([fileManager fileExistsAtPath:[self.slash7 eventsFilePath]], @"garbage events archive file not found");
+    STAssertTrue([fileManager fileExistsAtPath:[self.slash7 peopleFilePath]], @"garbage people archive file not found");
+    STAssertTrue([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"garbage properties archive file not found");
 
-    self.mixpanel = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.mixpanel.distinctId, [self.mixpanel defaultDistinctId], @"default distinct id from garbage failed");
-    STAssertTrue([[self.mixpanel currentSuperProperties] count] == 0, @"default super properties from garbage failed");
-    STAssertNotNil(self.mixpanel.eventsQueue, @"default events queue from garbage is nil");
-    STAssertTrue(self.mixpanel.eventsQueue.count == 0, @"default events queue from garbage not empty");
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id from garbage failed");
+    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties from garbage failed");
+    STAssertNotNil(self.slash7.eventsQueue, @"default events queue from garbage is nil");
+    STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from garbage not empty");
 }
 
 - (void)testMixpanelDelegate
 {
-    self.mixpanel.delegate = self;
-    [self.mixpanel identify:@"d1"];
-    [self.mixpanel track:@"e1"];
-    [self.mixpanel flush];
-    STAssertTrue(self.mixpanel.eventsQueue.count == 1, @"delegate should have stopped flush");
+    self.slash7.delegate = self;
+    [self.slash7 identify:@"d1"];
+    [self.slash7 track:@"e1"];
+    [self.slash7 flush];
+    STAssertTrue(self.slash7.eventsQueue.count == 1, @"delegate should have stopped flush");
 }
 
 - (void)testNilArguments
 {
-    [self.mixpanel identify:nil];
-    [self.mixpanel track:nil];
-    [self.mixpanel track:nil withParams:nil];
-    [self.mixpanel setUserAttributes:nil];
+    [self.slash7 identify:nil];
+    [self.slash7 track:nil];
+    [self.slash7 track:nil withParams:nil];
+    [self.slash7 setUserAttributes:nil];
 
     // legacy behavior
-    STAssertTrue(self.mixpanel.eventsQueue.count == 2, @"track with nil should create mp_event event");
-    STAssertEqualObjects([self.mixpanel.eventsQueue.lastObject objectForKey:@"event"], @"_empty", @"track with nil should create _empty event");
-    STAssertNotNil([self.mixpanel currentSuperProperties], @"setting super properties to nil should have no effect");
-    STAssertTrue([[self.mixpanel currentSuperProperties] count] == 0, @"setting super properties to nil should have no effect");
+    STAssertTrue(self.slash7.eventsQueue.count == 2, @"track with nil should create mp_event event");
+    STAssertEqualObjects([self.slash7.eventsQueue.lastObject objectForKey:@"event"], @"_empty", @"track with nil should create _empty event");
+    STAssertNotNil([self.slash7 currentSuperProperties], @"setting super properties to nil should have no effect");
+    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"setting super properties to nil should have no effect");
 
-    [self.mixpanel identify:nil];
+    [self.slash7 identify:nil];
 }
 
 @end
