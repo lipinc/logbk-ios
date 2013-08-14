@@ -40,16 +40,16 @@
 #define IFT_ETHER 0x6 // ethernet CSMACD
 #endif
 
-#ifdef MIXPANEL_LOG
-#define MixpanelLog(...) NSLog(__VA_ARGS__)
+#ifdef SLASH7_LOG
+#define Slash7Log(...) NSLog(__VA_ARGS__)
 #else
-#define MixpanelLog(...)
+#define Slash7Log(...)
 #endif
 
-#ifdef MIXPANEL_DEBUG
-#define MixpanelDebug(...) NSLog(__VA_ARGS__)
+#ifdef SLASH7_DEBUG
+#define Slash7Debug(...) NSLog(__VA_ARGS__)
 #else
-#define MixpanelDebug(...)
+#define Slash7Debug(...)
 #endif
 
 @interface Slash7 ()
@@ -144,7 +144,7 @@ static Slash7 *sharedInstance = nil;
     SCNetworkReachabilityFlags flags;
     BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(nrRef, &flags);
     if (!didRetrieveFlags) {
-        MixpanelDebug(@"%@ unable to fetch the network reachablity flags", self);
+        Slash7Debug(@"%@ unable to fetch the network reachablity flags", self);
     }
 
     CFRelease(nrRef);
@@ -169,7 +169,7 @@ static Slash7 *sharedInstance = nil;
     inBg = [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground;
 #endif
     if (inBg) {
-        MixpanelDebug(@"%@ in background", self);
+        Slash7Debug(@"%@ in background", self);
     }
     return inBg;
 }
@@ -383,7 +383,7 @@ static Slash7 *sharedInstance = nil;
         [Slash7 assertPropertyTypes:properties];
 
         NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:event, @"event", [NSDictionary dictionaryWithDictionary:p], @"properties", nil];
-        MixpanelLog(@"%@ queueing event: %@", self, e);
+        Slash7Log(@"%@ queueing event: %@", self, e);
         [self.eventsQueue addObject:e];
         if ([Slash7 inBackground]) {
             [self archiveEvents];
@@ -496,7 +496,7 @@ static Slash7 *sharedInstance = nil;
                                                         selector:@selector(flush)
                                                         userInfo:nil
                                                          repeats:YES];
-            MixpanelDebug(@"%@ started flush timer: %@", self, self.timer);
+            Slash7Debug(@"%@ started flush timer: %@", self, self.timer);
         }
     }
 }
@@ -506,7 +506,7 @@ static Slash7 *sharedInstance = nil;
     @synchronized(self) {
         if (self.timer) {
             [self.timer invalidate];
-            MixpanelDebug(@"%@ stopped flush timer: %@", self, self.timer);
+            Slash7Debug(@"%@ stopped flush timer: %@", self, self.timer);
         }
         self.timer = nil;
     }
@@ -525,11 +525,11 @@ static Slash7 *sharedInstance = nil;
     @synchronized(self) {
         if ([self.delegate respondsToSelector:@selector(slash7WillFlush:)]) {
             if (![self.delegate slash7WillFlush:self]) {
-                MixpanelDebug(@"%@ delegate deferred flush", self);
+                Slash7Debug(@"%@ delegate deferred flush", self);
                 return;
             }
         }
-        MixpanelDebug(@"%@ flushing data to %@", self, self.serverURL);
+        Slash7Debug(@"%@ flushing data to %@", self, self.serverURL);
         [self flushEvents];
     }
 }
@@ -542,13 +542,13 @@ static Slash7 *sharedInstance = nil;
             [[UIApplication sharedApplication] respondsToSelector:@selector(endBackgroundTask:)]) {
 
             self.taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-                MixpanelDebug(@"%@ flush background task %u cut short", self, self.taskId);
+                Slash7Debug(@"%@ flush background task %u cut short", self, self.taskId);
                 [self cancelFlush];
                 [[UIApplication sharedApplication] endBackgroundTask:self.taskId];
                 self.taskId = UIBackgroundTaskInvalid;
             }];
 
-            MixpanelDebug(@"%@ starting flush background task %u", self, self.taskId);
+            Slash7Debug(@"%@ starting flush background task %u", self, self.taskId);
             [self flush];
 
             // connection callbacks end this task by calling endBackgroundTaskIfComplete
@@ -560,10 +560,10 @@ static Slash7 *sharedInstance = nil;
 - (void)flushEvents
 {
     if ([self.eventsQueue count] == 0) {
-        MixpanelDebug(@"%@ no events to flush", self);
+        Slash7Debug(@"%@ no events to flush", self);
         return;
     } else if (self.eventsConnection != nil) {
-        MixpanelDebug(@"%@ events connection already open", self);
+        Slash7Debug(@"%@ events connection already open", self);
         return;
     } else if ([self.eventsQueue count] > 50) {
         self.eventsBatch = [self.eventsQueue subarrayWithRange:NSMakeRange(0, 50)];
@@ -574,7 +574,7 @@ static Slash7 *sharedInstance = nil;
     NSString *data = [Slash7 encodeAPIData:self.eventsBatch];
     NSString *postBody = [NSString stringWithFormat:@"ip=1&data=%@", data];
     
-    MixpanelDebug(@"%@ flushing %u of %u queued events: %@", self, self.eventsBatch.count, self.eventsQueue.count, self.eventsQueue);
+    Slash7Debug(@"%@ flushing %u of %u queued events: %@", self, self.eventsBatch.count, self.eventsQueue.count, self.eventsQueue);
 
     self.eventsConnection = [self apiConnectionWithEndpoint:@"/track/" andBody:postBody];
 
@@ -584,16 +584,16 @@ static Slash7 *sharedInstance = nil;
 - (void)cancelFlush
 {
     if (self.eventsConnection == nil) {
-        MixpanelDebug(@"%@ no events connection to cancel", self);
+        Slash7Debug(@"%@ no events connection to cancel", self);
     } else {
-        MixpanelDebug(@"%@ cancelling events connection", self);
+        Slash7Debug(@"%@ cancelling events connection", self);
         [self.eventsConnection cancel];
         self.eventsConnection = nil;
     }
     if (self.peopleConnection == nil) {
-        MixpanelDebug(@"%@ no people connection to cancel", self);
+        Slash7Debug(@"%@ no people connection to cancel", self);
     } else {
-        MixpanelDebug(@"%@ cancelling people connection", self);
+        Slash7Debug(@"%@ cancelling people connection", self);
         [self.peopleConnection cancel];
         self.peopleConnection = nil;
     }
@@ -643,7 +643,7 @@ static Slash7 *sharedInstance = nil;
 {
     @synchronized(self) {
         NSString *filePath = [self eventsFilePath];
-        MixpanelDebug(@"%@ archiving events data to %@: %@", self, filePath, self.eventsQueue);
+        Slash7Debug(@"%@ archiving events data to %@: %@", self, filePath, self.eventsQueue);
         if (![NSKeyedArchiver archiveRootObject:self.eventsQueue toFile:filePath]) {
             NSLog(@"%@ unable to archive events data", self);
         }
@@ -657,7 +657,7 @@ static Slash7 *sharedInstance = nil;
         NSMutableDictionary *properties = [NSMutableDictionary dictionary];
         [properties setValue:self.distinctId forKey:@"distinctId"];
         [properties setValue:self.superProperties forKey:@"superProperties"];
-        MixpanelDebug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
+        Slash7Debug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
         if (![NSKeyedArchiver archiveRootObject:properties toFile:filePath]) {
             NSLog(@"%@ unable to archive properties data", self);
         }
@@ -677,7 +677,7 @@ static Slash7 *sharedInstance = nil;
     NSString *filePath = [self eventsFilePath];
     @try {
         self.eventsQueue = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
-        MixpanelDebug(@"%@ unarchived events data: %@", self, self.eventsQueue);
+        Slash7Debug(@"%@ unarchived events data: %@", self, self.eventsQueue);
     }
     @catch (NSException *exception) {
         NSLog(@"%@ unable to unarchive events data, starting fresh", self);
@@ -695,7 +695,7 @@ static Slash7 *sharedInstance = nil;
     NSDictionary *properties = nil;
     @try {
         properties = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
-        MixpanelDebug(@"%@ unarchived properties data: %@", self, properties);
+        Slash7Debug(@"%@ unarchived properties data: %@", self, properties);
     }
     @catch (NSException *exception) {
         NSLog(@"%@ unable to unarchive properties data, starting fresh", self);
@@ -711,7 +711,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)addApplicationObservers
 {
-    MixpanelDebug(@"%@ adding application observers", self);
+    Slash7Debug(@"%@ adding application observers", self);
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self
                            selector:@selector(applicationWillTerminate:)
@@ -746,13 +746,13 @@ static Slash7 *sharedInstance = nil;
 
 - (void)removeApplicationObservers
 {
-    MixpanelDebug(@"%@ removing application observers", self);
+    Slash7Debug(@"%@ removing application observers", self);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification
 {
-    MixpanelDebug(@"%@ application did become active", self);
+    Slash7Debug(@"%@ application did become active", self);
     @synchronized(self) {
         [self startFlushTimer];
     }
@@ -760,7 +760,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)applicationWillResignActive:(NSNotification *)notification
 {
-    MixpanelDebug(@"%@ application will resign active", self);
+    Slash7Debug(@"%@ application will resign active", self);
     @synchronized(self) {
         [self stopFlushTimer];
     }
@@ -768,7 +768,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)applicationDidEnterBackground:(NSNotificationCenter *)notification
 {
-    MixpanelDebug(@"%@ did enter background", self);
+    Slash7Debug(@"%@ did enter background", self);
 
     @synchronized(self) {
         if (self.flushOnBackground) {
@@ -779,7 +779,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)applicationWillEnterForeground:(NSNotificationCenter *)notification
 {
-    MixpanelDebug(@"%@ will enter foreground", self);
+    Slash7Debug(@"%@ will enter foreground", self);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
     @synchronized(self) {
 
@@ -797,7 +797,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
-    MixpanelDebug(@"%@ application will terminate", self);
+    Slash7Debug(@"%@ application will terminate", self);
     @synchronized(self) {
         [self archive];
     }
@@ -811,7 +811,7 @@ static Slash7 *sharedInstance = nil;
 
         if (&UIBackgroundTaskInvalid && [[UIApplication sharedApplication] respondsToSelector:@selector(endBackgroundTask:)] &&
             self.taskId != UIBackgroundTaskInvalid && self.eventsConnection == nil && self.peopleConnection == nil) {
-            MixpanelDebug(@"%@ ending flush background task %u", self, self.taskId);
+            Slash7Debug(@"%@ ending flush background task %u", self, self.taskId);
             [[UIApplication sharedApplication] endBackgroundTask:self.taskId];
             self.taskId = UIBackgroundTaskInvalid;
         }
@@ -828,13 +828,13 @@ static Slash7 *sharedInstance = nil;
     [request setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
-    MixpanelDebug(@"%@ http request: %@?%@", self, [self.serverURL stringByAppendingString:endpoint], body);
+    Slash7Debug(@"%@ http request: %@?%@", self, [self.serverURL stringByAppendingString:endpoint], body);
     return [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
 {
-    MixpanelDebug(@"%@ http status code: %d", self, [response statusCode]);
+    Slash7Debug(@"%@ http status code: %d", self, [response statusCode]);
     if ([response statusCode] != 200) {
         NSLog(@"%@ http error: %@", self, [NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]]);
     } else if (connection == self.eventsConnection) {
@@ -877,7 +877,7 @@ static Slash7 *sharedInstance = nil;
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     @synchronized(self) {
-        MixpanelDebug(@"%@ http response finished loading", self);
+        Slash7Debug(@"%@ http response finished loading", self);
         if (connection == self.eventsConnection) {
             NSString *response = [[NSString alloc] initWithData:self.eventsResponseData encoding:NSUTF8StringEncoding];
             if ([response intValue] == 0) {
