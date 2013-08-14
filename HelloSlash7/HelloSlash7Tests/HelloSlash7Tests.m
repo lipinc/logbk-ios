@@ -132,12 +132,12 @@
         STAssertEqualObjects(self.slash7.distinctId, self.slash7.defaultDistinctId, @"mixpanel identify failed to set default distinct id");
         [self.slash7 track:@"e1"];
         STAssertTrue(self.slash7.eventsQueue.count == 1, @"events should be sent right away with default distinct id");
-        STAssertEqualObjects(self.slash7.eventsQueue.lastObject[@"properties"][@"distinct_id"], self.slash7.defaultDistinctId, @"events should use default distinct id if none set");
+        STAssertEqualObjects(self.slash7.eventsQueue.lastObject[S7_EVENT_PARAMS_KEY][@"distinct_id"], self.slash7.defaultDistinctId, @"events should use default distinct id if none set");
 
         [self.slash7 identify:distinctId];
         STAssertEqualObjects(self.slash7.distinctId, distinctId, @"mixpanel identify failed to set distinct id");
         [self.slash7 track:@"e2"];
-        STAssertEquals(self.slash7.eventsQueue.lastObject[@"properties"][@"distinct_id"], distinctId, @"events should use new distinct id after identify:");
+        STAssertEquals(self.slash7.eventsQueue.lastObject[S7_EVENT_PARAMS_KEY][@"distinct_id"], distinctId, @"events should use new distinct id after identify:");
         [self.slash7 reset];
     }
 }
@@ -147,8 +147,8 @@
     [self.slash7 track:@"Something Happened"];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
-    STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
-    NSDictionary *p = [e objectForKey:@"properties"];
+    STAssertEquals([e objectForKey:S7_EVENT_NAME_KEY], @"Something Happened", @"incorrect event name");
+    NSDictionary *p = [e objectForKey:S7_EVENT_PARAMS_KEY];
     STAssertTrue(p.count == 16, @"incorrect number of properties");
 
     STAssertNotNil([p objectForKey:@"$app_version"], @"$app_version not set");
@@ -180,7 +180,7 @@
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
     STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
-    p = [e objectForKey:@"properties"];
+    p = [e objectForKey:S7_EVENT_PARAMS_KEY];
     STAssertTrue(p.count == 19, @"incorrect number of properties");
     STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");
 }
@@ -192,8 +192,8 @@
                        @"d1",                      @"distinct_id",
                        nil];
     [self.slash7 track:@"e1" withParams:p];
-    NSString *trackToken = [[self.slash7.eventsQueue.lastObject objectForKey:@"properties"] objectForKey:@"token"];
-    NSString *trackDistinctId = [[self.slash7.eventsQueue.lastObject objectForKey:@"properties"] objectForKey:@"distinct_id"];
+    NSString *trackToken = [[self.slash7.eventsQueue.lastObject objectForKey:S7_EVENT_PARAMS_KEY] objectForKey:@"token"];
+    NSString *trackDistinctId = [[self.slash7.eventsQueue.lastObject objectForKey:S7_EVENT_PARAMS_KEY] objectForKey:@"distinct_id"];
     STAssertEqualObjects(trackToken, @"t1", @"user-defined distinct id not used in track. got: %@", trackToken);
     STAssertEqualObjects(trackDistinctId, @"d1", @"user-defined distinct id not used in track. got: %@", trackDistinctId);
 }

@@ -52,6 +52,9 @@
 #define Slash7Debug(...)
 #endif
 
+NSString * const S7_EVENT_NAME_KEY = @"_event_name";
+NSString * const S7_EVENT_PARAMS_KEY = @"_event_params";
+
 @interface Slash7 ()
 
 // re-declare internally as readwrite
@@ -382,7 +385,7 @@ static Slash7 *sharedInstance = nil;
 
         [Slash7 assertPropertyTypes:properties];
 
-        NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:event, @"_event_name", [NSDictionary dictionaryWithDictionary:p], @"properties", nil];
+        NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:event, S7_EVENT_NAME_KEY, [NSDictionary dictionaryWithDictionary:p], S7_EVENT_PARAMS_KEY, nil];
         Slash7Log(@"%@ queueing event: %@", self, e);
         [self.eventsQueue addObject:e];
         if ([Slash7 inBackground]) {

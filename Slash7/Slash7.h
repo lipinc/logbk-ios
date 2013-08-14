@@ -20,6 +20,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+extern NSString * const S7_EVENT_NAME_KEY;
+extern NSString * const S7_EVENT_PARAMS_KEY;
+
 @interface Slash7TransactionItem
 - initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num;
 @end
