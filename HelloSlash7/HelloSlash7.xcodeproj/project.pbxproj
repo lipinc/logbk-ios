@@ -48,22 +48,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2808F98D1610EFE3005772B7 /* HelloMixpanel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloMixpanel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2808F98D1610EFE3005772B7 /* HelloSlash7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloSlash7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2808F9911610EFE3005772B7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2808F9931610EFE3005772B7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2808F9951610EFE3005772B7 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		2808F9991610EFE3005772B7 /* HelloMixpanel-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloMixpanel-Info.plist"; sourceTree = "<group>"; };
+		2808F9991610EFE3005772B7 /* HelloSlash7-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloSlash7-Info.plist"; sourceTree = "<group>"; };
 		2808F99B1610EFE3005772B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2808F99D1610EFE3005772B7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2808F99F1610EFE3005772B7 /* HelloMixpanel-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HelloMixpanel-Prefix.pch"; sourceTree = "<group>"; };
+		2808F99F1610EFE3005772B7 /* HelloSlash7-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HelloSlash7-Prefix.pch"; sourceTree = "<group>"; };
 		2808F9A01610EFE3005772B7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2808F9A11610EFE3005772B7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		2808F9A31610EFE3005772B7 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2808F9A41610EFE3005772B7 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		2808F9A71610EFE3005772B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
-		2808F9B11610EFE4005772B7 /* HelloMixpanelTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HelloMixpanelTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2808F9B11610EFE4005772B7 /* HelloSlash7Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HelloSlash7Tests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2808F9B21610EFE4005772B7 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		2808F9BA1610EFE4005772B7 /* HelloMixpanelTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloMixpanelTests-Info.plist"; sourceTree = "<group>"; };
+		2808F9BA1610EFE4005772B7 /* HelloSlash7Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloSlash7Tests-Info.plist"; sourceTree = "<group>"; };
 		2808F9BC1610EFE4005772B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2808F9BE1610EFE4005772B7 /* HelloMixpanelTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloMixpanelTests.h; sourceTree = "<group>"; };
 		2808F9BF1610EFE4005772B7 /* HelloMixpanelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloMixpanelTests.m; sourceTree = "<group>"; };
@@ -120,7 +120,7 @@
 		2808F9821610EFE3005772B7 = {
 			isa = PBXGroup;
 			children = (
-				2808F9971610EFE3005772B7 /* HelloMixpanel */,
+				2808F9971610EFE3005772B7 /* HelloSlash7 */,
 				2808F9B81610EFE4005772B7 /* HelloMixpanelTests */,
 				2808F9901610EFE3005772B7 /* Frameworks */,
 				2808F98E1610EFE3005772B7 /* Products */,
@@ -131,8 +131,8 @@
 		2808F98E1610EFE3005772B7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2808F98D1610EFE3005772B7 /* HelloMixpanel.app */,
-				2808F9B11610EFE4005772B7 /* HelloMixpanelTests.octest */,
+				2808F98D1610EFE3005772B7 /* HelloSlash7.app */,
+				2808F9B11610EFE4005772B7 /* HelloSlash7Tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -151,7 +151,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2808F9971610EFE3005772B7 /* HelloMixpanel */ = {
+		2808F9971610EFE3005772B7 /* HelloSlash7 */ = {
 			isa = PBXGroup;
 			children = (
 				2808F9A01610EFE3005772B7 /* AppDelegate.h */,
@@ -161,7 +161,7 @@
 				2808F9A61610EFE3005772B7 /* ViewController.xib */,
 				2808F9981610EFE3005772B7 /* Supporting Files */,
 			);
-			path = HelloMixpanel;
+			path = HelloSlash7;
 			sourceTree = "<group>";
 		};
 		2808F9981610EFE3005772B7 /* Supporting Files */ = {
@@ -173,10 +173,10 @@
 				28C7E666161530BF00F78E49 /* Icon@2x.png */,
 				2808F9CB1610F0DE005772B7 /* logo_white.png */,
 				2808F9C91610F0D0005772B7 /* grid.png */,
-				2808F9991610EFE3005772B7 /* HelloMixpanel-Info.plist */,
+				2808F9991610EFE3005772B7 /* HelloSlash7-Info.plist */,
 				2808F99A1610EFE3005772B7 /* InfoPlist.strings */,
 				2808F99D1610EFE3005772B7 /* main.m */,
-				2808F99F1610EFE3005772B7 /* HelloMixpanel-Prefix.pch */,
+				2808F99F1610EFE3005772B7 /* HelloSlash7-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -188,13 +188,14 @@
 				2808F9BF1610EFE4005772B7 /* HelloMixpanelTests.m */,
 				2808F9B91610EFE4005772B7 /* Supporting Files */,
 			);
-			path = HelloMixpanelTests;
+			name = HelloMixpanelTests;
+			path = HelloSlash7Tests;
 			sourceTree = "<group>";
 		};
 		2808F9B91610EFE4005772B7 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				2808F9BA1610EFE4005772B7 /* HelloMixpanelTests-Info.plist */,
+				2808F9BA1610EFE4005772B7 /* HelloSlash7Tests-Info.plist */,
 				2808F9BB1610EFE4005772B7 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -255,9 +256,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2808F98C1610EFE3005772B7 /* HelloMixpanel */ = {
+		2808F98C1610EFE3005772B7 /* HelloSlash7 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2808F9C31610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloMixpanel" */;
+			buildConfigurationList = 2808F9C31610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloSlash7" */;
 			buildPhases = (
 				2808F9891610EFE3005772B7 /* Sources */,
 				2808F98A1610EFE3005772B7 /* Frameworks */,
@@ -267,14 +268,14 @@
 			);
 			dependencies = (
 			);
-			name = HelloMixpanel;
+			name = HelloSlash7;
 			productName = HelloMixpanel;
-			productReference = 2808F98D1610EFE3005772B7 /* HelloMixpanel.app */;
+			productReference = 2808F98D1610EFE3005772B7 /* HelloSlash7.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2808F9B01610EFE4005772B7 /* HelloMixpanelTests */ = {
+		2808F9B01610EFE4005772B7 /* HelloSlash7Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2808F9C61610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloMixpanelTests" */;
+			buildConfigurationList = 2808F9C61610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloSlash7Tests" */;
 			buildPhases = (
 				2808F9AC1610EFE4005772B7 /* Sources */,
 				2808F9AD1610EFE4005772B7 /* Frameworks */,
@@ -286,9 +287,9 @@
 			dependencies = (
 				2808F9B71610EFE4005772B7 /* PBXTargetDependency */,
 			);
-			name = HelloMixpanelTests;
+			name = HelloSlash7Tests;
 			productName = HelloMixpanelTests;
-			productReference = 2808F9B11610EFE4005772B7 /* HelloMixpanelTests.octest */;
+			productReference = 2808F9B11610EFE4005772B7 /* HelloSlash7Tests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -300,7 +301,7 @@
 				LastUpgradeCheck = 0440;
 				ORGANIZATIONNAME = Mixpanel;
 			};
-			buildConfigurationList = 2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloMixpanel" */;
+			buildConfigurationList = 2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloSlash7" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -312,8 +313,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2808F98C1610EFE3005772B7 /* HelloMixpanel */,
-				2808F9B01610EFE4005772B7 /* HelloMixpanelTests */,
+				2808F98C1610EFE3005772B7 /* HelloSlash7 */,
+				2808F9B01610EFE4005772B7 /* HelloSlash7Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -390,7 +391,7 @@
 /* Begin PBXTargetDependency section */
 		2808F9B71610EFE4005772B7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2808F98C1610EFE3005772B7 /* HelloMixpanel */;
+			target = 2808F98C1610EFE3005772B7 /* HelloSlash7 */;
 			targetProxy = 2808F9B61610EFE4005772B7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -540,21 +541,17 @@
 		2808F9C41610EFE4005772B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Neil Rahilly (JLY92MT8BF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Neil Rahilly (JLY92MT8BF)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloMixpanel/HelloMixpanel-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
 					"MIXPANEL_LOG=1",
 					"MIXPANEL_DEBUG=1",
 				);
-				INFOPLIST_FILE = "HelloMixpanel/HelloMixpanel-Info.plist";
+				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4807011B-D4F1-4BF7-BBC9-DF3E5E11CD3C";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4807011B-D4F1-4BF7-BBC9-DF3E5E11CD3C";
+				PRODUCT_NAME = HelloSlash7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -562,17 +559,13 @@
 		2808F9C51610EFE4005772B7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Mixpanel, Inc.";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Mixpanel, Inc.";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloMixpanel/HelloMixpanel-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "HelloMixpanel/HelloMixpanel-Info.plist";
+				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "6FF36473-8704-4929-A5F9-B8362FAD184E";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6FF36473-8704-4929-A5F9-B8362FAD184E";
+				PRODUCT_NAME = HelloSlash7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -580,7 +573,7 @@
 		2808F9C71610EFE4005772B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloMixpanel.app/HelloMixpanel";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloSlash7.app/HelloSlash7";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -588,12 +581,12 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloMixpanel/HelloMixpanel-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "HelloMixpanelTests/HelloMixpanelTests-Info.plist";
+				INFOPLIST_FILE = "HelloSlash7Tests/HelloSlash7Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = HelloSlash7Tests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -602,7 +595,7 @@
 		2808F9C81610EFE4005772B7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloMixpanel.app/HelloMixpanel";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloSlash7.app/HelloSlash7";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -610,12 +603,12 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloMixpanel/HelloMixpanel-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "HelloMixpanelTests/HelloMixpanelTests-Info.plist";
+				INFOPLIST_FILE = "HelloSlash7Tests/HelloSlash7Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = HelloSlash7Tests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -675,15 +668,13 @@
 		28C2136616376D3300696E4F /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloMixpanel/HelloMixpanel-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "HelloMixpanel/HelloMixpanel-Info.plist";
+				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = HelloSlash7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = AppStore;
@@ -691,7 +682,7 @@
 		28C2136716376D3300696E4F /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloMixpanel.app/HelloMixpanel";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloSlash7.app/HelloSlash7";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -699,12 +690,12 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloMixpanel/HelloMixpanel-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "HelloMixpanelTests/HelloMixpanelTests-Info.plist";
+				INFOPLIST_FILE = "HelloSlash7Tests/HelloSlash7Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = HelloSlash7Tests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -713,7 +704,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloMixpanel" */ = {
+		2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloSlash7" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2808F9C11610EFE4005772B7 /* Debug */,
@@ -723,7 +714,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2808F9C31610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloMixpanel" */ = {
+		2808F9C31610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloSlash7" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2808F9C41610EFE4005772B7 /* Debug */,
@@ -733,7 +724,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2808F9C61610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloMixpanelTests" */ = {
+		2808F9C61610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloSlash7Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2808F9C71610EFE4005772B7 /* Debug */,
