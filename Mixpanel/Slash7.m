@@ -523,8 +523,8 @@ static Slash7 *sharedInstance = nil;
     }
 
     @synchronized(self) {
-        if ([self.delegate respondsToSelector:@selector(mixpanelWillFlush:)]) {
-            if (![self.delegate mixpanelWillFlush:self]) {
+        if ([self.delegate respondsToSelector:@selector(slash7WillFlush:)]) {
+            if (![self.delegate slash7WillFlush:self]) {
                 MixpanelDebug(@"%@ delegate deferred flush", self);
                 return;
             }

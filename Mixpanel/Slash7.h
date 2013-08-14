@@ -338,6 +338,6 @@
  
  @param Slash7        Slash7 API instance
  */
-- (BOOL)Slash7WillFlush:(Slash7 *)Slash7;
+- (BOOL)slash7WillFlush:(Slash7 *)Slash7;
 
 @end
