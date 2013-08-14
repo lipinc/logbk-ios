@@ -124,7 +124,7 @@
 				2808F9B81610EFE4005772B7 /* HelloMixpanelTests */,
 				2808F9901610EFE3005772B7 /* Frameworks */,
 				2808F98E1610EFE3005772B7 /* Products */,
-				286760AD1611982600B1BEC8 /* Mixpanel */,
+				286760AD1611982600B1BEC8 /* Slash7 */,
 			);
 			sourceTree = "<group>";
 		};
@@ -200,15 +200,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		286760AD1611982600B1BEC8 /* Mixpanel */ = {
+		286760AD1611982600B1BEC8 /* Slash7 */ = {
 			isa = PBXGroup;
 			children = (
 				286760AE1611982600B1BEC8 /* Library */,
 				286760B91611982600B1BEC8 /* Slash7.h */,
 				286760BA1611982600B1BEC8 /* Slash7.m */,
 			);
-			name = Mixpanel;
-			path = ../Mixpanel;
+			name = Slash7;
+			path = ../Slash7;
 			sourceTree = "<group>";
 		};
 		286760AE1611982600B1BEC8 /* Library */ = {
