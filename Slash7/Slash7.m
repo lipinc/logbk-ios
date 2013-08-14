@@ -365,8 +365,8 @@ static Slash7 *sharedInstance = nil;
 {
     @synchronized(self) {
         if (event == nil || [event length] == 0) {
-            NSLog(@"%@ mixpanel track called with empty event parameter. using 'mp_event'", self);
-            event = @"mp_event";
+            NSLog(@"%@ track called with empty event parameter. using '_empty'", self);
+            event = @"_empty";
         }
         NSMutableDictionary *p = [NSMutableDictionary dictionary];
         [p addEntriesFromDictionary:[Slash7 deviceInfoProperties]];

@@ -329,7 +329,7 @@
 
     // legacy behavior
     STAssertTrue(self.mixpanel.eventsQueue.count == 2, @"track with nil should create mp_event event");
-    STAssertEqualObjects([self.mixpanel.eventsQueue.lastObject objectForKey:@"event"], @"mp_event", @"track with nil should create mp_event event");
+    STAssertEqualObjects([self.mixpanel.eventsQueue.lastObject objectForKey:@"event"], @"_empty", @"track with nil should create _empty event");
     STAssertNotNil([self.mixpanel currentSuperProperties], @"setting super properties to nil should have no effect");
     STAssertTrue([[self.mixpanel currentSuperProperties] count] == 0, @"setting super properties to nil should have no effect");
 
