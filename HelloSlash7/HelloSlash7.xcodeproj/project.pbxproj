@@ -23,7 +23,7 @@
 		2808F9CC1610F0DE005772B7 /* logo_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 2808F9CB1610F0DE005772B7 /* logo_white.png */; };
 		283CEC53171F5E2800ACACB5 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 283CEC52171F5E2800ACACB5 /* AdSupport.framework */; };
 		28537E8E16168C000032FE06 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 28537E8D16168C000032FE06 /* Default-568h@2x.png */; };
-		285EC8351611970A0087AE27 /* HelloMixpanelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2808F9BF1610EFE4005772B7 /* HelloMixpanelTests.m */; };
+		285EC8351611970A0087AE27 /* HelloSlash7Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */; };
 		286760BB1611982600B1BEC8 /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B11611982600B1BEC8 /* MPCJSONDataSerializer.m */; };
 		286760BC1611982600B1BEC8 /* MPCJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B31611982600B1BEC8 /* MPCJSONSerializer.m */; };
 		286760BD1611982600B1BEC8 /* MPCSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B51611982600B1BEC8 /* MPCSerializedJSONData.m */; };
@@ -65,8 +65,8 @@
 		2808F9B21610EFE4005772B7 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		2808F9BA1610EFE4005772B7 /* HelloSlash7Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloSlash7Tests-Info.plist"; sourceTree = "<group>"; };
 		2808F9BC1610EFE4005772B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		2808F9BE1610EFE4005772B7 /* HelloMixpanelTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloMixpanelTests.h; sourceTree = "<group>"; };
-		2808F9BF1610EFE4005772B7 /* HelloMixpanelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloMixpanelTests.m; sourceTree = "<group>"; };
+		2808F9BE1610EFE4005772B7 /* HelloSlash7Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloSlash7Tests.h; sourceTree = "<group>"; };
+		2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloSlash7Tests.m; sourceTree = "<group>"; };
 		2808F9C91610F0D0005772B7 /* grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grid.png; sourceTree = "<group>"; };
 		2808F9CB1610F0DE005772B7 /* logo_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_white.png; sourceTree = "<group>"; };
 		283CEC52171F5E2800ACACB5 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -121,7 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				2808F9971610EFE3005772B7 /* HelloSlash7 */,
-				2808F9B81610EFE4005772B7 /* HelloMixpanelTests */,
+				2808F9B81610EFE4005772B7 /* HelloSlash7Tests */,
 				2808F9901610EFE3005772B7 /* Frameworks */,
 				2808F98E1610EFE3005772B7 /* Products */,
 				286760AD1611982600B1BEC8 /* Slash7 */,
@@ -181,14 +181,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		2808F9B81610EFE4005772B7 /* HelloMixpanelTests */ = {
+		2808F9B81610EFE4005772B7 /* HelloSlash7Tests */ = {
 			isa = PBXGroup;
 			children = (
-				2808F9BE1610EFE4005772B7 /* HelloMixpanelTests.h */,
-				2808F9BF1610EFE4005772B7 /* HelloMixpanelTests.m */,
+				2808F9BE1610EFE4005772B7 /* HelloSlash7Tests.h */,
+				2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */,
 				2808F9B91610EFE4005772B7 /* Supporting Files */,
 			);
-			name = HelloMixpanelTests;
 			path = HelloSlash7Tests;
 			sourceTree = "<group>";
 		};
@@ -382,7 +381,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				285EC8351611970A0087AE27 /* HelloMixpanelTests.m in Sources */,
+				285EC8351611970A0087AE27 /* HelloSlash7Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,8 +437,8 @@
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Neil Rahilly (JLY92MT8BF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Neil Rahilly (JLY92MT8BF)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -474,8 +473,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PROVISIONING_PROFILE = "4807011B-D4F1-4BF7-BBC9-DF3E5E11CD3C";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4807011B-D4F1-4BF7-BBC9-DF3E5E11CD3C";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -496,8 +495,8 @@
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Mixpanel, Inc.";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Mixpanel, Inc.";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -529,8 +528,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "6FF36473-8704-4929-A5F9-B8362FAD184E";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6FF36473-8704-4929-A5F9-B8362FAD184E";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -549,7 +548,6 @@
 					"MIXPANEL_DEBUG=1",
 				);
 				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = HelloSlash7;
 				WRAPPER_EXTENSION = app;
@@ -563,7 +561,6 @@
 				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = HelloSlash7;
 				WRAPPER_EXTENSION = app;
@@ -672,7 +669,6 @@
 				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = HelloSlash7;
 				WRAPPER_EXTENSION = app;
