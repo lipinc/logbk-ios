@@ -611,49 +611,6 @@ static Slash7 *sharedInstance = nil;
     [self setUserAttributes:[NSDictionary dictionaryWithObject:object forKey:attribute]];
 }
 
-- (void)registerunsentUserAttributesOnce:(NSDictionary *)properties
-{
-    [Slash7 assertPropertyTypes:properties];
-    @synchronized(self) {
-        for (NSString *key in properties) {
-            if ([self.unsentUserAttributes objectForKey:key] == nil) {
-                [self.unsentUserAttributes setObject:[properties objectForKey:key] forKey:key];
-            }
-        }
-        if ([Slash7 inBackground]) {
-            [self archiveProperties];
-        }
-    }
-}
-
-- (void)registerunsentUserAttributesOnce:(NSDictionary *)properties defaultValue:(id)defaultValue
-{
-    [Slash7 assertPropertyTypes:properties];
-    @synchronized(self) {
-        for (NSString *key in properties) {
-            id value = [self.unsentUserAttributes objectForKey:key];
-            if (value == nil || [value isEqual:defaultValue]) {
-                [self.unsentUserAttributes setObject:[properties objectForKey:key] forKey:key];
-            }
-        }
-        if ([Slash7 inBackground]) {
-            [self archiveProperties];
-        }
-    }
-}
-
-- (void)unregisterSuperProperty:(NSString *)propertyName
-{
-    @synchronized(self) {
-        if ([self.unsentUserAttributes objectForKey:propertyName] != nil) {
-            [self.unsentUserAttributes removeObjectForKey:propertyName];
-            if ([Slash7 inBackground]) {
-                [self archiveProperties];
-            }
-        }
-    }
-}
-
 - (void)clearUnsentUserAttributes
 {
     @synchronized(self) {
