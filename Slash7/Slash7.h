@@ -20,6 +20,10 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+/*!
+ @abstract
+ Enum to represent app user id type.
+ */
 typedef enum {
     S7_USER_ID_TYPE_APP = 0,
     S7_USER_ID_TYPE_FACEBOOK,
@@ -34,6 +38,9 @@ typedef enum {
 @property (nonatomic,copy) NSString *itemName;
 @property (nonatomic,assign) NSInteger price;
 @property (nonatomic,assign) NSUInteger num;
+@property (nonatomic,copy) NSString *category1;
+@property (nonatomic,copy) NSString *category2;
+@property (nonatomic,copy) NSString *category3;
 - (id)initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num;
 @end
 

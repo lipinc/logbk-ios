@@ -58,6 +58,36 @@ static NSString * const S7_APP_USER_ID_KEY = @"_app_user_id";
 static NSString * const S7_APP_USER_ID_TYPE_KEY = @"_app_user_id_type";
 static NSString * const S7_TIME_KEY = @"_time";
 
+static NSString * const EMPTY_REPLACEMENT = @"_empty";
+
+@interface Slash7TransactionItem ()
+-(NSDictionary *)properties;
+@end
+
+@interface Slash7Transaction ()
+-(NSDictionary *)properties;
+@end
+
+@interface Slash7 ()
+
+// re-declare internally as readwrite
+@property(nonatomic,copy) NSString *appUserId;
+@property(nonatomic,copy) NSString *appUserIdType;
+@property(nonatomic,copy)   NSString *apiToken;
+@property(nonatomic,retain) NSMutableDictionary *unsentUserAttributes;
+@property(nonatomic,retain) NSTimer *timer;
+@property(nonatomic,retain) NSMutableArray *eventsQueue;
+@property(nonatomic,retain) NSArray *eventsBatch;
+@property(nonatomic,retain) NSURLConnection *eventsConnection;
+@property(nonatomic,retain) NSMutableData *eventsResponseData;
+@property(nonatomic,retain) NSDateFormatter *dateFormatter;
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
+@property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
+#endif
++(NSString *)genRandStringLength:(int)len;
+@end
+
 @implementation Slash7TransactionItem
 - (id)initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num
 {
@@ -68,6 +98,42 @@ static NSString * const S7_TIME_KEY = @"_time";
         self.num = num;
     }
     return self;
+}
+
+-(NSDictionary *)properties {
+    NSString *itemId = self.itemId;
+    if (itemId == nil || [itemId length] == 0) {
+        NSLog(@"%@ item Id is empty. using _empty", self);
+        itemId = EMPTY_REPLACEMENT;
+    }
+    
+    NSString *name = self.itemName;
+    if (name == nil || [name length] == 0) {
+        NSLog(@"%@ name is empty. using itemId", self);
+        name = itemId;
+    }
+    
+    NSMutableDictionary *p = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                              itemId, @"_item_id",
+                              name, @"_name",
+                              [NSNumber numberWithInteger:self.price], @"_price",
+                              [NSNumber numberWithUnsignedInteger:self.num], @"_num",
+                              nil];
+    if (self.category1) {
+        [p setObject:self.category1 forKey:@"_category1"];
+    }
+    if (self.category2) {
+        [p setObject:self.category2 forKey:@"_category2"];
+    }
+    if (self.category3) {
+        [p setObject:self.category3 forKey:@"_category3"];
+    }
+    return p;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<Slash7TransactionItem: %p %@ %@ %d %d>", self, self.itemId, self.itemName, self.price, self.num];
 }
 @end
 
@@ -96,31 +162,55 @@ static NSString * const S7_TIME_KEY = @"_time";
     }
     return sum;
 }
-@end
 
-@interface Slash7 ()
+-(NSArray *)itemsProperties {
+    NSMutableArray *ary = [NSMutableArray array];
+    for (Slash7TransactionItem *item in self.items) {
+        [ary addObject:[item properties]];
+    }
+    return ary;
+}
 
-// re-declare internally as readwrite
-@property(nonatomic,copy) NSString *appUserId;
-@property(nonatomic,copy) NSString *appUserIdType;
-@property(nonatomic,copy)   NSString *apiToken;
-@property(nonatomic,retain) NSMutableDictionary *unsentUserAttributes;
-@property(nonatomic,retain) NSTimer *timer;
-@property(nonatomic,retain) NSMutableArray *eventsQueue;
-@property(nonatomic,retain) NSArray *eventsBatch;
-@property(nonatomic,retain) NSURLConnection *eventsConnection;
-@property(nonatomic,retain) NSMutableData *eventsResponseData;
-@property(nonatomic,retain) NSDateFormatter *dateFormatter;
+-(NSDictionary *)properties
+{
+    if (self.items == nil || [self.items count] == 0) {
+        NSLog(@"%@ items are empty. skipped.", self);
+        return [NSDictionary dictionary];
+    }
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
-@property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
-#endif
+    NSString *txId = self.transactionId;
+    if (txId == nil || [txId length] == 0) {
+        NSLog(@"%@ empty transactionId. using random string", self);
+        txId = [Slash7 genRandStringLength:64];
+    }
+    
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            txId, @"_transact_id",
+            [NSNumber numberWithInteger:self.totalPrice], @"_total_price",
+            [self itemsProperties], @"_items",
+            nil];
+}
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<Slash7Transaction: %p %@ %d>", self, self.transactionId, self.totalPrice];
+}
 @end
 
 @implementation Slash7
 
 static Slash7 *sharedInstance = nil;
+
+#pragma mark * Utility
+
++(NSString *) genRandStringLength: (int) len {
+    static NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
+    for (int i=0; i<len; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
+    }
+    return randomString;
+}
 
 #pragma mark * AppUserIdType
 
@@ -441,16 +531,26 @@ static Slash7 *sharedInstance = nil;
 
 - (void)track:(NSString *)event
 {
-    [self track:event withParams:nil];
+    [self track:event withTransaction:nil withParams:nil];
 }
 
 - (void)track:(NSString *)event withParams:(NSDictionary *)params
+{
+    [self track:event withTransaction:nil withParams:params];
+}
+
+- (void)track:(NSString *)event withTransaction:(Slash7Transaction *)transaction
+{
+    [self track:event withTransaction:transaction withParams:nil];
+}
+
+- (void)track:(NSString *)event withTransaction:(Slash7Transaction *)transaction withParams:(NSDictionary *)params
 {
     @synchronized(self) {
         NSDate *now = [NSDate date];
         if (event == nil || [event length] == 0) {
             NSLog(@"%@ track called with empty event parameter. using '_empty'", self);
-            event = @"_empty";
+            event = EMPTY_REPLACEMENT;
         }
         NSMutableDictionary *p = [NSMutableDictionary dictionary];
         if (self.sendDeviceInfo) {
@@ -464,6 +564,9 @@ static Slash7 *sharedInstance = nil;
         [Slash7 assertPropertyTypes:params];
 
         NSMutableDictionary *e = [NSMutableDictionary dictionaryWithDictionary:self.unsentUserAttributes];
+        if (transaction) {
+            [e addEntriesFromDictionary:[transaction properties]];
+        }
         [e addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:
                                      event, S7_EVENT_NAME_KEY,
                                      [self.dateFormatter stringFromDate:now], S7_TIME_KEY,

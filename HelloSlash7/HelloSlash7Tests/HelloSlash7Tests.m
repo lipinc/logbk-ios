@@ -40,6 +40,10 @@
 
 @end
 
+@interface Slash7TransactionItem (Test)
+-(NSDictionary *)properties;
+@end
+
 @interface HelloSlash7Tests ()  <Slash7Delegate>
 
 @property(nonatomic,retain) Slash7 *slash7;
@@ -108,6 +112,46 @@
     data = [Slash7 JSONSerializeObject:[NSArray arrayWithObject:test]];
     json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
     STAssertEqualObjects(json, @"[{\"3\":\"non-string key\"}]", @"json serialization failed");
+}
+
+- (void)testItemProperty {
+    Slash7TransactionItem *item1 = [[[Slash7TransactionItem alloc] initWithId:@"item1" withName:@"Iron sword" withPrice:90 withNum:2] autorelease];
+    NSDictionary *p1 = [item1 properties];
+    STAssertEqualObjects([p1 objectForKey:@"_item_id"], @"item1", @"_item_id should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_name"], @"Iron sword", @"_name should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_price"], [NSNumber numberWithInt:90], @"_price should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_num"],[NSNumber numberWithInt:2], @"_num should be set");
+    STAssertNil([p1 objectForKey:@"_category1"], @"category1 should not be set");
+    STAssertNil([p1 objectForKey:@"_category2"], @"category1 should not be set");
+    STAssertNil([p1 objectForKey:@"_category3"], @"category1 should not be set");
+}
+
+- (void)testItemPropertyWithCategory {
+    Slash7TransactionItem *item1 = [[[Slash7TransactionItem alloc] initWithId:@"item1" withName:@"Iron sword" withPrice:90 withNum:2] autorelease];
+    item1.category1 = @"Category 1";
+    item1.category2 = @"Category 2";
+    item1.category3 = @"Category 3";
+    
+    NSDictionary *p1 = [item1 properties];
+    STAssertEqualObjects([p1 objectForKey:@"_item_id"], @"item1", @"_item_id should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_name"], @"Iron sword", @"_name should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_price"], [NSNumber numberWithInt:90], @"_price should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_num"],[NSNumber numberWithInt:2], @"_num should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_category1"], @"Category 1", @"category1 should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_category2"], @"Category 2", @"category2 should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_category3"], @"Category 3", @"category3 should be set");
+}
+
+-(void)testItemPropertyNil {
+    Slash7TransactionItem *item1 = [[[Slash7TransactionItem alloc] initWithId:nil withName:nil withPrice:0 withNum:0] autorelease];
+    NSDictionary *p1 = [item1 properties];
+    STAssertEqualObjects([p1 objectForKey:@"_item_id"], @"_empty", @"_item_id should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_name"], @"_empty", @"_name should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_price"], [NSNumber numberWithInt:0], @"_price should be set");
+    STAssertEqualObjects([p1 objectForKey:@"_num"],[NSNumber numberWithInt:0], @"_num should be set");
+    STAssertNil([p1 objectForKey:@"_category1"], @"category1 should not be set");
+    STAssertNil([p1 objectForKey:@"_category2"], @"category1 should not be set");
+    STAssertNil([p1 objectForKey:@"_category3"], @"category1 should not be set");
 }
 
 - (void)testIdentify
