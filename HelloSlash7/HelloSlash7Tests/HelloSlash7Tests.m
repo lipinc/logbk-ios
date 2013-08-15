@@ -29,12 +29,13 @@
 // get access to private members
 @property(nonatomic,retain) NSMutableArray *eventsQueue;
 @property(nonatomic,retain) NSTimer *timer;
+@property(nonatomic,retain) NSDateFormatter *dateFormatter;
 
 + (NSData *)JSONSerializeObject:(id)obj;
 - (NSString *)defaultDistinctId;
+- (NSString *)defaultAppUserIdType;
 - (void)archive;
 - (NSString *)eventsFilePath;
-- (NSString *)peopleFilePath;
 - (NSString *)propertiesFilePath;
 
 @end
@@ -60,7 +61,7 @@
     self.slash7 = nil;
 }
 
-- (BOOL)mixpanelWillFlush:(Slash7 *)mixpanel
+- (BOOL)slash7WillFlush:(Slash7 *)slash7
 {
     return NO;
 }
@@ -130,14 +131,8 @@
         NSString *distinctId = @"d1";
         // try this for IFA, ODIN and nil
         STAssertEqualObjects(self.slash7.distinctId, self.slash7.defaultDistinctId, @"mixpanel identify failed to set default distinct id");
-        [self.slash7 track:@"e1"];
-        STAssertTrue(self.slash7.eventsQueue.count == 1, @"events should be sent right away with default distinct id");
-        STAssertEqualObjects(self.slash7.eventsQueue.lastObject[S7_EVENT_PARAMS_KEY][@"distinct_id"], self.slash7.defaultDistinctId, @"events should use default distinct id if none set");
-
         [self.slash7 identify:distinctId];
         STAssertEqualObjects(self.slash7.distinctId, distinctId, @"mixpanel identify failed to set distinct id");
-        [self.slash7 track:@"e2"];
-        STAssertEquals(self.slash7.eventsQueue.lastObject[S7_EVENT_PARAMS_KEY][@"distinct_id"], distinctId, @"events should use new distinct id after identify:");
         [self.slash7 reset];
     }
 }
@@ -148,8 +143,12 @@
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
     STAssertEquals([e objectForKey:S7_EVENT_NAME_KEY], @"Something Happened", @"incorrect event name");
+    STAssertNotNil([e objectForKey:@"_app_user_id_type"], @"_app_user_id_type not set");
+    STAssertNotNil([e objectForKey:@"_app_user_id"], @"_app_user_id not set");
+    STAssertNotNil([e objectForKey:@"_time"], @"_time not set");
+
     NSDictionary *p = [e objectForKey:S7_EVENT_PARAMS_KEY];
-    STAssertTrue(p.count == 16, @"incorrect number of properties");
+    STAssertTrue(p.count == 12, @"incorrect number of properties");
 
     STAssertNotNil([p objectForKey:@"$app_version"], @"$app_version not set");
     STAssertNotNil([p objectForKey:@"$app_release"], @"$app_release not set");
@@ -160,12 +159,8 @@
     STAssertNotNil([p objectForKey:@"$os_version"], @"$os_version not set");
     STAssertNotNil([p objectForKey:@"$screen_height"], @"$screen_height not set");
     STAssertNotNil([p objectForKey:@"$screen_width"], @"$screen_width not set");
-    STAssertNotNil([p objectForKey:@"distinct_id"], @"distinct_id not set");
-    STAssertNotNil([p objectForKey:@"mp_device_model"], @"mp_device_model not set");
-    STAssertEqualObjects([p objectForKey:@"mp_lib"], @"iphone", @"incorrect mp_lib");
-    STAssertNotNil([p objectForKey:@"time"], @"time not set");
+    STAssertEqualObjects([p objectForKey:@"$lib"], @"iphone", @"incorrect mp_lib");
     STAssertNotNil([p objectForKey:@"$ios_ifa"], @"$ios_ifa not set");
-    STAssertEqualObjects([p objectForKey:@"token"], TEST_TOKEN, @"incorrect token");
 }
 
 - (void)testTrackProperties
@@ -181,7 +176,7 @@
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
     STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     p = [e objectForKey:S7_EVENT_PARAMS_KEY];
-    STAssertTrue(p.count == 19, @"incorrect number of properties");
+    STAssertTrue(p.count == 15, @"incorrect number of properties");
     STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");
 }
 
@@ -257,6 +252,7 @@
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
 
     STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id archive failed");
+    STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue archive failed");
 
@@ -269,27 +265,26 @@
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
 
     STAssertEqualObjects(self.slash7.distinctId, @"d1", @"custom distinct archive failed");
+    STAssertEqualObjects(self.slash7.appUserIdType, @"cookie", @"app user id type archive failed");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 1, @"custom super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"pending events queue archive failed");
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
     STAssertTrue([fileManager fileExistsAtPath:[self.slash7 eventsFilePath]], @"events archive file not found");
-    STAssertTrue([fileManager fileExistsAtPath:[self.slash7 peopleFilePath]], @"people archive file not found");
     STAssertTrue([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"properties archive file not found");
 
     // no existing file
 
     [fileManager removeItemAtPath:[self.slash7 eventsFilePath] error:NULL];
-    [fileManager removeItemAtPath:[self.slash7 peopleFilePath] error:NULL];
     [fileManager removeItemAtPath:[self.slash7 propertiesFilePath] error:NULL];
 
     STAssertFalse([fileManager fileExistsAtPath:[self.slash7 eventsFilePath]], @"events archive file not removed");
-    STAssertFalse([fileManager fileExistsAtPath:[self.slash7 peopleFilePath]], @"people archive file not removed");
     STAssertFalse([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"properties archive file not removed");
 
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
     STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id from no file failed");
+    STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties from no file failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from no file is nil");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from no file not empty");
@@ -298,15 +293,14 @@
 
     NSData *garbage = [@"garbage" dataUsingEncoding:NSUTF8StringEncoding];
     [garbage writeToFile:[self.slash7 eventsFilePath] atomically:NO];
-    [garbage writeToFile:[self.slash7 peopleFilePath] atomically:NO];
     [garbage writeToFile:[self.slash7 propertiesFilePath] atomically:NO];
 
     STAssertTrue([fileManager fileExistsAtPath:[self.slash7 eventsFilePath]], @"garbage events archive file not found");
-    STAssertTrue([fileManager fileExistsAtPath:[self.slash7 peopleFilePath]], @"garbage people archive file not found");
     STAssertTrue([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"garbage properties archive file not found");
 
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
     STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id from garbage failed");
+    STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties from garbage failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from garbage is nil");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from garbage not empty");
@@ -335,6 +329,17 @@
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"setting super properties to nil should have no effect");
 
     [self.slash7 identify:nil];
+}
+
+- (void)testDateFormatter
+{
+    NSDate *d1 = [NSDate dateWithTimeIntervalSince1970:0];
+    STAssertEqualObjects([self.slash7.dateFormatter stringFromDate:d1], @"1970-01-01T00:00:00Z", @"dateFormatter should format in ISO8601");
+    
+    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+    NSDate *d2 = [dateFormatter dateFromString:@"2012-09-28 19:14:36 PDT"];
+    STAssertEqualObjects([self.slash7.dateFormatter stringFromDate:d2], @"2012-09-29T02:14:36Z", @"dateFormatter should format in UTC");
 }
 
 @end

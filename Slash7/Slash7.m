@@ -34,7 +34,7 @@
 #import "NSData+S7Base64.h"
 #import "S7ODIN.h"
 
-#define VERSION @"2.0.0"
+#define VERSION @"0.1.0"
 
 #ifndef IFT_ETHER
 #define IFT_ETHER 0x6 // ethernet CSMACD
@@ -54,12 +54,15 @@
 
 NSString * const S7_EVENT_NAME_KEY = @"_event_name";
 NSString * const S7_EVENT_PARAMS_KEY = @"_event_params";
+NSString * const S7_APP_USER_ID_KEY = @"_app_user_id";
+NSString * const S7_APP_USER_ID_TYPE_KEY = @"_app_user_id_type";
+NSString * const S7_TIME_KEY = @"_time";
 
 @interface Slash7 ()
 
 // re-declare internally as readwrite
 @property(nonatomic,copy) NSString *distinctId;
-
+@property(nonatomic,copy) NSString *appUserIdType;
 @property(nonatomic,copy)   NSString *apiToken;
 @property(nonatomic,retain) NSMutableDictionary *superProperties;
 @property(nonatomic,retain) NSTimer *timer;
@@ -70,6 +73,7 @@ NSString * const S7_EVENT_PARAMS_KEY = @"_event_params";
 @property(nonatomic,retain) NSURLConnection *peopleConnection;
 @property(nonatomic,retain) NSMutableData *eventsResponseData;
 @property(nonatomic,retain) NSMutableData *peopleResponseData;
+@property(nonatomic,retain) NSDateFormatter *dateFormatter;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
 @property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
@@ -81,6 +85,30 @@ NSString * const S7_EVENT_PARAMS_KEY = @"_event_params";
 
 static Slash7 *sharedInstance = nil;
 
+#pragma mark * AppUserIdType
+
++ (NSString *)appUserIdTypeString:(S7AppUserIdType)type
+{
+    switch (type) {
+        case S7_USER_ID_TYPE_APP:
+            return @"app";
+        case S7_USER_ID_TYPE_FACEBOOK:
+            return @"facebook";
+        case S7_USER_ID_TYPE_TWITTER:
+            return @"twitter";
+        case S7_USER_ID_TYPE_GREE:
+            return @"gree";
+        case S7_USER_ID_TYPE_MOBAGE:
+            return @"mobage";
+        case S7_USER_ID_TYPE_COOKIE:
+            return @"cookie";
+        default:
+            NSAssert(false, @"Unknown S7AppUserIdType: %d", type);
+            return nil;
+    }
+}
+
+
 #pragma mark * Device info
 
 + (NSDictionary *)deviceInfoProperties
@@ -89,7 +117,7 @@ static Slash7 *sharedInstance = nil;
 
     UIDevice *device = [UIDevice currentDevice];
 
-    [properties setValue:@"iphone" forKey:@"mp_lib"];
+    [properties setValue:@"iphone" forKey:@"$lib"];
     [properties setValue:VERSION forKey:@"$lib_version"];
 
     [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"$app_version"];
@@ -99,7 +127,6 @@ static Slash7 *sharedInstance = nil;
     [properties setValue:[device systemName] forKey:@"$os"];
     [properties setValue:[device systemVersion] forKey:@"$os_version"];
     [properties setValue:[Slash7 deviceModel] forKey:@"$model"];
-    [properties setValue:[Slash7 deviceModel] forKey:@"mp_device_model"]; // legacy
 
     CGSize size = [UIScreen mainScreen].bounds.size;
     [properties setValue:[NSNumber numberWithInt:(int)size.height] forKey:@"$screen_height"];
@@ -311,6 +338,9 @@ static Slash7 *sharedInstance = nil;
         NSLog(@"%@ warning empty api token", self);
     }
     if (self = [self init]) {
+        self.dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+        [self.dateFormatter  setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+        self.dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
         self.apiToken = apiToken;
         self.flushInterval = flushInterval;
         self.flushOnBackground = YES;
@@ -318,6 +348,7 @@ static Slash7 *sharedInstance = nil;
         self.serverURL = @"https://api.mixpanel.com";
         
         self.distinctId = [self defaultDistinctId];
+        self.appUserIdType = [self defaultAppUserIdType];
         self.superProperties = [NSMutableDictionary dictionary];
 
         self.eventsQueue = [NSMutableArray array];
@@ -342,6 +373,19 @@ static Slash7 *sharedInstance = nil;
     }
 }
 
+
+- (void)identify:(NSString *)appUserId withType:(S7AppUserIdType)type
+{
+    @synchronized(self) {
+        self.distinctId = appUserId;
+        self.appUserIdType = [Slash7 appUserIdTypeString:type];
+        if ([Slash7 inBackground]) {
+            [self archiveProperties];
+        }
+    }
+}
+
+
 #pragma mark * Tracking
 
 - (NSString *)defaultDistinctId
@@ -359,6 +403,11 @@ static Slash7 *sharedInstance = nil;
     return distinctId;
 }
 
+- (NSString *)defaultAppUserIdType
+{
+    return [Slash7 appUserIdTypeString:S7_USER_ID_TYPE_COOKIE];
+}
+
 - (void)track:(NSString *)event
 {
     [self track:event withParams:nil];
@@ -367,17 +416,13 @@ static Slash7 *sharedInstance = nil;
 - (void)track:(NSString *)event withParams:(NSDictionary *)properties
 {
     @synchronized(self) {
+        NSDate *now = [NSDate date];
         if (event == nil || [event length] == 0) {
             NSLog(@"%@ track called with empty event parameter. using '_empty'", self);
             event = @"_empty";
         }
         NSMutableDictionary *p = [NSMutableDictionary dictionary];
         [p addEntriesFromDictionary:[Slash7 deviceInfoProperties]];
-        [p setObject:self.apiToken forKey:@"token"];
-        [p setObject:[NSNumber numberWithLong:(long)[[NSDate date] timeIntervalSince1970]] forKey:@"time"];
-        if (self.distinctId) {
-            [p setObject:self.distinctId forKey:@"distinct_id"];
-        }
         [p addEntriesFromDictionary:self.superProperties];
         if (properties) {
             [p addEntriesFromDictionary:properties];
@@ -385,7 +430,13 @@ static Slash7 *sharedInstance = nil;
 
         [Slash7 assertPropertyTypes:properties];
 
-        NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:event, S7_EVENT_NAME_KEY, [NSDictionary dictionaryWithDictionary:p], S7_EVENT_PARAMS_KEY, nil];
+        NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:
+                           event, S7_EVENT_NAME_KEY,
+                           [self.dateFormatter stringFromDate:now], S7_TIME_KEY,
+                           [NSDictionary dictionaryWithDictionary:p], S7_EVENT_PARAMS_KEY,
+                           self.appUserIdType, S7_APP_USER_ID_TYPE_KEY,
+                           self.distinctId, S7_APP_USER_ID_KEY,
+                           nil];
         Slash7Log(@"%@ queueing event: %@", self, e);
         [self.eventsQueue addObject:e];
         if ([Slash7 inBackground]) {
@@ -622,11 +673,6 @@ static Slash7 *sharedInstance = nil;
 - (NSString *)eventsFilePath
 {
     return [self filePathForData:@"events"];
-}
-
-- (NSString *)peopleFilePath
-{
-    return [self filePathForData:@"people"];
 }
 
 - (NSString *)propertiesFilePath

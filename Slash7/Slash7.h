@@ -23,6 +23,15 @@
 extern NSString * const S7_EVENT_NAME_KEY;
 extern NSString * const S7_EVENT_PARAMS_KEY;
 
+typedef enum {
+    S7_USER_ID_TYPE_APP = 0,
+    S7_USER_ID_TYPE_FACEBOOK,
+    S7_USER_ID_TYPE_TWITTER,
+    S7_USER_ID_TYPE_GREE,
+    S7_USER_ID_TYPE_MOBAGE,
+    S7_USER_ID_TYPE_COOKIE
+} S7AppUserIdType;
+
 @interface Slash7TransactionItem
 - initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num;
 @end
@@ -78,6 +87,14 @@ extern NSString * const S7_EVENT_PARAMS_KEY;
  use the <code>identify:</code> method.
  */
 @property(nonatomic,readonly,copy) NSString *distinctId;
+
+/*!
+ @property
+
+ @abstract
+ The type of user id.
+ */
+@property(nonatomic,readonly,copy) NSString *appUserIdType;
 
 /*!
  @property
@@ -200,9 +217,24 @@ extern NSString * const S7_EVENT_PARAMS_KEY;
  @abstract
  Sets the distinct ID of the current user.
 
+ @discussion
+ S7_USER_ID_TYPE_APP is used for type.
+
  @param distinctId string that uniquely identifies the current user
  */
 - (void)identify:(NSString *)distinctId;
+
+/*!
+ @property
+ 
+ @abstract
+ Sets the ID of the current user.
+ 
+ @param app_user_id string that uniquely identifies the current user
+ @param type the type of app_user_id
+ */
+
+- (void)identify:(NSString *)appUserId withType:(S7AppUserIdType)type;
 
 /*!
  @method
