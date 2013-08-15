@@ -29,9 +29,6 @@
 		286760BF1611982600B1BEC8 /* Slash7.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760BA1611982600B1BEC8 /* Slash7.m */; };
 		2892541D16548047003DAFFE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892541C16548047003DAFFE /* SystemConfiguration.framework */; };
 		2892541F16548283003DAFFE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892541E16548283003DAFFE /* CoreTelephony.framework */; };
-		28C7E667161530BF00F78E49 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 28C7E666161530BF00F78E49 /* Icon@2x.png */; };
-		28C7E6691615311100F78E49 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 28C7E6681615311100F78E49 /* Icon.png */; };
-		28C7E66B1615317400F78E49 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 28C7E66A1615317400F78E49 /* Icon-72.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,9 +75,6 @@
 		286760BA1611982600B1BEC8 /* Slash7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slash7.m; sourceTree = "<group>"; };
 		2892541C16548047003DAFFE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2892541E16548283003DAFFE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
-		28C7E666161530BF00F78E49 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
-		28C7E6681615311100F78E49 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		28C7E66A1615317400F78E49 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,9 +153,6 @@
 			isa = PBXGroup;
 			children = (
 				28537E8D16168C000032FE06 /* Default-568h@2x.png */,
-				28C7E66A1615317400F78E49 /* Icon-72.png */,
-				28C7E6681615311100F78E49 /* Icon.png */,
-				28C7E666161530BF00F78E49 /* Icon@2x.png */,
 				2808F9C91610F0D0005772B7 /* grid.png */,
 				2808F9991610EFE3005772B7 /* HelloSlash7-Info.plist */,
 				2808F99A1610EFE3005772B7 /* InfoPlist.strings */,
@@ -306,9 +297,6 @@
 				2808F99C1610EFE3005772B7 /* InfoPlist.strings in Resources */,
 				2808F9A81610EFE3005772B7 /* ViewController.xib in Resources */,
 				2808F9CA1610F0D0005772B7 /* grid.png in Resources */,
-				28C7E667161530BF00F78E49 /* Icon@2x.png in Resources */,
-				28C7E6691615311100F78E49 /* Icon.png in Resources */,
-				28C7E66B1615317400F78E49 /* Icon-72.png in Resources */,
 				28537E8E16168C000032FE06 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
