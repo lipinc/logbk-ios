@@ -32,7 +32,7 @@
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
 
 + (NSData *)JSONSerializeObject:(id)obj;
-- (NSString *)defaultAppUserId;
+- (NSString *)randomAppUserId;
 - (NSString *)defaultAppUserIdType;
 - (void)archive;
 - (NSString *)eventsFilePath;
@@ -231,7 +231,7 @@
 
         NSString *distinctId = @"d1";
         // try this for IFA, ODIN and nil
-        STAssertEqualObjects(self.slash7.appUserId, self.slash7.defaultAppUserId, @"identify failed to set default user id");
+        STAssertNotNil(self.slash7.appUserId, @"identify failed to set default user id");
         STAssertEqualObjects(self.slash7.appUserIdType, self.slash7.defaultAppUserIdType, @"identify failed to set default user id type");
         [self.slash7 identify:distinctId withType:S7_USER_ID_TYPE_APP];
         STAssertEqualObjects(self.slash7.appUserId, distinctId, @"identify failed to set distinct id");
@@ -250,7 +250,7 @@
     STAssertNotNil([e objectForKey:@"_time"], @"_time not set");
 
     NSDictionary *p = [e objectForKey:@"_event_params"];
-    STAssertTrue(p.count == 12, @"incorrect number of properties");
+    STAssertTrue(p.count == 11, @"incorrect number of properties");
 
     STAssertNotNil([p objectForKey:@"$app_version"], @"$app_version not set");
     STAssertNotNil([p objectForKey:@"$app_release"], @"$app_release not set");
@@ -262,7 +262,6 @@
     STAssertNotNil([p objectForKey:@"$screen_height"], @"$screen_height not set");
     STAssertNotNil([p objectForKey:@"$screen_width"], @"$screen_width not set");
     STAssertEqualObjects([p objectForKey:@"$lib"], @"iphone", @"incorrect mp_lib");
-    STAssertNotNil([p objectForKey:@"$ios_ifa"], @"$ios_ifa not set");
 }
 
 - (void)testTrackProperties
@@ -278,7 +277,7 @@
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
     STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     p = [e objectForKey:@"_event_params"];
-    STAssertTrue(p.count == 15, @"incorrect number of properties");
+    STAssertTrue(p.count == 14, @"incorrect number of properties");
     STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");
 }
 
@@ -308,7 +307,7 @@
     STAssertNotNil([e objectForKey:@"_total_price"], @"_total_price not set");
     
     p = [e objectForKey:@"_event_params"];
-    STAssertTrue(p.count == 15, @"incorrect number of properties");
+    STAssertTrue(p.count == 14, @"incorrect number of properties");
     STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");    
 }
 
@@ -362,13 +361,15 @@
     [self.slash7 archive];
 
     [self.slash7 reset];
-    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"distinct id failed to reset");
+    NSString *appUserIdAfterReset = self.slash7.appUserId;
+    STAssertNotNil(self.slash7.appUserId, @"default distinct id from no file failed");
+    STAssertFalse([self.slash7.appUserId isEqualToString:@"d1"], @"default distinct id from no file failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"distinct id type failed to reset");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"super properties failed to reset");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset");
     
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"distinct id failed to reset after archive");
+    STAssertEqualObjects(self.slash7.appUserId, appUserIdAfterReset, @"distinct id failed to reset after archive");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"distinct id type failed to reset after archive");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"super properties failed to reset after archive");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset after archive");
@@ -384,10 +385,10 @@
 
 - (void)testArchive
 {
+    NSString *origAppUserId = self.slash7.appUserId;
     [self.slash7 archive];
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-
-    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id archive failed");
+    STAssertEqualObjects(self.slash7.appUserId, origAppUserId, @"default distinct id archive failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue archive failed");
@@ -419,7 +420,8 @@
     STAssertFalse([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"properties archive file not removed");
 
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id from no file failed");
+    STAssertNotNil(self.slash7.appUserId, @"default distinct id from no file failed");
+    STAssertFalse([self.slash7.appUserId isEqualToString:origAppUserId], @"default distinct id from no file failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties from no file failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from no file is nil");
@@ -435,7 +437,8 @@
     STAssertTrue([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"garbage properties archive file not found");
 
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id from garbage failed");
+    STAssertNotNil(self.slash7.appUserId, @"default distinct id from no file failed");
+    STAssertFalse([self.slash7.appUserId isEqualToString:origAppUserId], @"default distinct id from no file failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties from garbage failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from garbage is nil");

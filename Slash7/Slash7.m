@@ -23,7 +23,6 @@
 #include <sys/socket.h>
 #include <sys/sysctl.h>
 
-#import <AdSupport/ASIdentifierManager.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
@@ -32,7 +31,6 @@
 #import "S7CJSONDataSerializer.h"
 #import "Slash7.h"
 #import "NSData+S7Base64.h"
-#import "S7ODIN.h"
 
 #define VERSION @"0.1.0"
 
@@ -275,10 +273,6 @@ static Slash7 *sharedInstance = nil;
         [properties setValue:carrier.carrierName forKey:@"$carrier"];
     }
 
-    if (NSClassFromString(@"ASIdentifierManager")) {
-        [properties setValue:ASIdentifierManager.sharedManager.advertisingIdentifier.UUIDString forKey:@"$ios_ifa"];
-    }
-
     return [NSDictionary dictionaryWithDictionary:properties];
 }
 
@@ -479,7 +473,7 @@ static Slash7 *sharedInstance = nil;
         self.sendDeviceInfo = YES;
         self.serverURL = @"https://tracker.slash-7.com";
         
-        self.appUserId = [self defaultAppUserId];
+        self.appUserId = [self randomAppUserId];
         self.appUserIdType = [self defaultAppUserIdType];
         self.unsentUserAttributes = [NSMutableDictionary dictionary];
 
@@ -515,19 +509,9 @@ static Slash7 *sharedInstance = nil;
 
 #pragma mark * Tracking
 
-- (NSString *)defaultAppUserId
+- (NSString *)randomAppUserId
 {
-    NSString *appUserId = nil;
-    if (NSClassFromString(@"ASIdentifierManager")) {
-        appUserId = ASIdentifierManager.sharedManager.advertisingIdentifier.UUIDString;
-    }
-    if (!appUserId) {
-        appUserId = S7ODIN1();
-    }
-    if (!appUserId) {
-        NSLog(@"%@ error getting default app user id: both iOS IFA and ODIN1 failed", self);
-    }
-    return appUserId;
+    return [Slash7 genRandStringLength:40];
 }
 
 - (NSString *)defaultAppUserIdType
@@ -631,7 +615,7 @@ static Slash7 *sharedInstance = nil;
 - (void)reset
 {
     @synchronized(self) {
-        self.appUserId = [self defaultAppUserId];
+        self.appUserId = [self randomAppUserId];
         self.appUserIdType = [self defaultAppUserIdType];
         self.unsentUserAttributes = [NSMutableDictionary dictionary];
 
