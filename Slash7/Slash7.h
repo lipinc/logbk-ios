@@ -144,6 +144,17 @@ typedef enum {
  @property
  
  @abstract
+ Controls whether to send device info as parameters.
+ 
+ @discussion
+ Defaults to YES.
+ */
+@property(nonatomic,assign) BOOL sendDeviceInfo;
+
+/*!
+ @property
+ 
+ @abstract
  The a Slash7Delegate object that can be used to assert fine-grain control
  over Slash7 network activity.
  

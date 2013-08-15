@@ -345,4 +345,27 @@
     STAssertEqualObjects([self.slash7.dateFormatter stringFromDate:d2], @"2012-09-29T02:14:36Z", @"dateFormatter should format in UTC");
 }
 
+- (void)testSendDeviceInfo
+{
+    self.slash7.sendDeviceInfo = NO;
+    [self.slash7 track:@"Something Happened"];
+    NSDictionary *e1 = self.slash7.eventsQueue.lastObject;
+    STAssertEquals([e1 objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
+    STAssertNotNil([e1 objectForKey:@"_app_user_id_type"], @"_app_user_id_type not set");
+    STAssertNotNil([e1 objectForKey:@"_app_user_id"], @"_app_user_id not set");
+    STAssertNotNil([e1 objectForKey:@"_time"], @"_time not set");
+    NSDictionary *p1 = [e1 objectForKey:@"_event_params"];
+    STAssertTrue(p1.count == 0, @"incorrect number of properties");
+
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:@"v1", @"k1", @"v2", @"k2", nil];
+    [self.slash7 track:@"Something Happened" withParams:params];
+    NSDictionary *e2 = self.slash7.eventsQueue.lastObject;
+    STAssertEquals([e2 objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
+    STAssertNotNil([e2 objectForKey:@"_app_user_id_type"], @"_app_user_id_type not set");
+    STAssertNotNil([e2 objectForKey:@"_app_user_id"], @"_app_user_id not set");
+    STAssertNotNil([e2 objectForKey:@"_time"], @"_time not set");
+    NSDictionary *p2 = [e2 objectForKey:@"_event_params"];
+    STAssertTrue(p2.count == 2, @"incorrect number of properties");
+}
+
 @end

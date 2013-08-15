@@ -345,6 +345,7 @@ static Slash7 *sharedInstance = nil;
         self.flushInterval = flushInterval;
         self.flushOnBackground = YES;
         self.showNetworkActivityIndicator = YES;
+        self.sendDeviceInfo = YES;
         self.serverURL = @"https://tracker.slash-7.com";
         
         self.appUserId = [self defaultAppUserId];
@@ -408,7 +409,7 @@ static Slash7 *sharedInstance = nil;
     [self track:event withParams:nil];
 }
 
-- (void)track:(NSString *)event withParams:(NSDictionary *)properties
+- (void)track:(NSString *)event withParams:(NSDictionary *)params
 {
     @synchronized(self) {
         NSDate *now = [NSDate date];
@@ -417,13 +418,15 @@ static Slash7 *sharedInstance = nil;
             event = @"_empty";
         }
         NSMutableDictionary *p = [NSMutableDictionary dictionary];
-        [p addEntriesFromDictionary:[Slash7 deviceInfoProperties]];
+        if (self.sendDeviceInfo) {
+            [p addEntriesFromDictionary:[Slash7 deviceInfoProperties]];
+        }
         [p addEntriesFromDictionary:self.superProperties];
-        if (properties) {
-            [p addEntriesFromDictionary:properties];
+        if (params) {
+            [p addEntriesFromDictionary:params];
         }
 
-        [Slash7 assertPropertyTypes:properties];
+        [Slash7 assertPropertyTypes:params];
 
         NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:
                            event, S7_EVENT_NAME_KEY,
