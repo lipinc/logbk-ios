@@ -20,9 +20,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-extern NSString * const S7_EVENT_NAME_KEY;
-extern NSString * const S7_EVENT_PARAMS_KEY;
-
 typedef enum {
     S7_USER_ID_TYPE_APP = 0,
     S7_USER_ID_TYPE_FACEBOOK,
@@ -86,7 +83,7 @@ typedef enum {
  hash of the MAC address of the device. To change the current distinct ID,
  use the <code>identify:</code> method.
  */
-@property(nonatomic,readonly,copy) NSString *distinctId;
+@property(nonatomic,readonly,copy) NSString *appUserId;
 
 /*!
  @property
@@ -220,9 +217,9 @@ typedef enum {
  @discussion
  S7_USER_ID_TYPE_APP is used for type.
 
- @param distinctId string that uniquely identifies the current user
+ @param appUserId string that uniquely identifies the current user
  */
-- (void)identify:(NSString *)distinctId;
+- (void)identify:(NSString *)appUserId;
 
 /*!
  @property

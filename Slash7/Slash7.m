@@ -52,16 +52,16 @@
 #define Slash7Debug(...)
 #endif
 
-NSString * const S7_EVENT_NAME_KEY = @"_event_name";
-NSString * const S7_EVENT_PARAMS_KEY = @"_event_params";
-NSString * const S7_APP_USER_ID_KEY = @"_app_user_id";
-NSString * const S7_APP_USER_ID_TYPE_KEY = @"_app_user_id_type";
-NSString * const S7_TIME_KEY = @"_time";
+static NSString * const S7_EVENT_NAME_KEY = @"_event_name";
+static NSString * const S7_EVENT_PARAMS_KEY = @"_event_params";
+static NSString * const S7_APP_USER_ID_KEY = @"_app_user_id";
+static NSString * const S7_APP_USER_ID_TYPE_KEY = @"_app_user_id_type";
+static NSString * const S7_TIME_KEY = @"_time";
 
 @interface Slash7 ()
 
 // re-declare internally as readwrite
-@property(nonatomic,copy) NSString *distinctId;
+@property(nonatomic,copy) NSString *appUserId;
 @property(nonatomic,copy) NSString *appUserIdType;
 @property(nonatomic,copy)   NSString *apiToken;
 @property(nonatomic,retain) NSMutableDictionary *superProperties;
@@ -347,7 +347,7 @@ static Slash7 *sharedInstance = nil;
         self.showNetworkActivityIndicator = YES;
         self.serverURL = @"https://tracker.slash-7.com";
         
-        self.distinctId = [self defaultDistinctId];
+        self.appUserId = [self defaultAppUserId];
         self.appUserIdType = [self defaultAppUserIdType];
         self.superProperties = [NSMutableDictionary dictionary];
 
@@ -363,21 +363,16 @@ static Slash7 *sharedInstance = nil;
 
 #pragma mark * Identity
 
-- (void)identify:(NSString *)distinctId
+- (void)identify:(NSString *)appUserId
 {
-    @synchronized(self) {
-        self.distinctId = distinctId;
-        if ([Slash7 inBackground]) {
-            [self archiveProperties];
-        }
-    }
+    [self identify:appUserId withType:S7_USER_ID_TYPE_APP];
 }
 
 
 - (void)identify:(NSString *)appUserId withType:(S7AppUserIdType)type
 {
     @synchronized(self) {
-        self.distinctId = appUserId;
+        self.appUserId = appUserId;
         self.appUserIdType = [Slash7 appUserIdTypeString:type];
         if ([Slash7 inBackground]) {
             [self archiveProperties];
@@ -388,19 +383,19 @@ static Slash7 *sharedInstance = nil;
 
 #pragma mark * Tracking
 
-- (NSString *)defaultDistinctId
+- (NSString *)defaultAppUserId
 {
-    NSString *distinctId = nil;
+    NSString *appUserId = nil;
     if (NSClassFromString(@"ASIdentifierManager")) {
-        distinctId = ASIdentifierManager.sharedManager.advertisingIdentifier.UUIDString;
+        appUserId = ASIdentifierManager.sharedManager.advertisingIdentifier.UUIDString;
     }
-    if (!distinctId) {
-        distinctId = S7ODIN1();
+    if (!appUserId) {
+        appUserId = S7ODIN1();
     }
-    if (!distinctId) {
-        NSLog(@"%@ error getting default distinct id: both iOS IFA and ODIN1 failed", self);
+    if (!appUserId) {
+        NSLog(@"%@ error getting default app user id: both iOS IFA and ODIN1 failed", self);
     }
-    return distinctId;
+    return appUserId;
 }
 
 - (NSString *)defaultAppUserIdType
@@ -435,7 +430,7 @@ static Slash7 *sharedInstance = nil;
                            [self.dateFormatter stringFromDate:now], S7_TIME_KEY,
                            [NSDictionary dictionaryWithDictionary:p], S7_EVENT_PARAMS_KEY,
                            self.appUserIdType, S7_APP_USER_ID_TYPE_KEY,
-                           self.distinctId, S7_APP_USER_ID_KEY,
+                           self.appUserId, S7_APP_USER_ID_KEY,
                            nil];
         Slash7Log(@"%@ queueing event: %@", self, e);
         [self.eventsQueue addObject:e];
@@ -521,7 +516,8 @@ static Slash7 *sharedInstance = nil;
 - (void)reset
 {
     @synchronized(self) {
-        self.distinctId = [self defaultDistinctId];
+        self.appUserId = [self defaultAppUserId];
+        self.appUserIdType = [self defaultAppUserIdType];
         self.superProperties = [NSMutableDictionary dictionary];
 
         self.eventsQueue = [NSMutableArray array];
@@ -705,7 +701,8 @@ static Slash7 *sharedInstance = nil;
     @synchronized(self) {
         NSString *filePath = [self propertiesFilePath];
         NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-        [properties setValue:self.distinctId forKey:@"distinctId"];
+        [properties setValue:self.appUserId forKey:@"appUserId"];
+        [properties setValue:self.appUserIdType forKey:@"appUserIdType"];
         [properties setValue:self.superProperties forKey:@"superProperties"];
         Slash7Debug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
         if (![NSKeyedArchiver archiveRootObject:properties toFile:filePath]) {
@@ -752,7 +749,8 @@ static Slash7 *sharedInstance = nil;
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     }
     if (properties) {
-        self.distinctId = [properties objectForKey:@"distinctId"];
+        self.appUserId = [properties objectForKey:@"appUserId"];
+        self.appUserIdType = [properties objectForKey:@"appUserIdType"];
         self.superProperties = [properties objectForKey:@"superProperties"];
     }
 }
@@ -962,7 +960,7 @@ static Slash7 *sharedInstance = nil;
     [self stopFlushTimer];
     [self removeApplicationObservers];
     
-    self.distinctId = nil;
+    self.appUserId = nil;
     self.serverURL = nil;
     self.delegate = nil;
     

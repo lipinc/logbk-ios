@@ -32,7 +32,7 @@
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
 
 + (NSData *)JSONSerializeObject:(id)obj;
-- (NSString *)defaultDistinctId;
+- (NSString *)defaultAppUserId;
 - (NSString *)defaultAppUserIdType;
 - (void)archive;
 - (NSString *)eventsFilePath;
@@ -87,7 +87,7 @@
                                                           forKey:@"p3"]]
                                                         forKey:@"p2"]
                                                        forKey:@"p1"];
-    NSURL *url = [NSURL URLWithString:@"https://mixpanel.com/"];
+    NSURL *url = [NSURL URLWithString:@"https://slash-7.com/"];
 
     return [NSDictionary dictionaryWithObjectsAndKeys:
             @"yello",   @"string",
@@ -116,7 +116,7 @@
     NSDictionary *test = [self allPropertyTypes];
     NSData *data = [Slash7 JSONSerializeObject:[NSArray arrayWithObject:test]];
     NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-    STAssertEqualObjects(json, @"[{\"float\":1.3,\"string\":\"yello\",\"url\":\"https:\\/\\/mixpanel.com\\/\",\"nested\":{\"p1\":{\"p2\":[{\"p3\":[\"bottom\"]}]}},\"array\":[\"1\"],\"date\":\"2012-09-29T02:14:36\",\"dictionary\":{\"k\":\"v\"},\"null\":null,\"number\":3}]", @"json serialization failed");
+    STAssertEqualObjects(json, @"[{\"float\":1.3,\"string\":\"yello\",\"url\":\"https:\\/\\/slash-7.com\\/\",\"nested\":{\"p1\":{\"p2\":[{\"p3\":[\"bottom\"]}]}},\"array\":[\"1\"],\"date\":\"2012-09-29T02:14:36\",\"dictionary\":{\"k\":\"v\"},\"null\":null,\"number\":3}]", @"json serialization failed");
 
     test = [NSDictionary dictionaryWithObject:@"non-string key" forKey:@3];
     data = [Slash7 JSONSerializeObject:[NSArray arrayWithObject:test]];
@@ -130,9 +130,10 @@
 
         NSString *distinctId = @"d1";
         // try this for IFA, ODIN and nil
-        STAssertEqualObjects(self.slash7.distinctId, self.slash7.defaultDistinctId, @"mixpanel identify failed to set default distinct id");
-        [self.slash7 identify:distinctId];
-        STAssertEqualObjects(self.slash7.distinctId, distinctId, @"mixpanel identify failed to set distinct id");
+        STAssertEqualObjects(self.slash7.appUserId, self.slash7.defaultAppUserId, @"identify failed to set default user id");
+        STAssertEqualObjects(self.slash7.appUserIdType, self.slash7.defaultAppUserIdType, @"identify failed to set default user id type");
+        [self.slash7 identify:distinctId withType:S7_USER_ID_TYPE_APP];
+        STAssertEqualObjects(self.slash7.appUserId, distinctId, @"identify failed to set distinct id");
         [self.slash7 reset];
     }
 }
@@ -142,12 +143,12 @@
     [self.slash7 track:@"Something Happened"];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
-    STAssertEquals([e objectForKey:S7_EVENT_NAME_KEY], @"Something Happened", @"incorrect event name");
+    STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     STAssertNotNil([e objectForKey:@"_app_user_id_type"], @"_app_user_id_type not set");
     STAssertNotNil([e objectForKey:@"_app_user_id"], @"_app_user_id not set");
     STAssertNotNil([e objectForKey:@"_time"], @"_time not set");
 
-    NSDictionary *p = [e objectForKey:S7_EVENT_PARAMS_KEY];
+    NSDictionary *p = [e objectForKey:@"_event_params"];
     STAssertTrue(p.count == 12, @"incorrect number of properties");
 
     STAssertNotNil([p objectForKey:@"$app_version"], @"$app_version not set");
@@ -175,7 +176,7 @@
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
     STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
-    p = [e objectForKey:S7_EVENT_PARAMS_KEY];
+    p = [e objectForKey:@"_event_params"];
     STAssertTrue(p.count == 15, @"incorrect number of properties");
     STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");
 }
@@ -187,8 +188,8 @@
                        @"d1",                      @"distinct_id",
                        nil];
     [self.slash7 track:@"e1" withParams:p];
-    NSString *trackToken = [[self.slash7.eventsQueue.lastObject objectForKey:S7_EVENT_PARAMS_KEY] objectForKey:@"token"];
-    NSString *trackDistinctId = [[self.slash7.eventsQueue.lastObject objectForKey:S7_EVENT_PARAMS_KEY] objectForKey:@"distinct_id"];
+    NSString *trackToken = [[self.slash7.eventsQueue.lastObject objectForKey:@"_event_params"] objectForKey:@"token"];
+    NSString *trackDistinctId = [[self.slash7.eventsQueue.lastObject objectForKey:@"_event_params"] objectForKey:@"distinct_id"];
     STAssertEqualObjects(trackToken, @"t1", @"user-defined distinct id not used in track. got: %@", trackToken);
     STAssertEqualObjects(trackDistinctId, @"d1", @"user-defined distinct id not used in track. got: %@", trackDistinctId);
 }
@@ -228,12 +229,14 @@
     [self.slash7 archive];
 
     [self.slash7 reset];
-    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"distinct id failed to reset");
+    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"distinct id failed to reset");
+    STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"distinct id type failed to reset");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"super properties failed to reset");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset");
     
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"distinct id failed to reset after archive");
+    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"distinct id failed to reset after archive");
+    STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"distinct id type failed to reset after archive");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"super properties failed to reset after archive");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset after archive");
 }
@@ -251,7 +254,7 @@
     [self.slash7 archive];
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
 
-    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id archive failed");
+    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id archive failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue archive failed");
@@ -264,8 +267,8 @@
     [self.slash7 archive];
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
 
-    STAssertEqualObjects(self.slash7.distinctId, @"d1", @"custom distinct archive failed");
-    STAssertEqualObjects(self.slash7.appUserIdType, @"cookie", @"app user id type archive failed");
+    STAssertEqualObjects(self.slash7.appUserId, @"d1", @"custom distinct archive failed");
+    STAssertEqualObjects(self.slash7.appUserIdType, @"app", @"app user id type archive failed");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 1, @"custom super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"pending events queue archive failed");
 
@@ -283,7 +286,7 @@
     STAssertFalse([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"properties archive file not removed");
 
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id from no file failed");
+    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id from no file failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties from no file failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from no file is nil");
@@ -299,14 +302,14 @@
     STAssertTrue([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"garbage properties archive file not found");
 
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
-    STAssertEqualObjects(self.slash7.distinctId, [self.slash7 defaultDistinctId], @"default distinct id from garbage failed");
+    STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id from garbage failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties from garbage failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from garbage is nil");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from garbage not empty");
 }
 
-- (void)testMixpanelDelegate
+- (void)testSlash7Delegate
 {
     self.slash7.delegate = self;
     [self.slash7 identify:@"d1"];
