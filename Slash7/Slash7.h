@@ -305,15 +305,14 @@ typedef enum {
  @discussion
  Property keys must be <code>NSString</code> objects and values must be
  <code>NSString</code>, <code>NSNumber</code>, <code>NSNull</code>,
- <code>NSArray</code>, <code>NSDictionary</code>, <code>NSDate</code> or
- <code>NSURL</code> objects.
+ <code>NSDate</code> or <code>NSURL</code> objects.
  
  @param name        property name
  @param object          property value
  */
-- (void)setUserAttributes:(NSString *)attribute to:(id)object;
+- (void)setUserAttribute:(NSString *)attribute to:(id)object;
 
-- (NSDictionary *)currentSuperProperties;
+- (NSDictionary *)currentUnsentUserAttributes;
 
 /*!
  @method

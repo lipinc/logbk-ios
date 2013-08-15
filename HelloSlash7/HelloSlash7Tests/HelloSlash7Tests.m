@@ -75,28 +75,14 @@
     NSDate *date = [dateFormatter dateFromString:@"2012-09-28 19:14:36 PDT"];
     [dateFormatter release];
 
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:@"v" forKey:@"k"];
-    NSArray *array = [NSArray arrayWithObject:@"1"];
     NSNull *null = [NSNull null];
-
-    NSDictionary *nested = [NSDictionary dictionaryWithObject:
-                            [NSDictionary dictionaryWithObject:
-                             [NSArray arrayWithObject:
-                              [NSDictionary dictionaryWithObject:
-                               [NSArray arrayWithObject:@"bottom"]
-                                                          forKey:@"p3"]]
-                                                        forKey:@"p2"]
-                                                       forKey:@"p1"];
     NSURL *url = [NSURL URLWithString:@"https://slash-7.com/"];
 
     return [NSDictionary dictionaryWithObjectsAndKeys:
             @"yello",   @"string",
             number,     @"number",
             date,       @"date",
-            dictionary, @"dictionary",
-            array,      @"array",
             null,       @"null",
-            nested,     @"nested",
             url,        @"url",
             @1.3,       @"float",
             nil];
@@ -116,7 +102,7 @@
     NSDictionary *test = [self allPropertyTypes];
     NSData *data = [Slash7 JSONSerializeObject:[NSArray arrayWithObject:test]];
     NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-    STAssertEqualObjects(json, @"[{\"float\":1.3,\"string\":\"yello\",\"url\":\"https:\\/\\/slash-7.com\\/\",\"nested\":{\"p1\":{\"p2\":[{\"p3\":[\"bottom\"]}]}},\"array\":[\"1\"],\"date\":\"2012-09-29T02:14:36\",\"dictionary\":{\"k\":\"v\"},\"null\":null,\"number\":3}]", @"json serialization failed");
+    STAssertEqualObjects(json, @"[{\"float\":1.3,\"null\":null,\"date\":\"2012-09-29T02:14:36\",\"number\":3,\"url\":\"https:\\/\\/slash-7.com\\/\",\"string\":\"yello\"}]", @"json serialization failed");
 
     test = [NSDictionary dictionaryWithObject:@"non-string key" forKey:@3];
     data = [Slash7 JSONSerializeObject:[NSArray arrayWithObject:test]];
@@ -194,7 +180,7 @@
     STAssertEqualObjects(trackDistinctId, @"d1", @"user-defined distinct id not used in track. got: %@", trackDistinctId);
 }
 
-- (void)testSuperProperties
+- (void)testUserAttributes
 {
     NSDictionary *p = [NSDictionary dictionaryWithObjectsAndKeys:
                        @"a",                       @"p1",
@@ -203,11 +189,13 @@
                        nil];
 
     [self.slash7 setUserAttributes:p];
-    STAssertEqualObjects([self.slash7 currentSuperProperties], p, @"register super properties failed");
+    STAssertEqualObjects([self.slash7 currentUnsentUserAttributes], p, @"register super properties failed");
     p = [NSDictionary dictionaryWithObject:@"b" forKey:@"p1"];
     [self.slash7 setUserAttributes:p];
-    STAssertEqualObjects([[self.slash7 currentSuperProperties] objectForKey:@"p1"], @"b",
+    STAssertEqualObjects([[self.slash7 currentUnsentUserAttributes] objectForKey:@"p1"], @"b",
                          @"register super properties failed to overwrite existing value");
+    [self.slash7 track:@"Some event"];
+    STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"Unsent user attributes should be cleared after track");
 }
 
 - (void)testAssertPropertyTypes
@@ -231,13 +219,13 @@
     [self.slash7 reset];
     STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"distinct id failed to reset");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"distinct id type failed to reset");
-    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"super properties failed to reset");
+    STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"super properties failed to reset");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset");
     
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
     STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"distinct id failed to reset after archive");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"distinct id type failed to reset after archive");
-    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"super properties failed to reset after archive");
+    STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"super properties failed to reset after archive");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset after archive");
 }
 
@@ -256,7 +244,7 @@
 
     STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id archive failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
-    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties archive failed");
+    STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue archive failed");
 
     NSDictionary *p = [NSDictionary dictionaryWithObject:@"a" forKey:@"p1"];
@@ -269,7 +257,7 @@
 
     STAssertEqualObjects(self.slash7.appUserId, @"d1", @"custom distinct archive failed");
     STAssertEqualObjects(self.slash7.appUserIdType, @"app", @"app user id type archive failed");
-    STAssertTrue([[self.slash7 currentSuperProperties] count] == 1, @"custom super properties archive failed");
+    STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"custom super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"pending events queue archive failed");
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -288,7 +276,7 @@
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
     STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id from no file failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
-    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties from no file failed");
+    STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties from no file failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from no file is nil");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from no file not empty");
 
@@ -304,7 +292,7 @@
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
     STAssertEqualObjects(self.slash7.appUserId, [self.slash7 defaultAppUserId], @"default distinct id from garbage failed");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
-    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"default super properties from garbage failed");
+    STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties from garbage failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from garbage is nil");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from garbage not empty");
 }
@@ -328,8 +316,8 @@
     // legacy behavior
     STAssertTrue(self.slash7.eventsQueue.count == 2, @"track with nil should create mp_event event");
     STAssertEqualObjects([self.slash7.eventsQueue.lastObject objectForKey:@"_event_name"], @"_empty", @"track with nil should create _empty event");
-    STAssertNotNil([self.slash7 currentSuperProperties], @"setting super properties to nil should have no effect");
-    STAssertTrue([[self.slash7 currentSuperProperties] count] == 0, @"setting super properties to nil should have no effect");
+    STAssertNotNil([self.slash7 currentUnsentUserAttributes], @"setting super properties to nil should have no effect");
+    STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"setting super properties to nil should have no effect");
 
     [self.slash7 identify:nil];
 }

@@ -64,7 +64,7 @@ static NSString * const S7_TIME_KEY = @"_time";
 @property(nonatomic,copy) NSString *appUserId;
 @property(nonatomic,copy) NSString *appUserIdType;
 @property(nonatomic,copy)   NSString *apiToken;
-@property(nonatomic,retain) NSMutableDictionary *superProperties;
+@property(nonatomic,retain) NSMutableDictionary *unsentUserAttributes;
 @property(nonatomic,retain) NSTimer *timer;
 @property(nonatomic,retain) NSMutableArray *eventsQueue;
 @property(nonatomic,retain) NSArray *eventsBatch;
@@ -299,11 +299,9 @@ static Slash7 *sharedInstance = nil;
         NSAssert([[properties objectForKey:k] isKindOfClass:[NSString class]] ||
                  [[properties objectForKey:k] isKindOfClass:[NSNumber class]] ||
                  [[properties objectForKey:k] isKindOfClass:[NSNull class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSArray class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSDictionary class]] ||
                  [[properties objectForKey:k] isKindOfClass:[NSDate class]] ||
                  [[properties objectForKey:k] isKindOfClass:[NSURL class]],
-                 @"%@ property values must be NSString, NSNumber, NSNull, NSArray, NSDictionary, NSDate or NSURL. got: %@ %@", self, [[properties objectForKey:k] class], [properties objectForKey:k]);
+                 @"%@ property values must be NSString, NSNumber, NSNull, NSDate or NSURL. got: %@ %@", self, [[properties objectForKey:k] class], [properties objectForKey:k]);
     }
 }
 
@@ -350,7 +348,7 @@ static Slash7 *sharedInstance = nil;
         
         self.appUserId = [self defaultAppUserId];
         self.appUserIdType = [self defaultAppUserIdType];
-        self.superProperties = [NSMutableDictionary dictionary];
+        self.unsentUserAttributes = [NSMutableDictionary dictionary];
 
         self.eventsQueue = [NSMutableArray array];
         
@@ -421,24 +419,30 @@ static Slash7 *sharedInstance = nil;
         if (self.sendDeviceInfo) {
             [p addEntriesFromDictionary:[Slash7 deviceInfoProperties]];
         }
-        [p addEntriesFromDictionary:self.superProperties];
+        [p addEntriesFromDictionary:self.unsentUserAttributes];
         if (params) {
             [p addEntriesFromDictionary:params];
         }
 
         [Slash7 assertPropertyTypes:params];
 
-        NSDictionary *e = [NSDictionary dictionaryWithObjectsAndKeys:
-                           event, S7_EVENT_NAME_KEY,
-                           [self.dateFormatter stringFromDate:now], S7_TIME_KEY,
-                           [NSDictionary dictionaryWithDictionary:p], S7_EVENT_PARAMS_KEY,
-                           self.appUserIdType, S7_APP_USER_ID_TYPE_KEY,
-                           self.appUserId, S7_APP_USER_ID_KEY,
-                           nil];
+        NSMutableDictionary *e = [NSMutableDictionary dictionaryWithDictionary:self.unsentUserAttributes];
+        [e addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:
+                                     event, S7_EVENT_NAME_KEY,
+                                     [self.dateFormatter stringFromDate:now], S7_TIME_KEY,
+                                     [NSDictionary dictionaryWithDictionary:p], S7_EVENT_PARAMS_KEY,
+                                     self.appUserIdType, S7_APP_USER_ID_TYPE_KEY,
+                                     self.appUserId, S7_APP_USER_ID_KEY,
+                                     nil]];
+        
         Slash7Log(@"%@ queueing event: %@", self, e);
         [self.eventsQueue addObject:e];
         if ([Slash7 inBackground]) {
             [self archiveEvents];
+        }
+        
+        if ([self.unsentUserAttributes count] > 0) {
+            [self clearUnsentUserAttributes];
         }
     }
 }
@@ -449,20 +453,25 @@ static Slash7 *sharedInstance = nil;
 {
     [Slash7 assertPropertyTypes:properties];
     @synchronized(self) {
-        [self.superProperties addEntriesFromDictionary:properties];
+        [self.unsentUserAttributes addEntriesFromDictionary:properties];
         if ([Slash7 inBackground]) {
             [self archiveProperties];
         }
     }
 }
 
-- (void)registerSuperPropertiesOnce:(NSDictionary *)properties
+- (void)setUserAttribute:(NSString *)attribute to:(id)object
+{
+    [self setUserAttributes:[NSDictionary dictionaryWithObject:object forKey:attribute]];
+}
+
+- (void)registerunsentUserAttributesOnce:(NSDictionary *)properties
 {
     [Slash7 assertPropertyTypes:properties];
     @synchronized(self) {
         for (NSString *key in properties) {
-            if ([self.superProperties objectForKey:key] == nil) {
-                [self.superProperties setObject:[properties objectForKey:key] forKey:key];
+            if ([self.unsentUserAttributes objectForKey:key] == nil) {
+                [self.unsentUserAttributes setObject:[properties objectForKey:key] forKey:key];
             }
         }
         if ([Slash7 inBackground]) {
@@ -471,14 +480,14 @@ static Slash7 *sharedInstance = nil;
     }
 }
 
-- (void)registerSuperPropertiesOnce:(NSDictionary *)properties defaultValue:(id)defaultValue
+- (void)registerunsentUserAttributesOnce:(NSDictionary *)properties defaultValue:(id)defaultValue
 {
     [Slash7 assertPropertyTypes:properties];
     @synchronized(self) {
         for (NSString *key in properties) {
-            id value = [self.superProperties objectForKey:key];
+            id value = [self.unsentUserAttributes objectForKey:key];
             if (value == nil || [value isEqual:defaultValue]) {
-                [self.superProperties setObject:[properties objectForKey:key] forKey:key];
+                [self.unsentUserAttributes setObject:[properties objectForKey:key] forKey:key];
             }
         }
         if ([Slash7 inBackground]) {
@@ -490,8 +499,8 @@ static Slash7 *sharedInstance = nil;
 - (void)unregisterSuperProperty:(NSString *)propertyName
 {
     @synchronized(self) {
-        if ([self.superProperties objectForKey:propertyName] != nil) {
-            [self.superProperties removeObjectForKey:propertyName];
+        if ([self.unsentUserAttributes objectForKey:propertyName] != nil) {
+            [self.unsentUserAttributes removeObjectForKey:propertyName];
             if ([Slash7 inBackground]) {
                 [self archiveProperties];
             }
@@ -499,20 +508,20 @@ static Slash7 *sharedInstance = nil;
     }
 }
 
-- (void)clearSuperProperties
+- (void)clearUnsentUserAttributes
 {
     @synchronized(self) {
-        [self.superProperties removeAllObjects];
+        [self.unsentUserAttributes removeAllObjects];
         if ([Slash7 inBackground]) {
             [self archiveProperties];
         }
     }
 }
 
-- (NSDictionary *)currentSuperProperties
+- (NSDictionary *)currentUnsentUserAttributes
 {
     @synchronized(self) {
-        return [[self.superProperties copy] autorelease];
+        return [[self.unsentUserAttributes copy] autorelease];
     }
 }
 
@@ -521,7 +530,7 @@ static Slash7 *sharedInstance = nil;
     @synchronized(self) {
         self.appUserId = [self defaultAppUserId];
         self.appUserIdType = [self defaultAppUserIdType];
-        self.superProperties = [NSMutableDictionary dictionary];
+        self.unsentUserAttributes = [NSMutableDictionary dictionary];
 
         self.eventsQueue = [NSMutableArray array];
 
@@ -706,7 +715,7 @@ static Slash7 *sharedInstance = nil;
         NSMutableDictionary *properties = [NSMutableDictionary dictionary];
         [properties setValue:self.appUserId forKey:@"appUserId"];
         [properties setValue:self.appUserIdType forKey:@"appUserIdType"];
-        [properties setValue:self.superProperties forKey:@"superProperties"];
+        [properties setValue:self.unsentUserAttributes forKey:@"unsentUserAttributes"];
         Slash7Debug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
         if (![NSKeyedArchiver archiveRootObject:properties toFile:filePath]) {
             NSLog(@"%@ unable to archive properties data", self);
@@ -754,7 +763,7 @@ static Slash7 *sharedInstance = nil;
     if (properties) {
         self.appUserId = [properties objectForKey:@"appUserId"];
         self.appUserIdType = [properties objectForKey:@"appUserIdType"];
-        self.superProperties = [properties objectForKey:@"superProperties"];
+        self.unsentUserAttributes = [properties objectForKey:@"unsentUserAttributes"];
     }
 }
 
@@ -968,7 +977,7 @@ static Slash7 *sharedInstance = nil;
     self.delegate = nil;
     
     self.apiToken = nil;
-    self.superProperties = nil;
+    self.unsentUserAttributes = nil;
     self.timer = nil;
     self.eventsQueue = nil;
     self.eventsBatch = nil;
