@@ -58,6 +58,46 @@ static NSString * const S7_APP_USER_ID_KEY = @"_app_user_id";
 static NSString * const S7_APP_USER_ID_TYPE_KEY = @"_app_user_id_type";
 static NSString * const S7_TIME_KEY = @"_time";
 
+@implementation Slash7TransactionItem
+- (id)initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num
+{
+    if (self = [self init]) {
+        self.itemId = itemId;
+        self.itemName = itemName;
+        self.price = price;
+        self.num = num;
+    }
+    return self;
+}
+@end
+
+@implementation Slash7Transaction
+
+-(id)initWithId:(NSString *)transactionId withItem:(Slash7TransactionItem *)item
+{
+    return [self initWithId:transactionId withItems:[NSArray arrayWithObject:item]];
+}
+
+-(id)initWithId:(NSString *)transactionId withItems:(NSArray *)items
+{
+    if (self = [self init]) {
+        self.transactionId = transactionId;
+        self.items = items;
+        self.totalPrice = [self totalPriceFromItems];
+    }
+    return self;
+}
+
+-(NSInteger)totalPriceFromItems
+{
+    NSInteger sum = 0;
+    for (Slash7TransactionItem* item in self.items) {
+        sum += item.price * item.num;
+    }
+    return sum;
+}
+@end
+
 @interface Slash7 ()
 
 // re-declare internally as readwrite
@@ -68,11 +108,8 @@ static NSString * const S7_TIME_KEY = @"_time";
 @property(nonatomic,retain) NSTimer *timer;
 @property(nonatomic,retain) NSMutableArray *eventsQueue;
 @property(nonatomic,retain) NSArray *eventsBatch;
-@property(nonatomic,retain) NSArray *peopleBatch;
 @property(nonatomic,retain) NSURLConnection *eventsConnection;
-@property(nonatomic,retain) NSURLConnection *peopleConnection;
 @property(nonatomic,retain) NSMutableData *eventsResponseData;
-@property(nonatomic,retain) NSMutableData *peopleResponseData;
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
@@ -653,19 +690,12 @@ static Slash7 *sharedInstance = nil;
         [self.eventsConnection cancel];
         self.eventsConnection = nil;
     }
-    if (self.peopleConnection == nil) {
-        Slash7Debug(@"%@ no people connection to cancel", self);
-    } else {
-        Slash7Debug(@"%@ cancelling people connection", self);
-        [self.peopleConnection cancel];
-        self.peopleConnection = nil;
-    }
 }
 
 - (void)updateNetworkActivityIndicator
 {
     @synchronized(self) {
-        BOOL visible = self.showNetworkActivityIndicator && (self.eventsConnection || self.peopleConnection);
+        BOOL visible = self.showNetworkActivityIndicator && self.eventsConnection;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:visible];
     }
 }
@@ -870,7 +900,7 @@ static Slash7 *sharedInstance = nil;
     @synchronized(self) {
 
         if (&UIBackgroundTaskInvalid && [[UIApplication sharedApplication] respondsToSelector:@selector(endBackgroundTask:)] &&
-            self.taskId != UIBackgroundTaskInvalid && self.eventsConnection == nil && self.peopleConnection == nil) {
+            self.taskId != UIBackgroundTaskInvalid && self.eventsConnection == nil) {
             Slash7Debug(@"%@ ending flush background task %u", self, self.taskId);
             [[UIApplication sharedApplication] endBackgroundTask:self.taskId];
             self.taskId = UIBackgroundTaskInvalid;
@@ -899,8 +929,6 @@ static Slash7 *sharedInstance = nil;
         NSLog(@"%@ http error: %@", self, [NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]]);
     } else if (connection == self.eventsConnection) {
         self.eventsResponseData = [NSMutableData data];
-    } else if (connection == self.peopleConnection) {
-        self.peopleResponseData = [NSMutableData data];
     }
 }
 
@@ -908,8 +936,6 @@ static Slash7 *sharedInstance = nil;
 {
     if (connection == self.eventsConnection) {
         [self.eventsResponseData appendData:data];
-    } else if (connection == self.peopleConnection) {
-        [self.peopleResponseData appendData:data];
     }
 }
 
@@ -922,10 +948,6 @@ static Slash7 *sharedInstance = nil;
             self.eventsResponseData = nil;
             self.eventsConnection = nil;
             [self archiveEvents];
-        } else if (connection == self.peopleConnection) {
-            self.peopleBatch = nil;
-            self.peopleResponseData = nil;
-            self.peopleConnection = nil;
         }
 
         [self updateNetworkActivityIndicator];
@@ -981,11 +1003,8 @@ static Slash7 *sharedInstance = nil;
     self.timer = nil;
     self.eventsQueue = nil;
     self.eventsBatch = nil;
-    self.peopleBatch = nil;
     self.eventsConnection = nil;
-    self.peopleConnection = nil;
     self.eventsResponseData = nil;
-    self.peopleResponseData = nil;
     
     [super dealloc];
 }

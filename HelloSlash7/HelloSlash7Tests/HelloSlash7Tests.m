@@ -356,4 +356,24 @@
     STAssertTrue(p2.count == 2, @"incorrect number of properties");
 }
 
+- (void)testTransaction
+{
+    NSArray *items = [NSArray arrayWithObjects:
+                      [[[Slash7TransactionItem alloc] initWithId:@"item1" withName:@"Item 1" withPrice:100 withNum:3] autorelease],
+                      [[[Slash7TransactionItem alloc] initWithId:@"item2" withName:@"Item 2" withPrice:50 withNum:1] autorelease],
+                      [[[Slash7TransactionItem alloc] initWithId:@"item3" withName:@"Item 3" withPrice:98 withNum:1] autorelease],
+                      nil];
+    Slash7Transaction *tx = [[[Slash7Transaction alloc] initWithId:@"tx1" withItems:items] autorelease];
+    STAssertTrue(tx.totalPrice == 448, @"total price should be calculated automatically");
+    
+    tx.totalPrice = 400;
+    STAssertTrue(tx.totalPrice == 400, @"total price should be set");
+    
+    Slash7TransactionItem *item = [tx.items objectAtIndex:2];
+    STAssertEqualObjects(item.itemId, @"item3", @"id should be kept");
+    STAssertEqualObjects(item.itemName, @"Item 3", @"name should be kept");
+    STAssertTrue(item.price == 98, @"price should be kept");
+    STAssertTrue(item.num == 1, @"num should be kept");
+}
+
 @end

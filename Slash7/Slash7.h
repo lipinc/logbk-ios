@@ -29,11 +29,15 @@ typedef enum {
     S7_USER_ID_TYPE_COOKIE
 } S7AppUserIdType;
 
-@interface Slash7TransactionItem
-- initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num;
+@interface Slash7TransactionItem : NSObject
+@property (nonatomic,copy) NSString *itemId;
+@property (nonatomic,copy) NSString *itemName;
+@property (nonatomic,assign) NSInteger price;
+@property (nonatomic,assign) NSUInteger num;
+- (id)initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num;
 @end
 
-@interface Slash7Transaction
+@interface Slash7Transaction : NSObject
 /*!
  @property
  
@@ -45,8 +49,10 @@ typedef enum {
  You need to set only when you set different total price for the transaction.
  */
 @property (nonatomic, assign) NSInteger totalPrice;
--initWithId:(NSString *)transactionId withItem:(Slash7TransactionItem *)item;
--initWithId:(NSString *)transactionId withItems:(NSArray *)items;
+@property(nonatomic,copy) NSString *transactionId;
+@property(nonatomic,retain) NSArray *items;
+-(id)initWithId:(NSString *)transactionId withItem:(Slash7TransactionItem *)item;
+-(id)initWithId:(NSString *)transactionId withItems:(NSArray *)items;
 @end
 
 @protocol Slash7Delegate;
