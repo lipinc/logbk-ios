@@ -524,11 +524,6 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
-				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
-					"MIXPANEL_LOG=1",
-					"MIXPANEL_DEBUG=1",
-				);
 				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = HelloSlash7;
@@ -541,7 +536,6 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = HelloSlash7;
@@ -651,7 +645,6 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = HelloSlash7;

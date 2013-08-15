@@ -2,6 +2,7 @@
 // AppDelegate.m
 // HelloSlash7
 //
+// Copyright 2013 pLucky, Inc.
 // Copyright 2012 Mixpanel
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +23,8 @@
 
 #import "ViewController.h"
 
-// IMPORTANT!!! replace with you api token from https://mixpanel.com/account/
-#define MIXPANEL_TOKEN @"YOUR MIXPANEL PROJECT TOKEN"
+// IMPORTANT!!! replace with your tracking code
+#define TRACKING_CODE @"YOUR_TRACKING_CODE"
 
 @implementation AppDelegate
 
@@ -41,14 +42,14 @@
     
     // Override point for customization after application launch.
     
-    // Initialize the MixpanelAPI object
-    self.mixpanel = [Slash7 sharedInstanceWithCode:MIXPANEL_TOKEN];
+    // Initialize the SLASH-7 object
+    self.slash7 = [Slash7 sharedInstanceWithCode:TRACKING_CODE];
 
     // Set the upload interval to 20 seconds for demonstration purposes. This would be overkill for most applications.
-    self.mixpanel.flushInterval = 20; // defaults to 60 seconds
+    self.slash7.flushInterval = 20; // defaults to 60 seconds
 
-    // Set some super properties, which will be added to every tracked event
-    [self.mixpanel setUserAttributes:[NSDictionary dictionaryWithObjectsAndKeys:@"Premium", @"Plan", nil]];
+    // Set some user attributes
+    [self.slash7 setUserAttributes:[NSDictionary dictionaryWithObjectsAndKeys:@"Premium", @"Plan", nil]];
     
     self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
     self.window.rootViewController = self.viewController;
@@ -116,9 +117,9 @@
         NSLog(@"%@ starting background task %u", self, self.bgTask);
 
         // track some events and set some people properties
-        Slash7 *mixpanel = [Slash7 sharedInstance];
-        [mixpanel setUserAttributes:[NSDictionary dictionaryWithObject:@"Hi!" forKey:@"Background Super Property"]];
-        [mixpanel track:@"Background Event"];
+        Slash7 *slash7 = [Slash7 sharedInstance];
+        [slash7 setUserAttributes:[NSDictionary dictionaryWithObject:@"Hi!" forKey:@"Background user attributes"]];
+        [slash7 track:@"Background Event"];
 
         NSLog(@"%@ ending background task %u", self, self.bgTask);
         [application endBackgroundTask:self.bgTask];

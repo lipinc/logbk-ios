@@ -27,7 +27,7 @@
 
 @property (strong, nonatomic) ViewController *viewController;
 
-@property (strong, nonatomic) Slash7 *mixpanel;
+@property (strong, nonatomic) Slash7 *slash7;
 
 @property (strong, nonatomic, retain) NSDate *startTime;
 
