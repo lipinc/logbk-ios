@@ -30,6 +30,7 @@
 @property(nonatomic,retain) NSMutableArray *eventsQueue;
 @property(nonatomic,retain) NSTimer *timer;
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
+@property(nonatomic,assign) BOOL projectDeleted;
 
 + (NSData *)JSONSerializeObject:(id)obj;
 - (NSString *)randomAppUserId;
@@ -324,6 +325,13 @@
     STAssertEqualObjects(trackDistinctId, @"d1", @"user-defined distinct id not used in track. got: %@", trackDistinctId);
 }
 
+- (void)testTrackWithDeletedProject
+{
+    self.slash7.projectDeleted = YES;
+    [self.slash7 track:@"Something Happened"];
+    STAssertTrue(self.slash7.eventsQueue.count == 0, @"event should not queued");
+}
+
 - (void)testUserAttributes
 {
     NSDictionary *p = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -358,6 +366,7 @@
     [self.slash7 identify:@"d1"];
     [self.slash7 setUserAttributes:p];
     [self.slash7 track:@"e1"];
+    self.slash7.projectDeleted = YES;
     [self.slash7 archive];
 
     [self.slash7 reset];
@@ -367,12 +376,14 @@
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"distinct id type failed to reset");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"super properties failed to reset");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset");
+    STAssertFalse(self.slash7.projectDeleted, @"project deleted failed to reset");
     
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
     STAssertEqualObjects(self.slash7.appUserId, appUserIdAfterReset, @"distinct id failed to reset after archive");
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"distinct id type failed to reset after archive");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"super properties failed to reset after archive");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"events queue failed to reset after archive");
+    STAssertFalse(self.slash7.projectDeleted, @"project deleted failed to reset");
 }
 
 - (void)testFlushTimer
@@ -392,11 +403,13 @@
     STAssertEqualObjects(self.slash7.appUserIdType, [self.slash7 defaultAppUserIdType], @"default app user id type archive failed");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue archive failed");
+    STAssertFalse(self.slash7.projectDeleted, @"default project deleted archive failed");
 
     NSDictionary *p = [NSDictionary dictionaryWithObject:@"a" forKey:@"p1"];
     [self.slash7 identify:@"d1"];
     [self.slash7 setUserAttributes:p];
     [self.slash7 track:@"e1"];
+    self.slash7.projectDeleted = YES;
 
     [self.slash7 archive];
     self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
@@ -405,6 +418,7 @@
     STAssertEqualObjects(self.slash7.appUserIdType, @"app", @"app user id type archive failed");
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"custom super properties archive failed");
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"pending events queue archive failed");
+    STAssertTrue(self.slash7.projectDeleted, @"project deleted archive failed");
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
@@ -426,6 +440,7 @@
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties from no file failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from no file is nil");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from no file not empty");
+    STAssertFalse(self.slash7.projectDeleted, @"default project deleted archive failed");
 
     // corrupt file
 
@@ -443,6 +458,7 @@
     STAssertTrue([[self.slash7 currentUnsentUserAttributes] count] == 0, @"default super properties from garbage failed");
     STAssertNotNil(self.slash7.eventsQueue, @"default events queue from garbage is nil");
     STAssertTrue(self.slash7.eventsQueue.count == 0, @"default events queue from garbage not empty");
+    STAssertFalse(self.slash7.projectDeleted, @"default project deleted archive failed");
 }
 
 - (void)testSlash7Delegate

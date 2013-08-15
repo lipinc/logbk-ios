@@ -79,6 +79,7 @@ static NSString * const EMPTY_REPLACEMENT = @"_empty";
 @property(nonatomic,retain) NSURLConnection *eventsConnection;
 @property(nonatomic,retain) NSMutableData *eventsResponseData;
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
+@property(nonatomic,assign) BOOL projectDeleted;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
 @property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
@@ -476,6 +477,7 @@ static Slash7 *sharedInstance = nil;
         self.appUserId = [self randomAppUserId];
         self.appUserIdType = [self defaultAppUserIdType];
         self.unsentUserAttributes = [NSMutableDictionary dictionary];
+        self.projectDeleted = NO;
 
         self.eventsQueue = [NSMutableArray array];
         
@@ -537,6 +539,11 @@ static Slash7 *sharedInstance = nil;
 - (void)track:(NSString *)event withTransaction:(Slash7Transaction *)transaction withParams:(NSDictionary *)params
 {
     @synchronized(self) {
+        if (self.projectDeleted) {
+            Slash7Log(@"%@ project has been deleted. skipped.", self);
+            return;
+        }
+        
         NSDate *now = [NSDate date];
         if (event == nil || [event length] == 0) {
             NSLog(@"%@ track called with empty event parameter. using '_empty'", self);
@@ -620,7 +627,7 @@ static Slash7 *sharedInstance = nil;
         self.unsentUserAttributes = [NSMutableDictionary dictionary];
 
         self.eventsQueue = [NSMutableArray array];
-
+        self.projectDeleted = NO;
         [self archive];
     }
 }
@@ -796,6 +803,7 @@ static Slash7 *sharedInstance = nil;
         [properties setValue:self.appUserId forKey:@"appUserId"];
         [properties setValue:self.appUserIdType forKey:@"appUserIdType"];
         [properties setValue:self.unsentUserAttributes forKey:@"unsentUserAttributes"];
+        [properties setValue:[NSNumber numberWithBool:self.projectDeleted] forKey:@"projectDeleted"];
         Slash7Debug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
         if (![NSKeyedArchiver archiveRootObject:properties toFile:filePath]) {
             NSLog(@"%@ unable to archive properties data", self);
@@ -844,6 +852,7 @@ static Slash7 *sharedInstance = nil;
         self.appUserId = [properties objectForKey:@"appUserId"];
         self.appUserIdType = [properties objectForKey:@"appUserIdType"];
         self.unsentUserAttributes = [properties objectForKey:@"unsentUserAttributes"];
+        self.projectDeleted = [(NSNumber *)[properties objectForKey:@"projectDeleted"] boolValue];
     }
 }
 
@@ -1012,7 +1021,11 @@ static Slash7 *sharedInstance = nil;
         Slash7Debug(@"%@ http response finished loading", self);
         if (connection == self.eventsConnection) {
             NSString *response = [[NSString alloc] initWithData:self.eventsResponseData encoding:NSUTF8StringEncoding];
-            if ([response intValue] == 0) {
+            if ([response isEqualToString:@"__DELETED__"]) {
+                Slash7Log(@"Project is deleted. %@", self);
+                self.projectDeleted = YES;
+                [self archiveProperties];
+            } else if ([response intValue] == 0) {
                 NSLog(@"%@ track api error: %@", self, response);
             }
             [response release];
