@@ -41,6 +41,7 @@ typedef enum {
 @property (nonatomic,copy) NSString *category1;
 @property (nonatomic,copy) NSString *category2;
 @property (nonatomic,copy) NSString *category3;
+- (id)initWithId:(NSString *)itemId withPrice:(NSInteger)price;
 - (id)initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num;
 @end
 

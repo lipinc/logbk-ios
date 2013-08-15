@@ -44,6 +44,10 @@
 -(NSDictionary *)properties;
 @end
 
+@interface Slash7Transaction (Test)
+-(NSDictionary *)properties;
+@end
+
 @interface HelloSlash7Tests ()  <Slash7Delegate>
 
 @property(nonatomic,retain) Slash7 *slash7;
@@ -124,6 +128,16 @@
     STAssertNil([p1 objectForKey:@"_category1"], @"category1 should not be set");
     STAssertNil([p1 objectForKey:@"_category2"], @"category1 should not be set");
     STAssertNil([p1 objectForKey:@"_category3"], @"category1 should not be set");
+    
+    Slash7TransactionItem *item2 = [[[Slash7TransactionItem alloc] initWithId:@"item2" withPrice:100] autorelease];
+    NSDictionary *p2 = [item2 properties];
+    STAssertEqualObjects([p2 objectForKey:@"_item_id"], @"item2", @"_item_id should be set");
+    STAssertEqualObjects([p2 objectForKey:@"_name"], @"item2", @"_name should be set");
+    STAssertEqualObjects([p2 objectForKey:@"_price"], [NSNumber numberWithInt:100], @"_price should be set");
+    STAssertEqualObjects([p2 objectForKey:@"_num"],[NSNumber numberWithInt:1], @"_num should be set");
+    STAssertNil([p2 objectForKey:@"_category1"], @"category1 should not be set");
+    STAssertNil([p2 objectForKey:@"_category2"], @"category1 should not be set");
+    STAssertNil([p2 objectForKey:@"_category3"], @"category1 should not be set");
 }
 
 - (void)testItemPropertyWithCategory {
@@ -140,6 +154,63 @@
     STAssertEqualObjects([p1 objectForKey:@"_category1"], @"Category 1", @"category1 should be set");
     STAssertEqualObjects([p1 objectForKey:@"_category2"], @"Category 2", @"category2 should be set");
     STAssertEqualObjects([p1 objectForKey:@"_category3"], @"Category 3", @"category3 should be set");
+}
+
+- (void)testTransaction
+{
+    NSArray *items = [NSArray arrayWithObjects:
+                      [[[Slash7TransactionItem alloc] initWithId:@"item1" withName:@"Item 1" withPrice:100 withNum:3] autorelease],
+                      [[[Slash7TransactionItem alloc] initWithId:@"item2" withName:@"Item 2" withPrice:50 withNum:1] autorelease],
+                      [[[Slash7TransactionItem alloc] initWithId:@"item3" withName:@"Item 3" withPrice:98 withNum:1] autorelease],
+                      nil];
+    Slash7Transaction *tx = [[[Slash7Transaction alloc] initWithId:@"tx1" withItems:items] autorelease];
+    STAssertTrue(tx.totalPrice == 448, @"total price should be calculated automatically");
+    
+    tx.totalPrice = 400;
+    STAssertTrue(tx.totalPrice == 400, @"total price should be set");
+    
+    Slash7TransactionItem *item = [tx.items objectAtIndex:2];
+    STAssertEqualObjects(item.itemId, @"item3", @"id should be kept");
+    STAssertEqualObjects(item.itemName, @"Item 3", @"name should be kept");
+    STAssertTrue(item.price == 98, @"price should be kept");
+    STAssertTrue(item.num == 1, @"num should be kept");
+}
+
+-(void)testTransactionProperties
+{
+    NSArray *items = [NSArray arrayWithObjects:
+                      [[[Slash7TransactionItem alloc] initWithId:@"item1" withName:@"Item 1" withPrice:100 withNum:3] autorelease],
+                      [[[Slash7TransactionItem alloc] initWithId:@"item2" withName:@"Item 2" withPrice:50 withNum:1] autorelease],
+                      [[[Slash7TransactionItem alloc] initWithId:@"item3" withName:@"Item 3" withPrice:98 withNum:1] autorelease],
+                      nil];
+    Slash7Transaction *tx = [[[Slash7Transaction alloc] initWithId:@"tx1" withItems:items] autorelease];
+    NSDictionary *p = [tx properties];
+    STAssertEqualObjects([p objectForKey:@"_transact_id"], @"tx1", @"id should be set");
+    STAssertEqualObjects([p objectForKey:@"_total_price"], @448, @"total price should be set");
+    STAssertNotNil([p objectForKey:@"_items"], @"items should be set");
+    STAssertTrue([[p objectForKey:@"_items"] count] == 3, @"items should have length 3");
+}
+
+-(void)testTransactionPropertiesNil
+{
+    Slash7Transaction *tx1 = [[[Slash7Transaction alloc] initWithId:@"tx1" withItems:nil] autorelease];
+    STAssertTrue([[tx1 properties] count] == 0, @"it should return empty dictionary with nil items");
+
+    Slash7Transaction *tx2 = [[[Slash7Transaction alloc] initWithId:@"tx2" withItems:[NSArray array]] autorelease];
+    STAssertTrue([[tx2 properties] count] == 0, @"it should return empty dictionary with empty items");
+    
+    Slash7Transaction *tx3 = [[[Slash7Transaction alloc] initWithId:@"tx3" withItem:nil] autorelease];
+    STAssertTrue([[tx3 properties] count] == 0, @"it should return empty dictionary with empty items");
+
+    Slash7Transaction *tx4 = [[[Slash7Transaction alloc] initWithId:nil withItem:nil] autorelease];
+    STAssertTrue([[tx4 properties] count] == 0, @"it should return empty dictionary with empty items");
+
+    Slash7TransactionItem *item1 = [[[Slash7TransactionItem alloc] initWithId:@"item1" withPrice:100] autorelease];
+    Slash7Transaction *tx5 = [[[Slash7Transaction alloc] initWithId:nil withItem:item1] autorelease];
+    NSDictionary *p5 = [tx5 properties];
+    STAssertNotNil([p5 objectForKey:@"_transact_id"], @"id should be set");
+    STAssertNotNil([p5 objectForKey:@"_items"], @"items should be set");
+    STAssertEqualObjects([p5 objectForKey:@"_total_price"], @100, @"price should be set");
 }
 
 -(void)testItemPropertyNil {
@@ -209,6 +280,36 @@
     p = [e objectForKey:@"_event_params"];
     STAssertTrue(p.count == 15, @"incorrect number of properties");
     STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");
+}
+
+-(void)testTrackTransaction
+{
+    NSArray *items = [NSArray arrayWithObjects:
+                      [[[Slash7TransactionItem alloc] initWithId:@"item1" withName:@"Item 1" withPrice:100 withNum:3] autorelease],
+                      [[[Slash7TransactionItem alloc] initWithId:@"item2" withName:@"Item 2" withPrice:50 withNum:1] autorelease],
+                      [[[Slash7TransactionItem alloc] initWithId:@"item3" withName:@"Item 3" withPrice:98 withNum:1] autorelease],
+                      nil];
+    Slash7Transaction *tx = [[[Slash7Transaction alloc] initWithId:@"tx1" withItems:items] autorelease];
+    NSDictionary *p = [NSDictionary dictionaryWithObjectsAndKeys:
+                       @"yello",                   @"string",
+                       [NSNumber numberWithInt:3], @"number",
+                       [NSDate date],              @"date",
+                       @"override",                @"$app_version",
+                       nil];
+    [self.slash7 track:@"Something Happened" withTransaction:tx withParams:p];
+    STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
+    NSDictionary *e = self.slash7.eventsQueue.lastObject;
+    STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
+    STAssertNotNil([e objectForKey:@"_app_user_id_type"], @"_app_user_id_type not set");
+    STAssertNotNil([e objectForKey:@"_app_user_id"], @"_app_user_id not set");
+    STAssertNotNil([e objectForKey:@"_time"], @"_time not set");
+    STAssertNotNil([e objectForKey:@"_transact_id"], @"_transact_id not set");
+    STAssertNotNil([e objectForKey:@"_items"], @"_items not set");
+    STAssertNotNil([e objectForKey:@"_total_price"], @"_total_price not set");
+    
+    p = [e objectForKey:@"_event_params"];
+    STAssertTrue(p.count == 15, @"incorrect number of properties");
+    STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");    
 }
 
 - (void)testTrackWithCustomDistinctIdAndToken
@@ -398,26 +499,6 @@
     STAssertNotNil([e2 objectForKey:@"_time"], @"_time not set");
     NSDictionary *p2 = [e2 objectForKey:@"_event_params"];
     STAssertTrue(p2.count == 2, @"incorrect number of properties");
-}
-
-- (void)testTransaction
-{
-    NSArray *items = [NSArray arrayWithObjects:
-                      [[[Slash7TransactionItem alloc] initWithId:@"item1" withName:@"Item 1" withPrice:100 withNum:3] autorelease],
-                      [[[Slash7TransactionItem alloc] initWithId:@"item2" withName:@"Item 2" withPrice:50 withNum:1] autorelease],
-                      [[[Slash7TransactionItem alloc] initWithId:@"item3" withName:@"Item 3" withPrice:98 withNum:1] autorelease],
-                      nil];
-    Slash7Transaction *tx = [[[Slash7Transaction alloc] initWithId:@"tx1" withItems:items] autorelease];
-    STAssertTrue(tx.totalPrice == 448, @"total price should be calculated automatically");
-    
-    tx.totalPrice = 400;
-    STAssertTrue(tx.totalPrice == 400, @"total price should be set");
-    
-    Slash7TransactionItem *item = [tx.items objectAtIndex:2];
-    STAssertEqualObjects(item.itemId, @"item3", @"id should be kept");
-    STAssertEqualObjects(item.itemName, @"Item 3", @"name should be kept");
-    STAssertTrue(item.price == 98, @"price should be kept");
-    STAssertTrue(item.num == 1, @"num should be kept");
 }
 
 @end

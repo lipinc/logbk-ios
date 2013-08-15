@@ -89,6 +89,12 @@ static NSString * const EMPTY_REPLACEMENT = @"_empty";
 @end
 
 @implementation Slash7TransactionItem
+
+- (id)initWithId:(NSString *)itemId withPrice:(NSInteger)price
+{
+    return [self initWithId:itemId withName:nil withPrice:price withNum:1];
+}
+
 - (id)initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num
 {
     if (self = [self init]) {
@@ -141,7 +147,7 @@ static NSString * const EMPTY_REPLACEMENT = @"_empty";
 
 -(id)initWithId:(NSString *)transactionId withItem:(Slash7TransactionItem *)item
 {
-    return [self initWithId:transactionId withItems:[NSArray arrayWithObject:item]];
+    return [self initWithId:transactionId withItems:[NSArray arrayWithObjects:item, nil]];
 }
 
 -(id)initWithId:(NSString *)transactionId withItems:(NSArray *)items
@@ -180,8 +186,8 @@ static NSString * const EMPTY_REPLACEMENT = @"_empty";
 
     NSString *txId = self.transactionId;
     if (txId == nil || [txId length] == 0) {
-        NSLog(@"%@ empty transactionId. using random string", self);
         txId = [Slash7 genRandStringLength:64];
+        NSLog(@"%@ empty transactionId. using random string: %@", self, txId);
     }
     
     return [NSDictionary dictionaryWithObjectsAndKeys:
