@@ -345,7 +345,7 @@ static Slash7 *sharedInstance = nil;
         self.flushInterval = flushInterval;
         self.flushOnBackground = YES;
         self.showNetworkActivityIndicator = YES;
-        self.serverURL = @"https://api.mixpanel.com";
+        self.serverURL = @"https://tracker.slash-7.com";
         
         self.distinctId = [self defaultDistinctId];
         self.appUserIdType = [self defaultAppUserIdType];
@@ -630,7 +630,8 @@ static Slash7 *sharedInstance = nil;
     
     Slash7Debug(@"%@ flushing %u of %u queued events: %@", self, self.eventsBatch.count, self.eventsQueue.count, self.eventsQueue);
 
-    self.eventsConnection = [self apiConnectionWithEndpoint:@"/track/" andBody:postBody];
+    NSString *endpoint = [@"/track/" stringByAppendingString:self.apiToken];
+    self.eventsConnection = [self apiConnectionWithEndpoint:endpoint andBody:postBody];
 
     [self updateNetworkActivityIndicator];
 }
