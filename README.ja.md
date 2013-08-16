@@ -95,5 +95,5 @@ ARCを使用しているプロジェクトで使う場合には、TARGETS > Buil
 
 [copy]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/copy.png "Copy"
 [frameworks]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/frameworks.png "Frameworks"
-[arc]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/arc "ARC"
+[arc]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/arc.png "ARC"
 
