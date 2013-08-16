@@ -97,6 +97,13 @@
             nil];
 }
 
+-(void)removeArchiveFiles
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    [fileManager removeItemAtPath:[self.slash7 eventsFilePath] error:NULL];
+    [fileManager removeItemAtPath:[self.slash7 propertiesFilePath] error:NULL];
+}
+
 - (void)assertDefaultPeopleProperties:(NSDictionary *)p
 {
     STAssertNotNil([p objectForKey:@"$ios_device_model"], @"missing $ios_device_model property");
@@ -238,6 +245,16 @@
         STAssertEqualObjects(self.slash7.appUserId, distinctId, @"identify failed to set distinct id");
         [self.slash7 reset];
     }
+}
+
+- (void)testRandomUserId
+{
+    [self removeArchiveFiles];
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    NSString *prev = self.slash7.appUserId;
+    self.slash7 = [[[Slash7 alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    STAssertEqualObjects(self.slash7.appUserIdType, @"cookie", @"incorrect app user id type");
+    STAssertEqualObjects(self.slash7.appUserId, prev, @"randomly generated user id should be kept");
 }
 
 - (void)testTrack
@@ -428,9 +445,7 @@
     STAssertTrue([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"properties archive file not found");
 
     // no existing file
-
-    [fileManager removeItemAtPath:[self.slash7 eventsFilePath] error:NULL];
-    [fileManager removeItemAtPath:[self.slash7 propertiesFilePath] error:NULL];
+    [self removeArchiveFiles];
 
     STAssertFalse([fileManager fileExistsAtPath:[self.slash7 eventsFilePath]], @"events archive file not removed");
     STAssertFalse([fileManager fileExistsAtPath:[self.slash7 propertiesFilePath]], @"properties archive file not removed");

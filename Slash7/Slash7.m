@@ -474,8 +474,6 @@ static Slash7 *sharedInstance = nil;
         self.sendDeviceInfo = YES;
         self.serverURL = @"https://tracker.slash-7.com";
         
-        self.appUserId = [self randomAppUserId];
-        self.appUserIdType = [self defaultAppUserIdType];
         self.unsentUserAttributes = [NSMutableDictionary dictionary];
         self.projectDeleted = NO;
 
@@ -484,6 +482,13 @@ static Slash7 *sharedInstance = nil;
         [self addApplicationObservers];
         
         [self unarchive];
+        
+        if (self.appUserId == nil || [self.appUserId length] == 0) {
+            self.appUserId = [self randomAppUserId];
+            self.appUserIdType = [self defaultAppUserIdType];
+            Slash7Log(@"Assigned randomly generated app user id %@", self.appUserId);
+            [self archiveProperties];
+        }
 
     }
     return self;

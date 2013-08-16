@@ -61,9 +61,14 @@
 {
     Slash7 *slash7 = [Slash7 sharedInstance];
     [slash7 setUserAttribute:@"gender" to:[self.genderControl titleForSegmentAtIndex:self.genderControl.selectedSegmentIndex]];
-    [slash7 track:@"Player Create" withParams:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [self.weaponControl titleForSegmentAtIndex:self.weaponControl.selectedSegmentIndex], @"weapon",
-                                                 nil]];
+    Slash7TransactionItem *item = [[[Slash7TransactionItem alloc] initWithId:@"item 1" withPrice:100] autorelease];
+    // Fake transaction id
+    NSString *txId = [NSString stringWithFormat:@"tx%d", arc4random()];
+    Slash7Transaction *tx = [[[Slash7Transaction alloc] initWithId:txId withItem:item] autorelease];
+    [slash7 track:@"Player Create" withTransaction:tx
+       withParams:[NSDictionary dictionaryWithObjectsAndKeys:
+                   [self.weaponControl titleForSegmentAtIndex:self.weaponControl.selectedSegmentIndex], @"weapon",
+                   nil]];
 }
 
 @end
