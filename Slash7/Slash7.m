@@ -553,7 +553,6 @@ static Slash7 *sharedInstance = nil;
         if (self.sendDeviceInfo) {
             [p addEntriesFromDictionary:[Slash7 deviceInfoProperties]];
         }
-        [p addEntriesFromDictionary:self.unsentUserAttributes];
         if (params) {
             [p addEntriesFromDictionary:params];
         }

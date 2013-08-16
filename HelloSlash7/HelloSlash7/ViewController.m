@@ -60,8 +60,8 @@
 - (IBAction)trackEvent:(id)sender
 {
     Slash7 *slash7 = [Slash7 sharedInstance];
+    [slash7 setUserAttribute:@"gender" to:[self.genderControl titleForSegmentAtIndex:self.genderControl.selectedSegmentIndex]];
     [slash7 track:@"Player Create" withParams:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                 [self.genderControl titleForSegmentAtIndex:self.genderControl.selectedSegmentIndex], @"gender",
                                                  [self.weaponControl titleForSegmentAtIndex:self.weaponControl.selectedSegmentIndex], @"weapon",
                                                  nil]];
 }

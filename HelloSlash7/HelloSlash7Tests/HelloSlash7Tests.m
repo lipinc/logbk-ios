@@ -242,9 +242,11 @@
 
 - (void)testTrack
 {
+    [self.slash7 setUserAttribute:@"gender" to:@"Female"];
     [self.slash7 track:@"Something Happened"];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
+    STAssertTrue(e.count == 6, @"incorrect number of event keys");
     STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     STAssertNotNil([e objectForKey:@"_app_user_id_type"], @"_app_user_id_type not set");
     STAssertNotNil([e objectForKey:@"_app_user_id"], @"_app_user_id not set");
