@@ -116,7 +116,7 @@
 
         NSLog(@"%@ starting background task %u", self, self.bgTask);
 
-        // track some events and set some people properties
+        // track some events and set some user attributes
         Slash7 *slash7 = [Slash7 sharedInstance];
         [slash7 setUserAttributes:[NSDictionary dictionaryWithObject:@"Hi!" forKey:@"Background user attributes"]];
         [slash7 track:@"Background Event"];

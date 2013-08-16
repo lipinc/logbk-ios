@@ -104,16 +104,6 @@
     [fileManager removeItemAtPath:[self.slash7 propertiesFilePath] error:NULL];
 }
 
-- (void)assertDefaultPeopleProperties:(NSDictionary *)p
-{
-    STAssertNotNil([p objectForKey:@"$ios_device_model"], @"missing $ios_device_model property");
-    STAssertNotNil([p objectForKey:@"$ios_version"], @"missing $ios_version property");
-    STAssertNotNil([p objectForKey:@"$ios_app_version"], @"missing $ios_app_version property");
-    STAssertNotNil([p objectForKey:@"$ios_app_release"], @"missing $ios_app_release property");
-    STAssertNotNil([p objectForKey:@"$ios_ifa"], @"missing $ios_ifa property");
-
-}
-
 - (void)testJSONSerializeObject {
     NSDictionary *test = [self allPropertyTypes];
     NSData *data = [Slash7 JSONSerializeObject:[NSArray arrayWithObject:test]];
@@ -272,16 +262,16 @@
     NSDictionary *p = [e objectForKey:@"_event_params"];
     STAssertTrue(p.count == 11, @"incorrect number of properties");
 
-    STAssertNotNil([p objectForKey:@"$app_version"], @"$app_version not set");
-    STAssertNotNil([p objectForKey:@"$app_release"], @"$app_release not set");
-    STAssertNotNil([p objectForKey:@"$lib_version"], @"$lib_version not set");
-    STAssertEqualObjects([p objectForKey:@"$manufacturer"], @"Apple", @"incorrect $manufacturer");
-    STAssertNotNil([p objectForKey:@"$model"], @"$model not set");
-    STAssertNotNil([p objectForKey:@"$os"], @"$os not set");
-    STAssertNotNil([p objectForKey:@"$os_version"], @"$os_version not set");
-    STAssertNotNil([p objectForKey:@"$screen_height"], @"$screen_height not set");
-    STAssertNotNil([p objectForKey:@"$screen_width"], @"$screen_width not set");
-    STAssertEqualObjects([p objectForKey:@"$lib"], @"iphone", @"incorrect mp_lib");
+    STAssertNotNil([p objectForKey:@"_app_version"], @"_app_version not set");
+    STAssertNotNil([p objectForKey:@"_app_release"], @"_app_release not set");
+    STAssertNotNil([p objectForKey:@"_lib_version"], @"_lib_version not set");
+    STAssertEqualObjects([p objectForKey:@"_manufacturer"], @"Apple", @"incorrect _manufacturer");
+    STAssertNotNil([p objectForKey:@"_model"], @"_model not set");
+    STAssertNotNil([p objectForKey:@"_os"], @"_os not set");
+    STAssertNotNil([p objectForKey:@"_os_version"], @"_os_version not set");
+    STAssertNotNil([p objectForKey:@"_screen_height"], @"_screen_height not set");
+    STAssertNotNil([p objectForKey:@"_screen_width"], @"_screen_width not set");
+    STAssertEqualObjects([p objectForKey:@"_lib"], @"iphone", @"incorrect mp_lib");
 }
 
 - (void)testTrackProperties
@@ -290,7 +280,7 @@
                        @"yello",                   @"string",
                        [NSNumber numberWithInt:3], @"number",
                        [NSDate date],              @"date",
-                       @"override",                @"$app_version",
+                       @"override",                @"_app_version",
                        nil];
     [self.slash7 track:@"Something Happened" withParams:p];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
@@ -298,7 +288,7 @@
     STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     p = [e objectForKey:@"_event_params"];
     STAssertTrue(p.count == 14, @"incorrect number of properties");
-    STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");
+    STAssertEqualObjects([p objectForKey:@"_app_version"], @"override", @"reserved property override failed");
 }
 
 -(void)testTrackTransaction
@@ -313,7 +303,7 @@
                        @"yello",                   @"string",
                        [NSNumber numberWithInt:3], @"number",
                        [NSDate date],              @"date",
-                       @"override",                @"$app_version",
+                       @"override",                @"_app_version",
                        nil];
     [self.slash7 track:@"Something Happened" withTransaction:tx withParams:p];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
@@ -328,7 +318,7 @@
     
     p = [e objectForKey:@"_event_params"];
     STAssertTrue(p.count == 14, @"incorrect number of properties");
-    STAssertEqualObjects([p objectForKey:@"$app_version"], @"override", @"reserved property override failed");    
+    STAssertEqualObjects([p objectForKey:@"_app_version"], @"override", @"reserved property override failed");    
 }
 
 - (void)testTrackWithCustomDistinctIdAndToken

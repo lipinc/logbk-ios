@@ -249,29 +249,29 @@ static Slash7 *sharedInstance = nil;
 
     UIDevice *device = [UIDevice currentDevice];
 
-    [properties setValue:@"iphone" forKey:@"$lib"];
-    [properties setValue:VERSION forKey:@"$lib_version"];
+    [properties setValue:@"iphone" forKey:@"_lib"];
+    [properties setValue:VERSION forKey:@"_lib_version"];
 
-    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"$app_version"];
-    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"$app_release"];
+    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"_app_version"];
+    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"_app_release"];
 
-    [properties setValue:@"Apple" forKey:@"$manufacturer"];
-    [properties setValue:[device systemName] forKey:@"$os"];
-    [properties setValue:[device systemVersion] forKey:@"$os_version"];
-    [properties setValue:[Slash7 deviceModel] forKey:@"$model"];
+    [properties setValue:@"Apple" forKey:@"_manufacturer"];
+    [properties setValue:[device systemName] forKey:@"_os"];
+    [properties setValue:[device systemVersion] forKey:@"_os_version"];
+    [properties setValue:[Slash7 deviceModel] forKey:@"_model"];
 
     CGSize size = [UIScreen mainScreen].bounds.size;
-    [properties setValue:[NSNumber numberWithInt:(int)size.height] forKey:@"$screen_height"];
-    [properties setValue:[NSNumber numberWithInt:(int)size.width] forKey:@"$screen_width"];
+    [properties setValue:[NSNumber numberWithInt:(int)size.height] forKey:@"_screen_height"];
+    [properties setValue:[NSNumber numberWithInt:(int)size.width] forKey:@"_screen_width"];
 
-    [properties setValue:[NSNumber numberWithBool:[Slash7 wifiAvailable]] forKey:@"$wifi"];
+    [properties setValue:[NSNumber numberWithBool:[Slash7 wifiAvailable]] forKey:@"_wifi"];
 
     CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier *carrier = [networkInfo subscriberCellularProvider];
     [networkInfo release];
 
     if (carrier.carrierName.length) {
-        [properties setValue:carrier.carrierName forKey:@"$carrier"];
+        [properties setValue:carrier.carrierName forKey:@"_carrier"];
     }
 
     return [NSDictionary dictionaryWithDictionary:properties];
