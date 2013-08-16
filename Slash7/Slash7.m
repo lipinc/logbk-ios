@@ -732,7 +732,7 @@ static Slash7 *sharedInstance = nil;
     }
     
     NSString *data = [Slash7 encodeAPIData:self.eventsBatch];
-    NSString *postBody = [NSString stringWithFormat:@"ip=1&data=%@", data];
+    NSString *postBody = [NSString stringWithFormat:@"data=%@", data];
     
     Slash7Debug(@"%@ flushing %u of %u queued events: %@", self, self.eventsBatch.count, self.eventsQueue.count, self.eventsQueue);
 
