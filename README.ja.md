@@ -28,6 +28,11 @@ TARGETS > Build Phases > Link Binary に以下のフレームワークのうち�
 
 ![Frameworks][frameworks]
 
+なお[CocoaPods](http://cocoapods.org/)をご利用の方は以下の行を `Podfile` に追加することで上記の組み込み手順を省略できます(CocoaPodsをご利用でない方は何もする必要はありません)。
+
+    pod 'Slash7'
+
+
 ## 初期化
 
 Application delegate の `application:didFinishLaunchingWithOptions` または `applicationDidFinishLaunching:` でライブラリの初期化を行います。
@@ -96,6 +101,12 @@ Slash7 *slash7 = [Slash7 sharedInstance];
 ARCを使用しているプロジェクトで使う場合には、TARGETS > Build Phases > Compile Sources から Slash7 が提供するソースファイルをダブルクリックし、 `-fno-objc-arc` を入力してください。
 
 ![ARC][arc]
+
+## お問い合わせ
+
+本ライブラリに関するバグ報告や改善要望は[issue](https://github.com/pLucky-Inc/slash7-ios/issues)へ投稿してください。Pull request も歓迎です。
+
+[SLASH-7](http://www.slash-7.com/)のお問い合わせは[こちらのフォーム](https://plucky.zendesk.com/tickets/new)からお願いします。
 
 [project_info]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/project_info.png "ProjectInfo"
 [copy]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/copy.png "Copy"
