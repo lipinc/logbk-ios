@@ -4,7 +4,11 @@
 
 ## セットアップ
 
-まずレポジトリからライブラリのコードを取得します。
+[SLASH-7](http://www.slash-7.com/)にログインし、プロジェクト情報からログ処理待ち時間を1日に設定し保存します。
+
+![ProjectInfo][project_info]
+
+次にレポジトリからライブラリのコードを取得します。
 
 ````
 git clone http://github.com/pLucky-Inc/slash7-ios.git
@@ -23,6 +27,11 @@ TARGETS > Build Phases > Link Binary に以下のフレームワークのうち�
 * CoreTelephony.framework
 
 ![Frameworks][frameworks]
+
+なお[CocoaPods](http://cocoapods.org/)をご利用の方は以下の行を `Podfile` に追加することで上記の組み込み手順を省略できます(CocoaPodsをご利用でない方は何もする必要はありません)。
+
+    pod 'Slash7'
+
 
 ## 初期化
 
@@ -93,6 +102,13 @@ ARCを使用しているプロジェクトで使う場合には、TARGETS > Buil
 
 ![ARC][arc]
 
+## お問い合わせ
+
+本ライブラリに関するバグ報告や改善要望は[issue](https://github.com/pLucky-Inc/slash7-ios/issues)へ投稿してください。Pull request も歓迎です。
+
+[SLASH-7](http://www.slash-7.com/)のお問い合わせは[こちらのフォーム](https://plucky.zendesk.com/tickets/new)からお願いします。
+
+[project_info]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/project_info.png "ProjectInfo"
 [copy]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/copy.png "Copy"
 [frameworks]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/frameworks.png "Frameworks"
 [arc]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/arc.png "ARC"
