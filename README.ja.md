@@ -4,7 +4,11 @@
 
 ## セットアップ
 
-まずレポジトリからライブラリのコードを取得します。
+[SLASH-7](http://www.slash-7.com/)にログインし、プロジェクト情報からログ処理待ち時間を1日に設定し保存します。
+
+![ProjectInfo][project_info]
+
+次にレポジトリからライブラリのコードを取得します。
 
 ````
 git clone http://github.com/pLucky-Inc/slash7-ios.git
@@ -93,6 +97,7 @@ ARCを使用しているプロジェクトで使う場合には、TARGETS > Buil
 
 ![ARC][arc]
 
+[project_info]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/project_info.png "ProjectInfo"
 [copy]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/copy.png "Copy"
 [frameworks]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/frameworks.png "Frameworks"
 [arc]: https://raw.github.com/pLucky-Inc/slash7-ios/master/Docs/Images/arc.png "ARC"
