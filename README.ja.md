@@ -40,6 +40,12 @@ TARGETS > Build Phases > Link Binary に以下のフレームワークのうち�
 
 ## 初期化
 
+本ライブラリで提供される関数を利用する場合には `Slash7.h` を `#import` します。
+
+````
+#import "Slash7.h"
+````
+
 Application delegate の `application:didFinishLaunchingWithOptions` または `applicationDidFinishLaunching:` でライブラリの初期化を行います。
 
 ````
