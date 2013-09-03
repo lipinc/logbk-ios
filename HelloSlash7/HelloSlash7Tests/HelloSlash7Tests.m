@@ -250,28 +250,56 @@
 - (void)testTrack
 {
     [self.slash7 setUserAttribute:@"gender" to:@"Female"];
+    [self.slash7 setUserAttribute:@"age" to:@30];
     [self.slash7 track:@"Something Happened"];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
-    STAssertTrue(e.count == 6, @"incorrect number of event keys");
+    STAssertTrue(e.count == 7, @"incorrect number of event keys");
     STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     STAssertNotNil([e objectForKey:@"_app_user_id_type"], @"_app_user_id_type not set");
     STAssertNotNil([e objectForKey:@"_app_user_id"], @"_app_user_id not set");
     STAssertNotNil([e objectForKey:@"_time"], @"_time not set");
-
     NSDictionary *p = [e objectForKey:@"_event_params"];
-    STAssertTrue(p.count == 11, @"incorrect number of properties");
+    STAssertTrue(p.count == 0, @"incorrect number of properties");
+    STAssertEqualObjects([e objectForKey:@"gender"], @"Female", @"gender not set");
+    STAssertEqualObjects([e objectForKey:@"age"], @30, @"age not set");
+}
 
-    STAssertNotNil([p objectForKey:@"_app_version"], @"_app_version not set");
-    STAssertNotNil([p objectForKey:@"_app_release"], @"_app_release not set");
-    STAssertNotNil([p objectForKey:@"_lib_version"], @"_lib_version not set");
-    STAssertEqualObjects([p objectForKey:@"_manufacturer"], @"Apple", @"incorrect _manufacturer");
-    STAssertNotNil([p objectForKey:@"_model"], @"_model not set");
-    STAssertNotNil([p objectForKey:@"_os"], @"_os not set");
-    STAssertNotNil([p objectForKey:@"_os_version"], @"_os_version not set");
-    STAssertNotNil([p objectForKey:@"_screen_height"], @"_screen_height not set");
-    STAssertNotNil([p objectForKey:@"_screen_width"], @"_screen_width not set");
-    STAssertEqualObjects([p objectForKey:@"_lib"], @"iphone", @"incorrect mp_lib");
+- (void)testTrackDeviceInfo
+{
+    self.slash7.sendDeviceInfo = YES;
+    [self.slash7 setUserAttribute:@"gender" to:@"Female"];
+    // Manufacturer can't be overridden
+    [self.slash7 setUserAttribute:@"manufacturer" to:@"pLucky"];
+    [self.slash7 track:@"Something Happened"];
+    STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
+    NSDictionary *e = self.slash7.eventsQueue.lastObject;
+
+    // e.count depends on whether career is available
+    STAssertTrue(e.count == 17 || e.count == 18, @"incorrect number of event keys");
+    
+    STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
+    STAssertNotNil([e objectForKey:@"_app_user_id_type"], @"_app_user_id_type not set");
+    STAssertNotNil([e objectForKey:@"_app_user_id"], @"_app_user_id not set");
+    STAssertNotNil([e objectForKey:@"_time"], @"_time not set");
+    
+    STAssertEqualObjects([e objectForKey:@"gender"], @"Female", @"gender not set");
+    
+    STAssertNotNil([e objectForKey:@"app_version"], @"app_version not set");
+    STAssertNotNil([e objectForKey:@"app_release"], @"app_release not set");
+    STAssertNotNil([e objectForKey:@"lib_version"], @"lib_version not set");
+    STAssertEqualObjects([e objectForKey:@"manufacturer"], @"Apple", @"incorrect manufacturer");
+    STAssertNotNil([e objectForKey:@"model"], @"model not set");
+    STAssertNotNil([e objectForKey:@"os"], @"os not set");
+    STAssertNotNil([e objectForKey:@"os_version"], @"os_version not set");
+    STAssertNotNil([e objectForKey:@"screen_height"], @"screen_height not set");
+    STAssertNotNil([e objectForKey:@"screen_width"], @"screen_width not set");
+    STAssertEqualObjects([e objectForKey:@"lib"], @"iOS", @"incorrect lib");
+    STAssertNotNil([e objectForKey:@"wifi"], @"wifi not set");
+    
+    NSDictionary *p = [e objectForKey:@"_event_params"];
+    STAssertTrue(p.count == 0, @"incorrect number of properties");
+    
 }
 
 - (void)testTrackProperties
@@ -280,15 +308,13 @@
                        @"yello",                   @"string",
                        [NSNumber numberWithInt:3], @"number",
                        [NSDate date],              @"date",
-                       @"override",                @"_app_version",
                        nil];
     [self.slash7 track:@"Something Happened" withParams:p];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.slash7.eventsQueue.lastObject;
     STAssertEquals([e objectForKey:@"_event_name"], @"Something Happened", @"incorrect event name");
     p = [e objectForKey:@"_event_params"];
-    STAssertTrue(p.count == 14, @"incorrect number of properties");
-    STAssertEqualObjects([p objectForKey:@"_app_version"], @"override", @"reserved property override failed");
+    STAssertTrue(p.count == 3, @"incorrect number of properties");
 }
 
 -(void)testTrackTransaction
@@ -303,7 +329,6 @@
                        @"yello",                   @"string",
                        [NSNumber numberWithInt:3], @"number",
                        [NSDate date],              @"date",
-                       @"override",                @"_app_version",
                        nil];
     [self.slash7 track:@"Something Happened" withTransaction:tx withParams:p];
     STAssertTrue(self.slash7.eventsQueue.count == 1, @"event not queued");
@@ -317,8 +342,7 @@
     STAssertNotNil([e objectForKey:@"_total_price"], @"_total_price not set");
     
     p = [e objectForKey:@"_event_params"];
-    STAssertTrue(p.count == 14, @"incorrect number of properties");
-    STAssertEqualObjects([p objectForKey:@"_app_version"], @"override", @"reserved property override failed");    
+    STAssertTrue(p.count == 3, @"incorrect number of properties");
 }
 
 - (void)testTrackWithCustomDistinctIdAndToken
