@@ -161,7 +161,7 @@ typedef enum {
  Controls whether to send device info as parameters.
  
  @discussion
- Defaults to YES.
+ Defaults to NO.
  */
 @property(nonatomic,assign) BOOL sendDeviceInfo;
 
