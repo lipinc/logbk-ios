@@ -32,7 +32,7 @@
 #import "Slash7.h"
 #import "NSData+S7Base64.h"
 
-#define VERSION @"0.1.0"
+#define VERSION @"1.0.0"
 
 #ifndef IFT_ETHER
 #define IFT_ETHER 0x6 // ethernet CSMACD
