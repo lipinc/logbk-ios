@@ -249,7 +249,7 @@ static Slash7 *sharedInstance = nil;
 
     UIDevice *device = [UIDevice currentDevice];
 
-    [properties setValue:@"iphone" forKey:@"lib"];
+    [properties setValue:@"iOS" forKey:@"lib"];
     [properties setValue:VERSION forKey:@"lib_version"];
 
     [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"app_version"];

@@ -294,7 +294,7 @@
     STAssertNotNil([e objectForKey:@"os_version"], @"os_version not set");
     STAssertNotNil([e objectForKey:@"screen_height"], @"screen_height not set");
     STAssertNotNil([e objectForKey:@"screen_width"], @"screen_width not set");
-    STAssertEqualObjects([e objectForKey:@"lib"], @"iphone", @"incorrect lib");
+    STAssertEqualObjects([e objectForKey:@"lib"], @"iOS", @"incorrect lib");
     STAssertNotNil([e objectForKey:@"wifi"], @"wifi not set");
     
     NSDictionary *p = [e objectForKey:@"_event_params"];

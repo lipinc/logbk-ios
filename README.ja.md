@@ -105,6 +105,27 @@ Slash7 *slash7 = [Slash7 sharedInstance];
 ````
 
 指定されたユーザ属性は、次のイベント送信時にサーバへ送付されます。 
+
+### プリセット情報をユーザ属性につける
+
+`slash7.sendDeviceInfo = YES` に設定することで、デバイスやライブラリ、アプリケーションに関するプリセット情報をユーザ属性として送ることができます。
+ユーザ属性として送られる情報は以下のとおりです。
+
+* lib -- `iOS` 固定
+* lib_version -- 本ライブラリのバージョン
+* app_version -- アプリケーションバージョン (`CFBundleVersion`)
+* app_release -- アプリケーションリリース (`CFBundleShortVersionString`)
+* manufacturer -- `Apple` 固定
+* os -- OS名
+* os_version -- OSバージョン
+* model -- デバイスモデル
+* screen_height, screen_width -- スクリーンのサイズ
+* wifi -- WiFiの利用可能状態
+* carrier -- キャリア（キャリアが存在する場合のみ付与）
+
+プリセット情報を送る場合、`setUserAttribute:to:` または `setUserAttributes:` を用いてプリセット情報を上書きすることはできません。
+
+複数の手段からログを送信する場合（例：iOSアプリとfluentd）には、プリセット情報の利用をおすすめしません。（もし複数の手段からログを送信する場合にこのプリセット情報を利用する時は、必ず全てのログに上記ユーザ属性を付与して下さい。そうしなければ、イベントとユーザ属性が正しく紐付かず、誤った状態で情報が処理されてしまうことがあります。）
  
 ## ARC
  
