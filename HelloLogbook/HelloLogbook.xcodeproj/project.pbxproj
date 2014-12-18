@@ -106,11 +106,11 @@
 		2808F9821610EFE3005772B7 = {
 			isa = PBXGroup;
 			children = (
-				2808F9971610EFE3005772B7 /* HelloSlash7 */,
-				2808F9B81610EFE4005772B7 /* HelloSlash7Tests */,
+				2808F9971610EFE3005772B7 /* HelloLogbook */,
+				2808F9B81610EFE4005772B7 /* HelloLogbookTests */,
 				2808F9901610EFE3005772B7 /* Frameworks */,
 				2808F98E1610EFE3005772B7 /* Products */,
-				286760AD1611982600B1BEC8 /* Slash7 */,
+				286760AD1611982600B1BEC8 /* Logbook */,
 			);
 			sourceTree = "<group>";
 		};
@@ -136,7 +136,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2808F9971610EFE3005772B7 /* HelloSlash7 */ = {
+		2808F9971610EFE3005772B7 /* HelloLogbook */ = {
 			isa = PBXGroup;
 			children = (
 				2808F9A01610EFE3005772B7 /* AppDelegate.h */,
@@ -146,7 +146,7 @@
 				2808F9A61610EFE3005772B7 /* ViewController.xib */,
 				2808F9981610EFE3005772B7 /* Supporting Files */,
 			);
-			path = HelloSlash7;
+			path = HelloLogbook;
 			sourceTree = "<group>";
 		};
 		2808F9981610EFE3005772B7 /* Supporting Files */ = {
@@ -162,14 +162,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		2808F9B81610EFE4005772B7 /* HelloSlash7Tests */ = {
+		2808F9B81610EFE4005772B7 /* HelloLogbookTests */ = {
 			isa = PBXGroup;
 			children = (
 				2808F9BE1610EFE4005772B7 /* HelloSlash7Tests.h */,
 				2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */,
 				2808F9B91610EFE4005772B7 /* Supporting Files */,
 			);
-			path = HelloSlash7Tests;
+			path = HelloLogbookTests;
 			sourceTree = "<group>";
 		};
 		2808F9B91610EFE4005772B7 /* Supporting Files */ = {
@@ -181,15 +181,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		286760AD1611982600B1BEC8 /* Slash7 */ = {
+		286760AD1611982600B1BEC8 /* Logbook */ = {
 			isa = PBXGroup;
 			children = (
 				286760AE1611982600B1BEC8 /* Library */,
 				286760B91611982600B1BEC8 /* Slash7.h */,
 				286760BA1611982600B1BEC8 /* Slash7.m */,
 			);
-			name = Slash7;
-			path = ../Slash7;
+			name = Logbook;
+			path = ../Logbook;
 			sourceTree = "<group>";
 		};
 		286760AE1611982600B1BEC8 /* Library */ = {
@@ -260,7 +260,7 @@
 			name = HelloSlash7Tests;
 			productName = HelloMixpanelTests;
 			productReference = 2808F9B11610EFE4005772B7 /* HelloSlash7Tests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -271,7 +271,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = Mixpanel;
 			};
-			buildConfigurationList = 2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloSlash7" */;
+			buildConfigurationList = 2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloLogbook" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -665,7 +665,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloSlash7" */ = {
+		2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloLogbook" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2808F9C11610EFE4005772B7 /* Debug */,
