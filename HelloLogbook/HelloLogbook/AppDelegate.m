@@ -106,7 +106,7 @@
 {
     self.bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
 
-        NSLog(@"%@ background task %u cut short", self, self.bgTask);
+        NSLog(@"%@ background task %lu cut short", self, (unsigned long)self.bgTask);
 
         [application endBackgroundTask:self.bgTask];
         self.bgTask = UIBackgroundTaskInvalid;
@@ -114,19 +114,19 @@
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-        NSLog(@"%@ starting background task %u", self, self.bgTask);
+        NSLog(@"%@ starting background task %lu", self, (unsigned long)self.bgTask);
 
         // track some events and set some user attributes
         Slash7 *slash7 = [Slash7 sharedInstance];
         [slash7 setUserAttributes:[NSDictionary dictionaryWithObject:@"Hi!" forKey:@"Background user attributes"]];
         [slash7 track:@"Background Event"];
 
-        NSLog(@"%@ ending background task %u", self, self.bgTask);
+        NSLog(@"%@ ending background task %lu", self, (unsigned long)self.bgTask);
         [application endBackgroundTask:self.bgTask];
         self.bgTask = UIBackgroundTaskInvalid;
     });
 
-    NSLog(@"%@ dispatched background task %u", self, self.bgTask);
+    NSLog(@"%@ dispatched background task %lu", self, (unsigned long)self.bgTask);
 
 }
 

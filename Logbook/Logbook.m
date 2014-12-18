@@ -138,7 +138,7 @@ static NSString * const EMPTY_REPLACEMENT = @"_empty";
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<Slash7TransactionItem: %p %@ %@ %d %d>", self, self.itemId, self.itemName, self.price, self.num];
+    return [NSString stringWithFormat:@"<Slash7TransactionItem: %p %@ %@ %ld %lu>", self, self.itemId, self.itemName, (long)self.price, (unsigned long)self.num];
 }
 @end
 
@@ -198,7 +198,7 @@ static NSString * const EMPTY_REPLACEMENT = @"_empty";
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<Slash7Transaction: %p %@ %d>", self, self.transactionId, self.totalPrice];
+    return [NSString stringWithFormat:@"<Slash7Transaction: %p %@ %ld>", self, self.transactionId, (long)self.totalPrice];
 }
 @end
 
