@@ -21,12 +21,12 @@
 		2808F9BD1610EFE4005772B7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2808F9BB1610EFE4005772B7 /* InfoPlist.strings */; };
 		2808F9CA1610F0D0005772B7 /* grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 2808F9C91610F0D0005772B7 /* grid.png */; };
 		28537E8E16168C000032FE06 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 28537E8D16168C000032FE06 /* Default-568h@2x.png */; };
-		285EC8351611970A0087AE27 /* HelloSlash7Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */; };
+		285EC8351611970A0087AE27 /* HelloLogbookTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2808F9BF1610EFE4005772B7 /* HelloLogbookTests.m */; };
 		286760BB1611982600B1BEC8 /* S7CJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B11611982600B1BEC8 /* S7CJSONDataSerializer.m */; };
 		286760BC1611982600B1BEC8 /* S7CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B31611982600B1BEC8 /* S7CJSONSerializer.m */; };
 		286760BD1611982600B1BEC8 /* S7CSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B51611982600B1BEC8 /* S7CSerializedJSONData.m */; };
 		286760BE1611982600B1BEC8 /* NSData+S7Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B81611982600B1BEC8 /* NSData+S7Base64.m */; };
-		286760BF1611982600B1BEC8 /* Slash7.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760BA1611982600B1BEC8 /* Slash7.m */; };
+		286760BF1611982600B1BEC8 /* Logbook.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760BA1611982600B1BEC8 /* Logbook.m */; };
 		2892541D16548047003DAFFE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892541C16548047003DAFFE /* SystemConfiguration.framework */; };
 		2892541F16548283003DAFFE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892541E16548283003DAFFE /* CoreTelephony.framework */; };
 /* End PBXBuildFile section */
@@ -42,25 +42,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2808F98D1610EFE3005772B7 /* HelloSlash7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloSlash7.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2808F98D1610EFE3005772B7 /* HelloLogbook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloLogbook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2808F9911610EFE3005772B7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2808F9931610EFE3005772B7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2808F9951610EFE3005772B7 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		2808F9991610EFE3005772B7 /* HelloSlash7-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloSlash7-Info.plist"; sourceTree = "<group>"; };
+		2808F9991610EFE3005772B7 /* HelloLogbook-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloLogbook-Info.plist"; sourceTree = "<group>"; };
 		2808F99B1610EFE3005772B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2808F99D1610EFE3005772B7 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		2808F99F1610EFE3005772B7 /* HelloSlash7-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HelloSlash7-Prefix.pch"; sourceTree = "<group>"; };
+		2808F99F1610EFE3005772B7 /* HelloLogbook-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HelloLogbook-Prefix.pch"; sourceTree = "<group>"; };
 		2808F9A01610EFE3005772B7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2808F9A11610EFE3005772B7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		2808F9A31610EFE3005772B7 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		2808F9A41610EFE3005772B7 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		2808F9A71610EFE3005772B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
-		2808F9B11610EFE4005772B7 /* HelloSlash7Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HelloSlash7Tests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2808F9B11610EFE4005772B7 /* HelloLogbookTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HelloLogbookTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2808F9B21610EFE4005772B7 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		2808F9BA1610EFE4005772B7 /* HelloSlash7Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloSlash7Tests-Info.plist"; sourceTree = "<group>"; };
+		2808F9BA1610EFE4005772B7 /* HelloLogbookTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "HelloLogbookTests-Info.plist"; sourceTree = "<group>"; };
 		2808F9BC1610EFE4005772B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		2808F9BE1610EFE4005772B7 /* HelloSlash7Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloSlash7Tests.h; sourceTree = "<group>"; };
-		2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloSlash7Tests.m; sourceTree = "<group>"; };
+		2808F9BE1610EFE4005772B7 /* HelloLogbookTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloLogbookTests.h; sourceTree = "<group>"; };
+		2808F9BF1610EFE4005772B7 /* HelloLogbookTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloLogbookTests.m; sourceTree = "<group>"; };
 		2808F9C91610F0D0005772B7 /* grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grid.png; sourceTree = "<group>"; };
 		28537E8D16168C000032FE06 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		286760B01611982600B1BEC8 /* S7CJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S7CJSONDataSerializer.h; sourceTree = "<group>"; };
@@ -71,8 +71,8 @@
 		286760B51611982600B1BEC8 /* S7CSerializedJSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S7CSerializedJSONData.m; sourceTree = "<group>"; };
 		286760B71611982600B1BEC8 /* NSData+S7Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+S7Base64.h"; sourceTree = "<group>"; };
 		286760B81611982600B1BEC8 /* NSData+S7Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+S7Base64.m"; sourceTree = "<group>"; };
-		286760B91611982600B1BEC8 /* Slash7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slash7.h; sourceTree = "<group>"; };
-		286760BA1611982600B1BEC8 /* Slash7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slash7.m; sourceTree = "<group>"; };
+		286760B91611982600B1BEC8 /* Logbook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logbook.h; sourceTree = "<group>"; };
+		286760BA1611982600B1BEC8 /* Logbook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logbook.m; sourceTree = "<group>"; };
 		2892541C16548047003DAFFE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2892541E16548283003DAFFE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -106,19 +106,19 @@
 		2808F9821610EFE3005772B7 = {
 			isa = PBXGroup;
 			children = (
-				2808F9971610EFE3005772B7 /* HelloSlash7 */,
-				2808F9B81610EFE4005772B7 /* HelloSlash7Tests */,
+				2808F9971610EFE3005772B7 /* HelloLogbook */,
+				2808F9B81610EFE4005772B7 /* HelloLogbookTests */,
 				2808F9901610EFE3005772B7 /* Frameworks */,
 				2808F98E1610EFE3005772B7 /* Products */,
-				286760AD1611982600B1BEC8 /* Slash7 */,
+				286760AD1611982600B1BEC8 /* Logbook */,
 			);
 			sourceTree = "<group>";
 		};
 		2808F98E1610EFE3005772B7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2808F98D1610EFE3005772B7 /* HelloSlash7.app */,
-				2808F9B11610EFE4005772B7 /* HelloSlash7Tests.octest */,
+				2808F98D1610EFE3005772B7 /* HelloLogbook.app */,
+				2808F9B11610EFE4005772B7 /* HelloLogbookTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,7 +136,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2808F9971610EFE3005772B7 /* HelloSlash7 */ = {
+		2808F9971610EFE3005772B7 /* HelloLogbook */ = {
 			isa = PBXGroup;
 			children = (
 				2808F9A01610EFE3005772B7 /* AppDelegate.h */,
@@ -146,7 +146,7 @@
 				2808F9A61610EFE3005772B7 /* ViewController.xib */,
 				2808F9981610EFE3005772B7 /* Supporting Files */,
 			);
-			path = HelloSlash7;
+			path = HelloLogbook;
 			sourceTree = "<group>";
 		};
 		2808F9981610EFE3005772B7 /* Supporting Files */ = {
@@ -154,42 +154,42 @@
 			children = (
 				28537E8D16168C000032FE06 /* Default-568h@2x.png */,
 				2808F9C91610F0D0005772B7 /* grid.png */,
-				2808F9991610EFE3005772B7 /* HelloSlash7-Info.plist */,
+				2808F9991610EFE3005772B7 /* HelloLogbook-Info.plist */,
 				2808F99A1610EFE3005772B7 /* InfoPlist.strings */,
 				2808F99D1610EFE3005772B7 /* main.m */,
-				2808F99F1610EFE3005772B7 /* HelloSlash7-Prefix.pch */,
+				2808F99F1610EFE3005772B7 /* HelloLogbook-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		2808F9B81610EFE4005772B7 /* HelloSlash7Tests */ = {
+		2808F9B81610EFE4005772B7 /* HelloLogbookTests */ = {
 			isa = PBXGroup;
 			children = (
-				2808F9BE1610EFE4005772B7 /* HelloSlash7Tests.h */,
-				2808F9BF1610EFE4005772B7 /* HelloSlash7Tests.m */,
+				2808F9BE1610EFE4005772B7 /* HelloLogbookTests.h */,
+				2808F9BF1610EFE4005772B7 /* HelloLogbookTests.m */,
 				2808F9B91610EFE4005772B7 /* Supporting Files */,
 			);
-			path = HelloSlash7Tests;
+			path = HelloLogbookTests;
 			sourceTree = "<group>";
 		};
 		2808F9B91610EFE4005772B7 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				2808F9BA1610EFE4005772B7 /* HelloSlash7Tests-Info.plist */,
+				2808F9BA1610EFE4005772B7 /* HelloLogbookTests-Info.plist */,
 				2808F9BB1610EFE4005772B7 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		286760AD1611982600B1BEC8 /* Slash7 */ = {
+		286760AD1611982600B1BEC8 /* Logbook */ = {
 			isa = PBXGroup;
 			children = (
 				286760AE1611982600B1BEC8 /* Library */,
-				286760B91611982600B1BEC8 /* Slash7.h */,
-				286760BA1611982600B1BEC8 /* Slash7.m */,
+				286760B91611982600B1BEC8 /* Logbook.h */,
+				286760BA1611982600B1BEC8 /* Logbook.m */,
 			);
-			name = Slash7;
-			path = ../Slash7;
+			name = Logbook;
+			path = ../Logbook;
 			sourceTree = "<group>";
 		};
 		286760AE1611982600B1BEC8 /* Library */ = {
@@ -226,9 +226,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2808F98C1610EFE3005772B7 /* HelloSlash7 */ = {
+		2808F98C1610EFE3005772B7 /* HelloLogbook */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2808F9C31610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloSlash7" */;
+			buildConfigurationList = 2808F9C31610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloLogbook" */;
 			buildPhases = (
 				2808F9891610EFE3005772B7 /* Sources */,
 				2808F98A1610EFE3005772B7 /* Frameworks */,
@@ -238,14 +238,14 @@
 			);
 			dependencies = (
 			);
-			name = HelloSlash7;
+			name = HelloLogbook;
 			productName = HelloMixpanel;
-			productReference = 2808F98D1610EFE3005772B7 /* HelloSlash7.app */;
+			productReference = 2808F98D1610EFE3005772B7 /* HelloLogbook.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2808F9B01610EFE4005772B7 /* HelloSlash7Tests */ = {
+		2808F9B01610EFE4005772B7 /* HelloLogbookTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2808F9C61610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloSlash7Tests" */;
+			buildConfigurationList = 2808F9C61610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloLogbookTests" */;
 			buildPhases = (
 				2808F9AC1610EFE4005772B7 /* Sources */,
 				2808F9AD1610EFE4005772B7 /* Frameworks */,
@@ -257,10 +257,10 @@
 			dependencies = (
 				2808F9B71610EFE4005772B7 /* PBXTargetDependency */,
 			);
-			name = HelloSlash7Tests;
+			name = HelloLogbookTests;
 			productName = HelloMixpanelTests;
-			productReference = 2808F9B11610EFE4005772B7 /* HelloSlash7Tests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 2808F9B11610EFE4005772B7 /* HelloLogbookTests.octest */;
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -268,10 +268,10 @@
 		2808F9841610EFE3005772B7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = Mixpanel;
 			};
-			buildConfigurationList = 2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloSlash7" */;
+			buildConfigurationList = 2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloLogbook" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -283,8 +283,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2808F98C1610EFE3005772B7 /* HelloSlash7 */,
-				2808F9B01610EFE4005772B7 /* HelloSlash7Tests */,
+				2808F98C1610EFE3005772B7 /* HelloLogbook */,
+				2808F9B01610EFE4005772B7 /* HelloLogbookTests */,
 			);
 		};
 /* End PBXProject section */
@@ -339,7 +339,7 @@
 				286760BC1611982600B1BEC8 /* S7CJSONSerializer.m in Sources */,
 				286760BD1611982600B1BEC8 /* S7CSerializedJSONData.m in Sources */,
 				286760BE1611982600B1BEC8 /* NSData+S7Base64.m in Sources */,
-				286760BF1611982600B1BEC8 /* Slash7.m in Sources */,
+				286760BF1611982600B1BEC8 /* Logbook.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,7 +347,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				285EC8351611970A0087AE27 /* HelloSlash7Tests.m in Sources */,
+				285EC8351611970A0087AE27 /* HelloLogbookTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,7 +356,7 @@
 /* Begin PBXTargetDependency section */
 		2808F9B71610EFE4005772B7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2808F98C1610EFE3005772B7 /* HelloSlash7 */;
+			target = 2808F98C1610EFE3005772B7 /* HelloLogbook */;
 			targetProxy = 2808F9B61610EFE4005772B7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -393,10 +393,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_INT_CONVERSION = YES;
@@ -404,16 +405,18 @@
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"SLASH7_LOG=1",
-					"SLASH7_DEBUG=1",
+					"LOGBOOK_LOG=1",
+					"LOGBOOK_DEBUG=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
@@ -440,6 +443,7 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -453,10 +457,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_INT_CONVERSION = YES;
@@ -464,14 +469,16 @@
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"SLASH7_LOG=1",
-					"SLASH7_DEBUG=1",
+					"LOGBOOK_LOG=1",
+					"LOGBOOK_DEBUG=1",
 				);
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
@@ -511,10 +518,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
-				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
+				GCC_PREFIX_HEADER = "HelloLogbook/HelloLogbook-Prefix.pch";
+				INFOPLIST_FILE = "HelloLogbook/HelloLogbook-Info.plist";
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = HelloSlash7;
+				PRODUCT_NAME = HelloLogbook;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -523,10 +530,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
-				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
+				GCC_PREFIX_HEADER = "HelloLogbook/HelloLogbook-Prefix.pch";
+				INFOPLIST_FILE = "HelloLogbook/HelloLogbook-Info.plist";
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = HelloSlash7;
+				PRODUCT_NAME = HelloLogbook;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -534,7 +541,7 @@
 		2808F9C71610EFE4005772B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloSlash7.app/HelloSlash7";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloLogbook.app/HelloLogbook";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -542,12 +549,12 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloLogbook/HelloLogbook-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "HelloSlash7Tests/HelloSlash7Tests-Info.plist";
+				INFOPLIST_FILE = "HelloLogbookTests/HelloLogbookTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = HelloSlash7Tests;
+				PRODUCT_NAME = HelloLogbookTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -556,7 +563,7 @@
 		2808F9C81610EFE4005772B7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloSlash7.app/HelloSlash7";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloLogbook.app/HelloLogbook";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -564,12 +571,12 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloLogbook/HelloLogbook-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "HelloSlash7Tests/HelloSlash7Tests-Info.plist";
+				INFOPLIST_FILE = "HelloLogbookTests/HelloLogbookTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = HelloSlash7Tests;
+				PRODUCT_NAME = HelloLogbookTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -579,10 +586,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = NO;
 				CLANG_WARN_INT_CONVERSION = YES;
@@ -590,10 +598,12 @@
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = NO;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
@@ -632,10 +642,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
-				INFOPLIST_FILE = "HelloSlash7/HelloSlash7-Info.plist";
+				GCC_PREFIX_HEADER = "HelloLogbook/HelloLogbook-Prefix.pch";
+				INFOPLIST_FILE = "HelloLogbook/HelloLogbook-Info.plist";
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = HelloSlash7;
+				PRODUCT_NAME = HelloLogbook;
 				WRAPPER_EXTENSION = app;
 			};
 			name = AppStore;
@@ -643,7 +653,7 @@
 		28C2136716376D3300696E4F /* AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloSlash7.app/HelloSlash7";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/HelloLogbook.app/HelloLogbook";
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -651,12 +661,12 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "HelloSlash7/HelloSlash7-Prefix.pch";
+				GCC_PREFIX_HEADER = "HelloLogbook/HelloLogbook-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "";
-				INFOPLIST_FILE = "HelloSlash7Tests/HelloSlash7Tests-Info.plist";
+				INFOPLIST_FILE = "HelloLogbookTests/HelloLogbookTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "";
-				PRODUCT_NAME = HelloSlash7Tests;
+				PRODUCT_NAME = HelloLogbookTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -665,7 +675,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloSlash7" */ = {
+		2808F9871610EFE3005772B7 /* Build configuration list for PBXProject "HelloLogbook" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2808F9C11610EFE4005772B7 /* Debug */,
@@ -675,7 +685,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2808F9C31610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloSlash7" */ = {
+		2808F9C31610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloLogbook" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2808F9C41610EFE4005772B7 /* Debug */,
@@ -685,7 +695,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2808F9C61610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloSlash7Tests" */ = {
+		2808F9C61610EFE4005772B7 /* Build configuration list for PBXNativeTarget "HelloLogbookTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2808F9C71610EFE4005772B7 /* Debug */,

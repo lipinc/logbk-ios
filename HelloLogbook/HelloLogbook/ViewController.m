@@ -16,7 +16,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import "Slash7.h"
+#import "Logbook.h"
 
 #import "ViewController.h"
 

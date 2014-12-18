@@ -17,9 +17,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import "HelloSlash7Tests.h"
+#import "HelloLogbookTests.h"
 
-#import "Slash7.h"
+#import "Logbook.h"
 #import "S7CJSONSerializer.h"
 
 #define TEST_TOKEN @"abc123"

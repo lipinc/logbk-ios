@@ -29,7 +29,7 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 
 #import "S7CJSONDataSerializer.h"
-#import "Slash7.h"
+#import "Logbook.h"
 #import "NSData+S7Base64.h"
 
 #define VERSION @"1.0.0"
