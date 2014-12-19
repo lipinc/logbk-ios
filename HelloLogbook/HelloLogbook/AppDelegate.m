@@ -43,14 +43,11 @@
     // Override point for customization after application launch.
     
     // Initialize the SLASH-7 object
-    self.slash7 = [Slash7 sharedInstanceWithCode:TRACKING_CODE];
+    self.logbook = [Logbook sharedInstanceWithCode:TRACKING_CODE];
 
     // Set the upload interval to 20 seconds for demonstration purposes. This would be overkill for most applications.
-    self.slash7.flushInterval = 20; // defaults to 60 seconds
+    self.logbook.flushInterval = 20; // defaults to 60 seconds
 
-    // Set some user attributes
-    [self.slash7 setUserAttributes:[NSDictionary dictionaryWithObjectsAndKeys:@"Premium", @"Plan", nil]];
-    
     self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
@@ -97,7 +94,7 @@
 {
     NSLog(@"%@ will resign active", self);
     NSNumber *seconds = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSinceDate:self.startTime]];
-    [[Slash7 sharedInstance] track:@"Session" withParams:[NSDictionary dictionaryWithObject:seconds forKey:@"Length"]];
+    [[Logbook sharedInstance] track:@"Session" withParams:[NSDictionary dictionaryWithObject:seconds forKey:@"Length"]];
 }
 
 #pragma mark * Background task tracking test
@@ -116,10 +113,9 @@
 
         NSLog(@"%@ starting background task %lu", self, (unsigned long)self.bgTask);
 
-        // track some events and set some user attributes
-        Slash7 *slash7 = [Slash7 sharedInstance];
-        [slash7 setUserAttributes:[NSDictionary dictionaryWithObject:@"Hi!" forKey:@"Background user attributes"]];
-        [slash7 track:@"Background Event"];
+        // track some events
+        Logbook *logbook = [Logbook sharedInstance];
+        [logbook track:@"Background Event"];
 
         NSLog(@"%@ ending background task %lu", self, (unsigned long)self.bgTask);
         [application endBackgroundTask:self.bgTask];

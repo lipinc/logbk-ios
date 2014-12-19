@@ -60,20 +60,11 @@
 
 - (IBAction)trackEvent:(id)sender
 {
-    Slash7 *slash7 = [Slash7 sharedInstance];
-    [slash7 setUserAttribute:@"gender" to:[self.genderControl titleForSegmentAtIndex:self.genderControl.selectedSegmentIndex]];
+    Logbook *logbook = [Logbook sharedInstance];
     NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
                             [self.weaponControl titleForSegmentAtIndex:self.weaponControl.selectedSegmentIndex], @"weapon",
                             nil];
-    if (self.transactionControl.isOn) {
-        Slash7TransactionItem *item = [[[Slash7TransactionItem alloc] initWithId:@"item 1" withPrice:100] autorelease];
-        // Fake transaction id
-        NSString *txId = [NSString stringWithFormat:@"tx%d", arc4random()];
-        Slash7Transaction *tx = [[[Slash7Transaction alloc] initWithId:txId withItem:item] autorelease];
-        [slash7 track:@"Player Create" withTransaction:tx withParams:params];
-    } else {
-        [slash7 track:@"Player Create" withParams:params];
-    }
+    [logbook track:@"Player Create" withParams:params];
 }
 
 @end

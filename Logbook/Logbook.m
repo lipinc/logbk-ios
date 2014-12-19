@@ -1,8 +1,8 @@
 //
-// Slash7.m
-// Slash7
+// Logbook.m
+// Logbook
 //
-// Copyright 2013 pLucky, Inc.
+// Copyright 2013-2014 pLucky, Inc.
 // Copyright 2012 Mixpanel
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,41 +38,31 @@
 #define IFT_ETHER 0x6 // ethernet CSMACD
 #endif
 
-#ifdef SLASH7_LOG
-#define Slash7Log(...) NSLog(__VA_ARGS__)
+#ifdef LOGBOOK_LOG
+#define LogbookLog(...) NSLog(__VA_ARGS__)
 #else
-#define Slash7Log(...)
+#define LogbookLog(...)
 #endif
 
-#ifdef SLASH7_DEBUG
-#define Slash7Debug(...) NSLog(__VA_ARGS__)
+#ifdef LOGBOOK_DEBUG
+#define LogbookDebug(...) NSLog(__VA_ARGS__)
 #else
-#define Slash7Debug(...)
+#define LogbookDebug(...)
 #endif
 
-static NSString * const S7_EVENT_NAME_KEY = @"_event_name";
-static NSString * const S7_EVENT_PARAMS_KEY = @"_event_params";
-static NSString * const S7_APP_USER_ID_KEY = @"_app_user_id";
-static NSString * const S7_APP_USER_ID_TYPE_KEY = @"_app_user_id_type";
-static NSString * const S7_TIME_KEY = @"_time";
+static NSString * const LB_TIME_KEY = @"time";
+static NSString * const LB_EVENT_KEY = @"event";
+static NSString * const LB_RAND_USER_KEY = @"randUser";
+static NSString * const LB_USER_KEY = @"user";
+static NSString * const LB_LIB_NAME = @"libName";
+static NSString * const LB_LIB_VERSION = @"libVersion";
 
-static NSString * const EMPTY_REPLACEMENT = @"_empty";
-
-@interface Slash7TransactionItem ()
--(NSDictionary *)properties;
-@end
-
-@interface Slash7Transaction ()
--(NSDictionary *)properties;
-@end
-
-@interface Slash7 ()
+@interface Logbook ()
 
 // re-declare internally as readwrite
-@property(nonatomic,copy) NSString *appUserId;
-@property(nonatomic,copy) NSString *appUserIdType;
+@property(nonatomic,copy) NSString *randUser;
+@property(nonatomic,copy) NSString *user;
 @property(nonatomic,copy)   NSString *apiToken;
-@property(nonatomic,retain) NSMutableDictionary *unsentUserAttributes;
 @property(nonatomic,retain) NSTimer *timer;
 @property(nonatomic,retain) NSMutableArray *eventsQueue;
 @property(nonatomic,retain) NSArray *eventsBatch;
@@ -87,124 +77,9 @@ static NSString * const EMPTY_REPLACEMENT = @"_empty";
 +(NSString *)genRandStringLength:(int)len;
 @end
 
-@implementation Slash7TransactionItem
+@implementation Logbook
 
-- (id)initWithId:(NSString *)itemId withPrice:(NSInteger)price
-{
-    return [self initWithId:itemId withName:nil withPrice:price withNum:1];
-}
-
-- (id)initWithId:(NSString *)itemId withName:(NSString *)itemName withPrice:(NSInteger)price withNum:(NSUInteger)num
-{
-    if (self = [self init]) {
-        self.itemId = itemId;
-        self.itemName = itemName;
-        self.price = price;
-        self.num = num;
-    }
-    return self;
-}
-
--(NSDictionary *)properties {
-    NSString *itemId = self.itemId;
-    if (itemId == nil || [itemId length] == 0) {
-        NSLog(@"%@ item Id is empty. using _empty", self);
-        itemId = EMPTY_REPLACEMENT;
-    }
-    
-    NSString *name = self.itemName;
-    if (name == nil || [name length] == 0) {
-        NSLog(@"%@ name is empty. using itemId", self);
-        name = itemId;
-    }
-    
-    NSMutableDictionary *p = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                              itemId, @"_item_id",
-                              name, @"_name",
-                              [NSNumber numberWithInteger:self.price], @"_price",
-                              [NSNumber numberWithUnsignedInteger:self.num], @"_num",
-                              nil];
-    if (self.category1) {
-        [p setObject:self.category1 forKey:@"_category1"];
-    }
-    if (self.category2) {
-        [p setObject:self.category2 forKey:@"_category2"];
-    }
-    if (self.category3) {
-        [p setObject:self.category3 forKey:@"_category3"];
-    }
-    return p;
-}
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"<Slash7TransactionItem: %p %@ %@ %ld %lu>", self, self.itemId, self.itemName, (long)self.price, (unsigned long)self.num];
-}
-@end
-
-@implementation Slash7Transaction
-
--(id)initWithId:(NSString *)transactionId withItem:(Slash7TransactionItem *)item
-{
-    return [self initWithId:transactionId withItems:[NSArray arrayWithObjects:item, nil]];
-}
-
--(id)initWithId:(NSString *)transactionId withItems:(NSArray *)items
-{
-    if (self = [self init]) {
-        self.transactionId = transactionId;
-        self.items = items;
-        self.totalPrice = [self totalPriceFromItems];
-    }
-    return self;
-}
-
--(NSInteger)totalPriceFromItems
-{
-    NSInteger sum = 0;
-    for (Slash7TransactionItem* item in self.items) {
-        sum += item.price * item.num;
-    }
-    return sum;
-}
-
--(NSArray *)itemsProperties {
-    NSMutableArray *ary = [NSMutableArray array];
-    for (Slash7TransactionItem *item in self.items) {
-        [ary addObject:[item properties]];
-    }
-    return ary;
-}
-
--(NSDictionary *)properties
-{
-    if (self.items == nil || [self.items count] == 0) {
-        NSLog(@"%@ items are empty. skipped.", self);
-        return [NSDictionary dictionary];
-    }
-
-    NSString *txId = self.transactionId;
-    if (txId == nil || [txId length] == 0) {
-        txId = [Slash7 genRandStringLength:64];
-        NSLog(@"%@ empty transactionId. using random string: %@", self, txId);
-    }
-    
-    return [NSDictionary dictionaryWithObjectsAndKeys:
-            txId, @"_transact_id",
-            [NSNumber numberWithInteger:self.totalPrice], @"_total_price",
-            [self itemsProperties], @"_items",
-            nil];
-}
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"<Slash7Transaction: %p %@ %ld>", self, self.transactionId, (long)self.totalPrice];
-}
-@end
-
-@implementation Slash7
-
-static Slash7 *sharedInstance = nil;
+static Logbook *sharedInstance = nil;
 
 #pragma mark * Utility
 
@@ -217,30 +92,6 @@ static Slash7 *sharedInstance = nil;
     return randomString;
 }
 
-#pragma mark * AppUserIdType
-
-+ (NSString *)appUserIdTypeString:(S7AppUserIdType)type
-{
-    switch (type) {
-        case S7_USER_ID_TYPE_APP:
-            return @"app";
-        case S7_USER_ID_TYPE_FACEBOOK:
-            return @"facebook";
-        case S7_USER_ID_TYPE_TWITTER:
-            return @"twitter";
-        case S7_USER_ID_TYPE_GREE:
-            return @"gree";
-        case S7_USER_ID_TYPE_MOBAGE:
-            return @"mobage";
-        case S7_USER_ID_TYPE_COOKIE:
-            return @"cookie";
-        default:
-            NSAssert(false, @"Unknown S7AppUserIdType: %d", type);
-            return nil;
-    }
-}
-
-
 #pragma mark * Device info
 
 + (NSDictionary *)deviceInfoProperties
@@ -249,22 +100,19 @@ static Slash7 *sharedInstance = nil;
 
     UIDevice *device = [UIDevice currentDevice];
 
-    [properties setValue:@"iOS" forKey:@"lib"];
-    [properties setValue:VERSION forKey:@"lib_version"];
-
     [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"app_version"];
     [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"app_release"];
 
     [properties setValue:@"Apple" forKey:@"manufacturer"];
     [properties setValue:[device systemName] forKey:@"os"];
     [properties setValue:[device systemVersion] forKey:@"os_version"];
-    [properties setValue:[Slash7 deviceModel] forKey:@"model"];
+    [properties setValue:[Logbook deviceModel] forKey:@"model"];
 
     CGSize size = [UIScreen mainScreen].bounds.size;
     [properties setValue:[NSNumber numberWithInt:(int)size.height] forKey:@"screen_height"];
     [properties setValue:[NSNumber numberWithInt:(int)size.width] forKey:@"screen_width"];
 
-    [properties setValue:[NSNumber numberWithBool:[Slash7 wifiAvailable]] forKey:@"wifi"];
+    [properties setValue:[NSNumber numberWithBool:[Logbook wifiAvailable]] forKey:@"wifi"];
 
     CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier *carrier = [networkInfo subscriberCellularProvider];
@@ -302,7 +150,7 @@ static Slash7 *sharedInstance = nil;
     SCNetworkReachabilityFlags flags;
     BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(nrRef, &flags);
     if (!didRetrieveFlags) {
-        Slash7Debug(@"%@ unable to fetch the network reachablity flags", self);
+        LogbookDebug(@"%@ unable to fetch the network reachablity flags", self);
     }
 
     CFRelease(nrRef);
@@ -327,7 +175,7 @@ static Slash7 *sharedInstance = nil;
     inBg = [[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground;
 #endif
     if (inBg) {
-        Slash7Debug(@"%@ in background", self);
+        LogbookDebug(@"%@ in background", self);
     }
     return inBg;
 }
@@ -336,7 +184,7 @@ static Slash7 *sharedInstance = nil;
 
 + (NSData *)JSONSerializeObject:(id)obj
 {
-    id coercedObj = [Slash7 JSONSerializableObjectForObject:obj];
+    id coercedObj = [Logbook JSONSerializableObjectForObject:obj];
 
     S7CJSONDataSerializer *serializer = [S7CJSONDataSerializer serializer];
     NSError *error = nil;
@@ -366,7 +214,7 @@ static Slash7 *sharedInstance = nil;
     if ([obj isKindOfClass:[NSArray class]]) {
         NSMutableArray *a = [NSMutableArray array];
         for (id i in obj) {
-            [a addObject:[Slash7 JSONSerializableObjectForObject:i]];
+            [a addObject:[Logbook JSONSerializableObjectForObject:i]];
         }
         return [NSArray arrayWithArray:a];
     }
@@ -380,7 +228,7 @@ static Slash7 *sharedInstance = nil;
             } else {
                 stringKey = [NSString stringWithString:key];
             }
-            id v = [Slash7 JSONSerializableObjectForObject:[obj objectForKey:key]];
+            id v = [Logbook JSONSerializableObjectForObject:[obj objectForKey:key]];
             [d setObject:v forKey:stringKey];
         }
         return [NSDictionary dictionaryWithDictionary:d];
@@ -407,7 +255,7 @@ static Slash7 *sharedInstance = nil;
 + (NSString *)encodeAPIData:(NSArray *)array
 {
     NSString *b64String = @"";
-    NSData *data = [Slash7 JSONSerializeObject:array];
+    NSData *data = [Logbook JSONSerializeObject:array];
     if (data) {
         b64String = [data s7_base64EncodedString];
         b64String = (id)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
@@ -474,7 +322,6 @@ static Slash7 *sharedInstance = nil;
         self.sendDeviceInfo = NO;
         self.serverURL = @"https://tracker.slash-7.com";
         
-        self.unsentUserAttributes = [NSMutableDictionary dictionary];
         self.projectDeleted = NO;
 
         self.eventsQueue = [NSMutableArray array];
@@ -483,10 +330,9 @@ static Slash7 *sharedInstance = nil;
         
         [self unarchive];
         
-        if (self.appUserId == nil || [self.appUserId length] == 0) {
-            self.appUserId = [self randomAppUserId];
-            self.appUserIdType = [self defaultAppUserIdType];
-            Slash7Log(@"Assigned randomly generated app user id %@", self.appUserId);
+        if (self.randUser == nil || [self.randUser length] == 0) {
+            self.randUser = [self randomAppUserId];
+            LogbookLog(@"Assigned randomly generated app user id %@", self.randUser);
             [self archiveProperties];
         }
 
@@ -498,138 +344,64 @@ static Slash7 *sharedInstance = nil;
 
 - (void)identify:(NSString *)appUserId
 {
-    [self identify:appUserId withType:S7_USER_ID_TYPE_APP];
-}
-
-
-- (void)identify:(NSString *)appUserId withType:(S7AppUserIdType)type
-{
     @synchronized(self) {
-        self.appUserId = appUserId;
-        self.appUserIdType = [Slash7 appUserIdTypeString:type];
-        if ([Slash7 inBackground]) {
-            [self archiveProperties];
+        self.user = appUserId;
+        if ([Logbook inBackground]) {
+            [self archiveEvents];
         }
     }
 }
-
 
 #pragma mark * Tracking
 
 - (NSString *)randomAppUserId
 {
-    return [Slash7 genRandStringLength:40];
-}
-
-- (NSString *)defaultAppUserIdType
-{
-    return [Slash7 appUserIdTypeString:S7_USER_ID_TYPE_COOKIE];
+    return [Logbook genRandStringLength:40];
 }
 
 - (void)track:(NSString *)event
 {
-    [self track:event withTransaction:nil withParams:nil];
-}
-
-- (void)track:(NSString *)event withParams:(NSDictionary *)params
-{
-    [self track:event withTransaction:nil withParams:params];
-}
-
-- (void)track:(NSString *)event withTransaction:(Slash7Transaction *)transaction
-{
-    [self track:event withTransaction:transaction withParams:nil];
-}
-
-- (void)track:(NSString *)event withTransaction:(Slash7Transaction *)transaction withParams:(NSDictionary *)params
-{
     @synchronized(self) {
         if (self.projectDeleted) {
-            Slash7Log(@"%@ project has been deleted. skipped.", self);
+            LogbookLog(@"%@ project has been deleted. skipped.", self);
             return;
         }
         
-        NSDate *now = [NSDate date];
         if (event == nil || [event length] == 0) {
-            NSLog(@"%@ track called with empty event parameter. using '_empty'", self);
-            event = EMPTY_REPLACEMENT;
+            NSLog(@"%@ track called with an empty event parameter. Skipping.", self);
+            return;
         }
-        NSMutableDictionary *p = [NSMutableDictionary dictionary];
-        if (params) {
-            [p addEntriesFromDictionary:params];
-        }
+        NSDate *now = [NSDate date];
 
-        [Slash7 assertPropertyTypes:params];
-
-        NSMutableDictionary *e = [NSMutableDictionary dictionaryWithDictionary:self.unsentUserAttributes];
-        if (transaction) {
-            [e addEntriesFromDictionary:[transaction properties]];
+        NSMutableDictionary *e = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                     @"logbk-ios", LB_LIB_NAME,
+                                     VERSION, LB_LIB_VERSION,
+                                     event, LB_EVENT_KEY,
+                                     [self.dateFormatter stringFromDate:now], LB_TIME_KEY,
+                                     self.randUser, LB_RAND_USER_KEY,
+                                     nil];
+        // user can't be set by dictionaryWithObjectsAndKeys: because it's nil-able.
+        if (self.user != nil) {
+            [e setObject:self.user forKey:LB_USER_KEY];
         }
-        [e addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:
-                                     event, S7_EVENT_NAME_KEY,
-                                     [self.dateFormatter stringFromDate:now], S7_TIME_KEY,
-                                     [NSDictionary dictionaryWithDictionary:p], S7_EVENT_PARAMS_KEY,
-                                     self.appUserIdType, S7_APP_USER_ID_TYPE_KEY,
-                                     self.appUserId, S7_APP_USER_ID_KEY,
-                                     nil]];
         if (self.sendDeviceInfo) {
-            [e addEntriesFromDictionary:[Slash7 deviceInfoProperties]];
+            [e addEntriesFromDictionary:[Logbook deviceInfoProperties]];
         }
+        NSLog(@"XXX %@", e);
         
-        Slash7Log(@"%@ queueing event: %@", self, e);
+        LogbookLog(@"%@ queueing event: %@", self, e);
         [self.eventsQueue addObject:e];
-        if ([Slash7 inBackground]) {
+        if ([Logbook inBackground]) {
             [self archiveEvents];
         }
-        
-        if ([self.unsentUserAttributes count] > 0) {
-            [self clearUnsentUserAttributes];
-        }
-    }
-}
-
-#pragma mark * Super property methods
-
-- (void)setUserAttributes:(NSDictionary *)properties
-{
-    [Slash7 assertPropertyTypes:properties];
-    @synchronized(self) {
-        [self.unsentUserAttributes addEntriesFromDictionary:properties];
-        if ([Slash7 inBackground]) {
-            [self archiveProperties];
-        }
-    }
-}
-
-- (void)setUserAttribute:(NSString *)attribute to:(id)object
-{
-    [self setUserAttributes:[NSDictionary dictionaryWithObject:object forKey:attribute]];
-}
-
-- (void)clearUnsentUserAttributes
-{
-    @synchronized(self) {
-        [self.unsentUserAttributes removeAllObjects];
-        if ([Slash7 inBackground]) {
-            [self archiveProperties];
-        }
-    }
-}
-
-- (NSDictionary *)currentUnsentUserAttributes
-{
-    @synchronized(self) {
-        return [[self.unsentUserAttributes copy] autorelease];
     }
 }
 
 - (void)reset
 {
     @synchronized(self) {
-        self.appUserId = [self randomAppUserId];
-        self.appUserIdType = [self defaultAppUserIdType];
-        self.unsentUserAttributes = [NSMutableDictionary dictionary];
-
+        self.randUser = [self randomAppUserId];
+        self.user = nil;
         self.eventsQueue = [NSMutableArray array];
         self.projectDeleted = NO;
         [self archive];
@@ -656,7 +428,7 @@ static Slash7 *sharedInstance = nil;
                                                         selector:@selector(flush)
                                                         userInfo:nil
                                                          repeats:YES];
-            Slash7Debug(@"%@ started flush timer: %@", self, self.timer);
+            LogbookDebug(@"%@ started flush timer: %@", self, self.timer);
         }
     }
 }
@@ -666,7 +438,7 @@ static Slash7 *sharedInstance = nil;
     @synchronized(self) {
         if (self.timer) {
             [self.timer invalidate];
-            Slash7Debug(@"%@ stopped flush timer: %@", self, self.timer);
+            LogbookDebug(@"%@ stopped flush timer: %@", self, self.timer);
         }
         self.timer = nil;
     }
@@ -677,19 +449,19 @@ static Slash7 *sharedInstance = nil;
     // If the app is currently in the background but Mixpanel has not requested
     // to run a background task, the flush will be cut short. This can happen
     // when the app forces a flush from within its own background task.
-    if ([Slash7 inBackground] && self.taskId == UIBackgroundTaskInvalid) {
+    if ([Logbook inBackground] && self.taskId == UIBackgroundTaskInvalid) {
         [self flushInBackgroundTask];
         return;
     }
 
     @synchronized(self) {
         if ([self.delegate respondsToSelector:@selector(slash7WillFlush:)]) {
-            if (![self.delegate slash7WillFlush:self]) {
-                Slash7Debug(@"%@ delegate deferred flush", self);
+            if (![self.delegate logbookWillFlush:self]) {
+                LogbookDebug(@"%@ delegate deferred flush", self);
                 return;
             }
         }
-        Slash7Debug(@"%@ flushing data to %@", self, self.serverURL);
+        LogbookDebug(@"%@ flushing data to %@", self, self.serverURL);
         [self flushEvents];
     }
 }
@@ -702,13 +474,13 @@ static Slash7 *sharedInstance = nil;
             [[UIApplication sharedApplication] respondsToSelector:@selector(endBackgroundTask:)]) {
 
             self.taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-                Slash7Debug(@"%@ flush background task %u cut short", self, self.taskId);
+                LogbookDebug(@"%@ flush background task %lu cut short", self, (unsigned long)self.taskId);
                 [self cancelFlush];
                 [[UIApplication sharedApplication] endBackgroundTask:self.taskId];
                 self.taskId = UIBackgroundTaskInvalid;
             }];
 
-            Slash7Debug(@"%@ starting flush background task %u", self, self.taskId);
+            LogbookDebug(@"%@ starting flush background task %lu", self, (unsigned long)self.taskId);
             [self flush];
 
             // connection callbacks end this task by calling endBackgroundTaskIfComplete
@@ -720,10 +492,10 @@ static Slash7 *sharedInstance = nil;
 - (void)flushEvents
 {
     if ([self.eventsQueue count] == 0) {
-        Slash7Debug(@"%@ no events to flush", self);
+        LogbookDebug(@"%@ no events to flush", self);
         return;
     } else if (self.eventsConnection != nil) {
-        Slash7Debug(@"%@ events connection already open", self);
+        LogbookDebug(@"%@ events connection already open", self);
         return;
     } else if ([self.eventsQueue count] > 50) {
         self.eventsBatch = [self.eventsQueue subarrayWithRange:NSMakeRange(0, 50)];
@@ -731,10 +503,10 @@ static Slash7 *sharedInstance = nil;
         self.eventsBatch = [NSArray arrayWithArray:self.eventsQueue];
     }
     
-    NSString *data = [Slash7 encodeAPIData:self.eventsBatch];
+    NSString *data = [Logbook encodeAPIData:self.eventsBatch];
     NSString *postBody = [NSString stringWithFormat:@"data=%@", data];
     
-    Slash7Debug(@"%@ flushing %u of %u queued events: %@", self, self.eventsBatch.count, self.eventsQueue.count, self.eventsQueue);
+    LogbookDebug(@"%@ flushing %lu of %lu queued events: %@", self, (unsigned long)self.eventsBatch.count, (unsigned long)self.eventsQueue.count, self.eventsQueue);
 
     NSString *endpoint = [@"/track/" stringByAppendingString:self.apiToken];
     self.eventsConnection = [self apiConnectionWithEndpoint:endpoint andBody:postBody];
@@ -745,9 +517,9 @@ static Slash7 *sharedInstance = nil;
 - (void)cancelFlush
 {
     if (self.eventsConnection == nil) {
-        Slash7Debug(@"%@ no events connection to cancel", self);
+        LogbookDebug(@"%@ no events connection to cancel", self);
     } else {
-        Slash7Debug(@"%@ cancelling events connection", self);
+        LogbookDebug(@"%@ cancelling events connection", self);
         [self.eventsConnection cancel];
         self.eventsConnection = nil;
     }
@@ -792,7 +564,7 @@ static Slash7 *sharedInstance = nil;
 {
     @synchronized(self) {
         NSString *filePath = [self eventsFilePath];
-        Slash7Debug(@"%@ archiving events data to %@: %@", self, filePath, self.eventsQueue);
+        LogbookDebug(@"%@ archiving events data to %@: %@", self, filePath, self.eventsQueue);
         if (![NSKeyedArchiver archiveRootObject:self.eventsQueue toFile:filePath]) {
             NSLog(@"%@ unable to archive events data", self);
         }
@@ -804,11 +576,10 @@ static Slash7 *sharedInstance = nil;
     @synchronized(self) {
         NSString *filePath = [self propertiesFilePath];
         NSMutableDictionary *properties = [NSMutableDictionary dictionary];
-        [properties setValue:self.appUserId forKey:@"appUserId"];
-        [properties setValue:self.appUserIdType forKey:@"appUserIdType"];
-        [properties setValue:self.unsentUserAttributes forKey:@"unsentUserAttributes"];
+        [properties setValue:self.randUser forKey:@"randUser"];
+        [properties setValue:self.user forKey:@"user"];
         [properties setValue:[NSNumber numberWithBool:self.projectDeleted] forKey:@"projectDeleted"];
-        Slash7Debug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
+        LogbookDebug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
         if (![NSKeyedArchiver archiveRootObject:properties toFile:filePath]) {
             NSLog(@"%@ unable to archive properties data", self);
         }
@@ -828,7 +599,7 @@ static Slash7 *sharedInstance = nil;
     NSString *filePath = [self eventsFilePath];
     @try {
         self.eventsQueue = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
-        Slash7Debug(@"%@ unarchived events data: %@", self, self.eventsQueue);
+        LogbookDebug(@"%@ unarchived events data: %@", self, self.eventsQueue);
     }
     @catch (NSException *exception) {
         NSLog(@"%@ unable to unarchive events data, starting fresh", self);
@@ -846,16 +617,15 @@ static Slash7 *sharedInstance = nil;
     NSDictionary *properties = nil;
     @try {
         properties = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
-        Slash7Debug(@"%@ unarchived properties data: %@", self, properties);
+        LogbookDebug(@"%@ unarchived properties data: %@", self, properties);
     }
     @catch (NSException *exception) {
         NSLog(@"%@ unable to unarchive properties data, starting fresh", self);
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     }
     if (properties) {
-        self.appUserId = [properties objectForKey:@"appUserId"];
-        self.appUserIdType = [properties objectForKey:@"appUserIdType"];
-        self.unsentUserAttributes = [properties objectForKey:@"unsentUserAttributes"];
+        self.randUser = [properties objectForKey:@"randUser"];
+        self.user = [properties objectForKey:@"user"];
         self.projectDeleted = [(NSNumber *)[properties objectForKey:@"projectDeleted"] boolValue];
     }
 }
@@ -864,7 +634,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)addApplicationObservers
 {
-    Slash7Debug(@"%@ adding application observers", self);
+    LogbookDebug(@"%@ adding application observers", self);
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
     [notificationCenter addObserver:self
                            selector:@selector(applicationWillTerminate:)
@@ -899,13 +669,13 @@ static Slash7 *sharedInstance = nil;
 
 - (void)removeApplicationObservers
 {
-    Slash7Debug(@"%@ removing application observers", self);
+    LogbookDebug(@"%@ removing application observers", self);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification
 {
-    Slash7Debug(@"%@ application did become active", self);
+    LogbookDebug(@"%@ application did become active", self);
     @synchronized(self) {
         [self startFlushTimer];
     }
@@ -913,7 +683,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)applicationWillResignActive:(NSNotification *)notification
 {
-    Slash7Debug(@"%@ application will resign active", self);
+    LogbookDebug(@"%@ application will resign active", self);
     @synchronized(self) {
         [self stopFlushTimer];
     }
@@ -921,7 +691,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)applicationDidEnterBackground:(NSNotificationCenter *)notification
 {
-    Slash7Debug(@"%@ did enter background", self);
+    LogbookDebug(@"%@ did enter background", self);
 
     @synchronized(self) {
         if (self.flushOnBackground) {
@@ -932,7 +702,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)applicationWillEnterForeground:(NSNotificationCenter *)notification
 {
-    Slash7Debug(@"%@ will enter foreground", self);
+    LogbookDebug(@"%@ will enter foreground", self);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
     @synchronized(self) {
 
@@ -950,7 +720,7 @@ static Slash7 *sharedInstance = nil;
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
-    Slash7Debug(@"%@ application will terminate", self);
+    LogbookDebug(@"%@ application will terminate", self);
     @synchronized(self) {
         [self archive];
     }
@@ -964,7 +734,7 @@ static Slash7 *sharedInstance = nil;
 
         if (&UIBackgroundTaskInvalid && [[UIApplication sharedApplication] respondsToSelector:@selector(endBackgroundTask:)] &&
             self.taskId != UIBackgroundTaskInvalid && self.eventsConnection == nil) {
-            Slash7Debug(@"%@ ending flush background task %u", self, self.taskId);
+            LogbookDebug(@"%@ ending flush background task %lu", self, (unsigned long)self.taskId);
             [[UIApplication sharedApplication] endBackgroundTask:self.taskId];
             self.taskId = UIBackgroundTaskInvalid;
         }
@@ -981,13 +751,13 @@ static Slash7 *sharedInstance = nil;
     [request setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:[body dataUsingEncoding:NSUTF8StringEncoding]];
-    Slash7Debug(@"%@ http request: %@?%@", self, [self.serverURL stringByAppendingString:endpoint], body);
+    LogbookDebug(@"%@ http request: %@?%@", self, [self.serverURL stringByAppendingString:endpoint], body);
     return [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
 {
-    Slash7Debug(@"%@ http status code: %d", self, [response statusCode]);
+    LogbookDebug(@"%@ http status code: %ld", self, (long)[response statusCode]);
     if ([response statusCode] != 200) {
         NSLog(@"%@ http error: %@", self, [NSHTTPURLResponse localizedStringForStatusCode:[response statusCode]]);
     } else if (connection == self.eventsConnection) {
@@ -1022,11 +792,11 @@ static Slash7 *sharedInstance = nil;
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     @synchronized(self) {
-        Slash7Debug(@"%@ http response finished loading", self);
+        LogbookDebug(@"%@ http response finished loading", self);
         if (connection == self.eventsConnection) {
             NSString *response = [[NSString alloc] initWithData:self.eventsResponseData encoding:NSUTF8StringEncoding];
             if ([response isEqualToString:@"__DELETED__"]) {
-                Slash7Log(@"Project is deleted. %@", self);
+                LogbookLog(@"Project is deleted. %@", self);
                 self.projectDeleted = YES;
                 [self archiveProperties];
             } else if ([response intValue] == 0) {
@@ -1061,12 +831,12 @@ static Slash7 *sharedInstance = nil;
     [self stopFlushTimer];
     [self removeApplicationObservers];
     
-    self.appUserId = nil;
+    self.randUser = nil;
+    self.user = nil;
     self.serverURL = nil;
     self.delegate = nil;
     
     self.apiToken = nil;
-    self.unsentUserAttributes = nil;
     self.timer = nil;
     self.eventsQueue = nil;
     self.eventsBatch = nil;

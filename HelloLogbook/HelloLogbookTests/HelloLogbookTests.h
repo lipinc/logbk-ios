@@ -18,6 +18,6 @@
 
 #import <XCTest/XCTest.h>
 
-@interface HelloSlash7Tests : XCTestCase
+@interface HelloLogbookTests : XCTestCase
 
 @end

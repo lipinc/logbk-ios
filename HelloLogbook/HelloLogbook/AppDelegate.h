@@ -19,7 +19,7 @@
 #import <UIKit/UIKit.h>
 
 @class ViewController;
-@class Slash7;
+@class Logbook;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -27,7 +27,7 @@
 
 @property (strong, nonatomic) ViewController *viewController;
 
-@property (strong, nonatomic) Slash7 *slash7;
+@property (strong, nonatomic) Logbook *logbook;
 
 @property (strong, nonatomic, retain) NSDate *startTime;
 
