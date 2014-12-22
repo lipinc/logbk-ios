@@ -455,7 +455,7 @@ static Logbook *sharedInstance = nil;
     }
 
     @synchronized(self) {
-        if ([self.delegate respondsToSelector:@selector(slash7WillFlush:)]) {
+        if ([self.delegate respondsToSelector:@selector(logbookWillFlush:)]) {
             if (![self.delegate logbookWillFlush:self]) {
                 LogbookDebug(@"%@ delegate deferred flush", self);
                 return;
@@ -537,7 +537,7 @@ static Logbook *sharedInstance = nil;
 
 - (NSString *)filePathForData:(NSString *)data
 {
-    NSString *filename = [NSString stringWithFormat:@"slash7-%@-%@.plist", self.apiToken, data];
+    NSString *filename = [NSString stringWithFormat:@"logbook-%@-%@.plist", self.apiToken, data];
     return [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) lastObject]
             stringByAppendingPathComponent:filename];
 }
@@ -823,7 +823,7 @@ static Logbook *sharedInstance = nil;
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<Slash7: %p %@>", self, self.apiToken];
+    return [NSString stringWithFormat:@"<Logbook: %p %@>", self, self.apiToken];
 }
 
 - (void)dealloc

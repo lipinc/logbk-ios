@@ -1,6 +1,6 @@
 //
 // ViewController.h
-// HelloSlash7
+// HelloLogbook
 //
 // Copyright 2012 Mixpanel
 //

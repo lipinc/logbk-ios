@@ -1,6 +1,6 @@
 //
 // AppDelegate.m
-// HelloSlash7
+// HelloLogbook
 //
 // Copyright 2013 pLucky, Inc.
 // Copyright 2012 Mixpanel

@@ -1,6 +1,6 @@
 //
-//  HelloSlash7Tests.h
-//  HelloSlash7Tests
+//  HelloLogbookTests.h
+//  HelloLogbookTests
 //
 // Copyright 2012 Mixpanel
 //

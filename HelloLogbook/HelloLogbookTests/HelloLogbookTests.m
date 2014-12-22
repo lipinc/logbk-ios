@@ -1,6 +1,6 @@
 //
-//  HelloSlash7Tests.m
-//  HelloSlash7Tests
+//  HelloLogbookTests.m
+//  HelloLogbookTests
 //
 // Copyright 2013 pLucky, Inc.
 // Copyright 2012 Mixpanel
@@ -254,7 +254,7 @@
     XCTAssertFalse(self.logbook.projectDeleted, @"default project deleted archive failed");
 }
 
-- (void)testSlash7Delegate
+- (void)testLogbookDelegate
 {
     self.logbook.delegate = self;
     [self.logbook identify:@"d1"];
