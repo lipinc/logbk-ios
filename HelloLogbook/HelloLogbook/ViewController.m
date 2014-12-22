@@ -61,10 +61,7 @@
 - (IBAction)trackEvent:(id)sender
 {
     Logbook *logbook = [Logbook sharedInstance];
-    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-                            [self.weaponControl titleForSegmentAtIndex:self.weaponControl.selectedSegmentIndex], @"weapon",
-                            nil];
-    [logbook track:@"Player Create" withParams:params];
+    [logbook track:@"Player Create"];
 }
 
 @end
