@@ -387,7 +387,6 @@ static Logbook *sharedInstance = nil;
         if (self.sendDeviceInfo) {
             [e addEntriesFromDictionary:[Logbook deviceInfoProperties]];
         }
-        NSLog(@"XXX %@", e);
         
         LogbookLog(@"%@ queueing event: %@", self, e);
         [self.eventsQueue addObject:e];
