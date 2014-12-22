@@ -42,7 +42,7 @@
     
     // Override point for customization after application launch.
     
-    // Initialize the SLASH-7 object
+    // Initialize the Logbook object
     self.logbook = [Logbook sharedInstanceWithCode:TRACKING_CODE];
 
     // Set the upload interval to 20 seconds for demonstration purposes. This would be overkill for most applications.

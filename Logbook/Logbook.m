@@ -320,7 +320,7 @@ static Logbook *sharedInstance = nil;
         self.flushOnBackground = YES;
         self.showNetworkActivityIndicator = YES;
         self.sendDeviceInfo = NO;
-        self.serverURL = @"https://tracker.slash-7.com";
+        self.serverURL = @"https://tracker.logbk.net";
         
         self.projectDeleted = NO;
 
