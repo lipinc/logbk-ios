@@ -20,7 +20,7 @@
 #import "HelloLogbookTests.h"
 
 #import "Logbook.h"
-#import "S7CJSONSerializer.h"
+#import "LBCJSONSerializer.h"
 
 #define TEST_TOKEN @"abc123"
 

@@ -27,20 +27,20 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "S7CJSONDataSerializer.h"
+#import "LBCJSONDataSerializer.h"
 
-#import "S7CSerializedJSONData.h"
+#import "LBCSerializedJSONData.h"
 
 static NSData *kNULL = nil;
 static NSData *kFalse = nil;
 static NSData *kTrue = nil;
 
-@implementation S7CJSONDataSerializer
+@implementation LBCJSONDataSerializer
 
 + (void)initialize {
     NSAutoreleasePool *thePool = [[NSAutoreleasePool alloc] init];
 
-    @synchronized(@"S7CJSONDataSerializer") {
+    @synchronized(@"LBCJSONDataSerializer") {
         if (kNULL == nil)
             kNULL = [[NSData alloc] initWithBytesNoCopy:"null" length:4 freeWhenDone:NO];
         if (kFalse == nil)
@@ -72,7 +72,7 @@ static NSData *kTrue = nil;
     } else if ([inObject isKindOfClass:[NSData class]]) {
         NSString *theString = [[[NSString alloc] initWithData:inObject encoding:NSUTF8StringEncoding] autorelease];
         theResult = [self serializeString:theString error:outError];
-    } else if ([inObject isKindOfClass:[S7CSerializedJSONData class]]) {
+    } else if ([inObject isKindOfClass:[LBCSerializedJSONData class]]) {
         theResult = [inObject data];
     } else {
         theResult = [self serializeString:[inObject description] error:outError];

@@ -21,10 +21,10 @@
 		2808F9CA1610F0D0005772B7 /* grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 2808F9C91610F0D0005772B7 /* grid.png */; };
 		28537E8E16168C000032FE06 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 28537E8D16168C000032FE06 /* Default-568h@2x.png */; };
 		285EC8351611970A0087AE27 /* HelloLogbookTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2808F9BF1610EFE4005772B7 /* HelloLogbookTests.m */; };
-		286760BB1611982600B1BEC8 /* S7CJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B11611982600B1BEC8 /* S7CJSONDataSerializer.m */; };
-		286760BC1611982600B1BEC8 /* S7CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B31611982600B1BEC8 /* S7CJSONSerializer.m */; };
-		286760BD1611982600B1BEC8 /* S7CSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B51611982600B1BEC8 /* S7CSerializedJSONData.m */; };
-		286760BE1611982600B1BEC8 /* NSData+S7Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B81611982600B1BEC8 /* NSData+S7Base64.m */; };
+		286760BB1611982600B1BEC8 /* LBCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B11611982600B1BEC8 /* LBCJSONDataSerializer.m */; };
+		286760BC1611982600B1BEC8 /* LBCJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B31611982600B1BEC8 /* LBCJSONSerializer.m */; };
+		286760BD1611982600B1BEC8 /* LBCSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B51611982600B1BEC8 /* LBCSerializedJSONData.m */; };
+		286760BE1611982600B1BEC8 /* NSData+LBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760B81611982600B1BEC8 /* NSData+LBBase64.m */; };
 		286760BF1611982600B1BEC8 /* Logbook.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760BA1611982600B1BEC8 /* Logbook.m */; };
 		2892541D16548047003DAFFE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892541C16548047003DAFFE /* SystemConfiguration.framework */; };
 		2892541F16548283003DAFFE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892541E16548283003DAFFE /* CoreTelephony.framework */; };
@@ -61,14 +61,14 @@
 		2808F9BF1610EFE4005772B7 /* HelloLogbookTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HelloLogbookTests.m; sourceTree = "<group>"; };
 		2808F9C91610F0D0005772B7 /* grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grid.png; sourceTree = "<group>"; };
 		28537E8D16168C000032FE06 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		286760B01611982600B1BEC8 /* S7CJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S7CJSONDataSerializer.h; sourceTree = "<group>"; };
-		286760B11611982600B1BEC8 /* S7CJSONDataSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S7CJSONDataSerializer.m; sourceTree = "<group>"; };
-		286760B21611982600B1BEC8 /* S7CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S7CJSONSerializer.h; sourceTree = "<group>"; };
-		286760B31611982600B1BEC8 /* S7CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S7CJSONSerializer.m; sourceTree = "<group>"; };
-		286760B41611982600B1BEC8 /* S7CSerializedJSONData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = S7CSerializedJSONData.h; sourceTree = "<group>"; };
-		286760B51611982600B1BEC8 /* S7CSerializedJSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = S7CSerializedJSONData.m; sourceTree = "<group>"; };
-		286760B71611982600B1BEC8 /* NSData+S7Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+S7Base64.h"; sourceTree = "<group>"; };
-		286760B81611982600B1BEC8 /* NSData+S7Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+S7Base64.m"; sourceTree = "<group>"; };
+		286760B01611982600B1BEC8 /* LBCJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBCJSONDataSerializer.h; sourceTree = "<group>"; };
+		286760B11611982600B1BEC8 /* LBCJSONDataSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBCJSONDataSerializer.m; sourceTree = "<group>"; };
+		286760B21611982600B1BEC8 /* LBCJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBCJSONSerializer.h; sourceTree = "<group>"; };
+		286760B31611982600B1BEC8 /* LBCJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBCJSONSerializer.m; sourceTree = "<group>"; };
+		286760B41611982600B1BEC8 /* LBCSerializedJSONData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBCSerializedJSONData.h; sourceTree = "<group>"; };
+		286760B51611982600B1BEC8 /* LBCSerializedJSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBCSerializedJSONData.m; sourceTree = "<group>"; };
+		286760B71611982600B1BEC8 /* NSData+LBBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+LBBase64.h"; sourceTree = "<group>"; };
+		286760B81611982600B1BEC8 /* NSData+LBBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+LBBase64.m"; sourceTree = "<group>"; };
 		286760B91611982600B1BEC8 /* Logbook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logbook.h; sourceTree = "<group>"; };
 		286760BA1611982600B1BEC8 /* Logbook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logbook.m; sourceTree = "<group>"; };
 		2892541C16548047003DAFFE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -200,12 +200,12 @@
 		286760AF1611982600B1BEC8 /* JSON */ = {
 			isa = PBXGroup;
 			children = (
-				286760B01611982600B1BEC8 /* S7CJSONDataSerializer.h */,
-				286760B11611982600B1BEC8 /* S7CJSONDataSerializer.m */,
-				286760B21611982600B1BEC8 /* S7CJSONSerializer.h */,
-				286760B31611982600B1BEC8 /* S7CJSONSerializer.m */,
-				286760B41611982600B1BEC8 /* S7CSerializedJSONData.h */,
-				286760B51611982600B1BEC8 /* S7CSerializedJSONData.m */,
+				286760B01611982600B1BEC8 /* LBCJSONDataSerializer.h */,
+				286760B11611982600B1BEC8 /* LBCJSONDataSerializer.m */,
+				286760B21611982600B1BEC8 /* LBCJSONSerializer.h */,
+				286760B31611982600B1BEC8 /* LBCJSONSerializer.m */,
+				286760B41611982600B1BEC8 /* LBCSerializedJSONData.h */,
+				286760B51611982600B1BEC8 /* LBCSerializedJSONData.m */,
 			);
 			path = JSON;
 			sourceTree = "<group>";
@@ -213,8 +213,8 @@
 		286760B61611982600B1BEC8 /* NSData_Base64 */ = {
 			isa = PBXGroup;
 			children = (
-				286760B71611982600B1BEC8 /* NSData+S7Base64.h */,
-				286760B81611982600B1BEC8 /* NSData+S7Base64.m */,
+				286760B71611982600B1BEC8 /* NSData+LBBase64.h */,
+				286760B81611982600B1BEC8 /* NSData+LBBase64.m */,
 			);
 			path = NSData_Base64;
 			sourceTree = "<group>";
@@ -331,10 +331,10 @@
 				2808F99E1610EFE3005772B7 /* main.m in Sources */,
 				2808F9A21610EFE3005772B7 /* AppDelegate.m in Sources */,
 				2808F9A51610EFE3005772B7 /* ViewController.m in Sources */,
-				286760BB1611982600B1BEC8 /* S7CJSONDataSerializer.m in Sources */,
-				286760BC1611982600B1BEC8 /* S7CJSONSerializer.m in Sources */,
-				286760BD1611982600B1BEC8 /* S7CSerializedJSONData.m in Sources */,
-				286760BE1611982600B1BEC8 /* NSData+S7Base64.m in Sources */,
+				286760BB1611982600B1BEC8 /* LBCJSONDataSerializer.m in Sources */,
+				286760BC1611982600B1BEC8 /* LBCJSONSerializer.m in Sources */,
+				286760BD1611982600B1BEC8 /* LBCSerializedJSONData.m in Sources */,
+				286760BE1611982600B1BEC8 /* NSData+LBBase64.m in Sources */,
 				286760BF1611982600B1BEC8 /* Logbook.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

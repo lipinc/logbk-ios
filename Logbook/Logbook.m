@@ -28,9 +28,9 @@
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
-#import "S7CJSONDataSerializer.h"
+#import "LBCJSONDataSerializer.h"
 #import "Logbook.h"
-#import "NSData+S7Base64.h"
+#import "NSData+LBBase64.h"
 
 #define VERSION @"1.0.0"
 
@@ -227,7 +227,7 @@ static Logbook *sharedInstance = nil;
 {
     id coercedObj = [Logbook JSONSerializableObjectForObject:obj];
 
-    S7CJSONDataSerializer *serializer = [S7CJSONDataSerializer serializer];
+    LBCJSONDataSerializer *serializer = [LBCJSONDataSerializer serializer];
     NSError *error = nil;
     NSData *data = nil;
     @try {
@@ -298,7 +298,7 @@ static Logbook *sharedInstance = nil;
     NSString *b64String = @"";
     NSData *data = [Logbook JSONSerializeObject:array];
     if (data) {
-        b64String = [data s7_base64EncodedString];
+        b64String = [data lb_base64EncodedString];
         b64String = (id)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
                                                                 (CFStringRef)b64String,
                                                                 NULL,

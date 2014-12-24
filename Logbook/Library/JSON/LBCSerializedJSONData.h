@@ -1,9 +1,9 @@
 //
-//  CJSONSerializer.h
+//  CSerializedJSONData.h
 //  TouchCode
 //
-//  Created by Jonathan Wight on 12/07/2005.
-//  Copyright 2005 toxicsoftware.com. All rights reserved.
+//  Created by Jonathan Wight on 10/23/09.
+//  Copyright 2009 toxicsoftware.com. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person
 //  obtaining a copy of this software and associated documentation
@@ -29,19 +29,12 @@
 
 #import <Foundation/Foundation.h>
 
-@class S7CJSONDataSerializer;
-
-/// Serialize JSON compatible objects (NSNull, NSNumber, NSString, NSArray, NSDictionary) into a JSON formatted string. Note this class is just a wrapper around CJSONDataSerializer which you really should be using instead.
-@interface S7CJSONSerializer : NSObject {
-	S7CJSONDataSerializer *serializer;
+@interface LBCSerializedJSONData : NSObject {
+	NSData *data;
 }
 
-+ (id)serializer;
+@property (readonly, nonatomic, retain) NSData *data;
 
-/// Take any JSON compatible object (generally NSNull, NSNumber, NSString, NSArray and NSDictionary) and produce a JSON string.
-- (NSString *)serializeObject:(id)inObject error:(NSError **)outError;
-
-- (NSString *)serializeArray:(NSArray *)inArray error:(NSError **)outError;
-- (NSString *)serializeDictionary:(NSDictionary *)inDictionary error:(NSError **)outError;
+- (id)initWithData:(NSData *)inData;
 
 @end

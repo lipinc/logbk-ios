@@ -14,20 +14,20 @@
 
 #import <Foundation/Foundation.h>
 
-void *S7_NewBase64Decode(
+void *LB_NewBase64Decode(
 	const char *inputBuffer,
 	size_t length,
 	size_t *outputLength);
 
-char *S7_NewBase64Encode(
+char *LB_NewBase64Encode(
 	const void *inputBuffer,
 	size_t length,
 	bool separateLines,
 	size_t *outputLength);
 
-@interface NSData (S7_Base64)
+@interface NSData (LB_Base64)
 
-+ (NSData *)s7_dataFromBase64String:(NSString *)aString;
-- (NSString *)s7_base64EncodedString;
++ (NSData *)lb_dataFromBase64String:(NSString *)aString;
+- (NSString *)lb_base64EncodedString;
 
 @end
