@@ -184,7 +184,18 @@
     [self.logbook track:@"SomethingHappened"];
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqual([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertEqualObjects([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
+    XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
+    XCTAssertNotNil([e objectForKey:@"libVersion"], @"lib_version not set");
+    XCTAssertEqualObjects([e objectForKey:@"libName"], @"logbk-ios", @"incorrect lib");
+}
+
+- (void)testTrackAccess {
+    [self.logbook trackAccess];
+    XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
+    NSDictionary *e = self.logbook.eventsQueue.lastObject;
+    XCTAssertEqualObjects([e objectForKey:@"event"], @"_access", @"incorrect event name");
     XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
     XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
     XCTAssertNotNil([e objectForKey:@"libVersion"], @"lib_version not set");
@@ -198,7 +209,7 @@
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
 
-    XCTAssertEqual([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertEqualObjects([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
     XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
     XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
     
@@ -336,7 +347,7 @@
     self.logbook.sendDeviceInfo = NO;
     [self.logbook track:@"SomethingHappened"];
     NSDictionary *e1 = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqual([e1 objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertEqualObjects([e1 objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
     XCTAssertNotNil([e1 objectForKey:@"randUser"], @"randUser not set");
     XCTAssertNotNil([e1 objectForKey:@"time"], @"time not set");
 }

@@ -395,13 +395,8 @@ static Logbook *sharedInstance = nil;
 
 #pragma mark * Tracking
 
-- (void)track:(NSString *)event
+- (void)trackInternal:(NSString *)event
 {
-    if (![Logbook isValidEventName:event]) {
-        NSLog(@"%@ track called with an invalid event parameter %@. Skipping.", self, event);
-        return;
-    }
-    
     @synchronized(self) {
         if (self.projectDeleted) {
             LogbookLog(@"%@ project has been deleted. skipped.", self);
@@ -430,6 +425,30 @@ static Logbook *sharedInstance = nil;
             [self archiveEvents];
         }
     }
+}
+
+/**
+ * Track a system event.
+ * Internal API.
+ */
+- (void)trackSystem:(NSString *)event {
+    if (![Logbook isValidSystemEventName:event]) {
+        NSLog(@"%@ track called with an invalid system event parameter %@. Skipping.", self, event);
+        return;
+    }
+    [self trackInternal:event];
+}
+
+- (void)track:(NSString *)event {
+    if (![Logbook isValidEventName:event]) {
+        NSLog(@"%@ track called with an invalid event parameter %@. Skipping.", self, event);
+        return;
+    }
+    [self trackInternal:event];
+}
+
+- (void)trackAccess {
+    [self trackSystem:@"_access"];
 }
 
 - (void)reset

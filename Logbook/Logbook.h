@@ -140,7 +140,7 @@
  elsewhere in your code, you can use <code>sharedInstance</code>.
  
  <pre>
- [[Logbook sharedInstance] track:@"Something Happened"];
+ [[Logbook sharedInstance] track:@"SomethingHappened"];
  </pre>
  
  If you are going to use this singleton approach,
@@ -200,6 +200,14 @@
  @param event           event name
  */
 - (void)track:(NSString *)event;
+
+/*!
+ @method
+ 
+ @abstract
+ Tracks an access event.
+ */
+- (void)trackAccess;
 
 /*!
  @method
