@@ -32,6 +32,8 @@
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
 @property(nonatomic,assign) BOOL projectDeleted;
 
++ (BOOL)isValidEventName: (NSString *)name;
++ (BOOL)isValidSystemEventName: (NSString *)name;
 + (NSData *)JSONSerializeObject:(id)obj;
 - (NSString *)randomAppUserId;
 - (NSString *)defaultAppUserIdType;
@@ -108,6 +110,47 @@
                           @"{\"3\":\"non-string key\"}", @"json serialization failed");
 }
 
+- (void)testIsValidEventName {
+    XCTAssertTrue([Logbook isValidEventName:@"ev1"]);
+    XCTAssertTrue([Logbook isValidEventName:@"Access"]);
+    XCTAssertTrue([Logbook isValidEventName:@"NotContainSpace"]);
+    XCTAssertTrue([Logbook isValidEventName:@"l2345678901234567890123456789012"]);
+    XCTAssertTrue([Logbook isValidEventName:@"snake_case"]);
+    XCTAssertTrue([Logbook isValidEventName:@"dash-separated"]);
+    XCTAssertTrue([Logbook isValidEventName:@"dot.separated"]);
+
+    XCTAssertFalse([Logbook isValidEventName:nil]);
+    XCTAssertFalse([Logbook isValidEventName:@"_access"]);
+    XCTAssertFalse([Logbook isValidEventName:@"0a"]);
+    XCTAssertFalse([Logbook isValidEventName:@""]);
+    XCTAssertFalse([Logbook isValidEventName:@"Access%"]);
+    XCTAssertFalse([Logbook isValidEventName:@" access"]);
+    XCTAssertFalse([Logbook isValidEventName:@"access "]);
+    XCTAssertFalse([Logbook isValidEventName:@"contains space"]);
+    XCTAssertFalse([Logbook isValidEventName:@"contains　zenkaku　space"]);
+    XCTAssertFalse([Logbook isValidEventName:@"アルファベット以外"]);
+    XCTAssertFalse([Logbook isValidEventName:@"l23456789012345678901234567890123"]);
+}
+
+- (void)testIsValidSystemEventName {
+    XCTAssertTrue([Logbook isValidSystemEventName:@"_access"]);
+    XCTAssertTrue([Logbook isValidSystemEventName:@"_referral"]);
+    XCTAssertTrue([Logbook isValidSystemEventName:@"_l345678901234567890123456789012"]);
+
+    XCTAssertFalse([Logbook isValidSystemEventName:nil]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"ev1"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@" _access"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"_access "]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"Access"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"NotContainSpace"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"l2345678901234567890123456789012"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"snake_case"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"dash-separated"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"dot.separated"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"_2345678901234567890123456789012"]);
+    XCTAssertFalse([Logbook isValidSystemEventName:@"_l3456789012345678901234567890123"]);
+}
+
 - (void)testIdentify
 {
     for (int i = 0; i < 2; i++) { // run this twice to test reset works correctly wrt to distinct ids
@@ -131,10 +174,10 @@
 
 - (void)testTrack
 {
-    [self.logbook track:@"Something Happened"];
+    [self.logbook track:@"SomethingHappened"];
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqual([e objectForKey:@"event"], @"Something Happened", @"incorrect event name");
+    XCTAssertEqual([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
     XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
     XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
     XCTAssertNotNil([e objectForKey:@"libVersion"], @"lib_version not set");
@@ -144,11 +187,11 @@
 - (void)testTrackDeviceInfo
 {
     self.logbook.sendDeviceInfo = YES;
-    [self.logbook track:@"Something Happened"];
+    [self.logbook track:@"SomethingHappened"];
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
 
-    XCTAssertEqual([e objectForKey:@"event"], @"Something Happened", @"incorrect event name");
+    XCTAssertEqual([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
     XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
     XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
     
@@ -284,9 +327,9 @@
 - (void)testSendDeviceInfo
 {
     self.logbook.sendDeviceInfo = NO;
-    [self.logbook track:@"Something Happened"];
+    [self.logbook track:@"SomethingHappened"];
     NSDictionary *e1 = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqual([e1 objectForKey:@"event"], @"Something Happened", @"incorrect event name");
+    XCTAssertEqual([e1 objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
     XCTAssertNotNil([e1 objectForKey:@"randUser"], @"randUser not set");
     XCTAssertNotNil([e1 objectForKey:@"time"], @"time not set");
 }

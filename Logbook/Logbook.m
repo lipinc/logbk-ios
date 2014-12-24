@@ -56,6 +56,7 @@ static NSString * const LB_RAND_USER_KEY = @"randUser";
 static NSString * const LB_USER_KEY = @"user";
 static NSString * const LB_LIB_NAME = @"libName";
 static NSString * const LB_LIB_VERSION = @"libVersion";
+static int const MAX_EVENT_NAME = 32;
 
 @interface Logbook ()
 
@@ -90,6 +91,51 @@ static Logbook *sharedInstance = nil;
         [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
     }
     return randomString;
+}
+
++ (BOOL)isMatch:(NSString *)name regex:(NSRegularExpression *)regex inSize:(NSUInteger)maxLength {
+    if (name == nil) {
+        return NO;
+    }
+    
+    NSTextCheckingResult *match = [regex firstMatchInString:name options:0 range:NSMakeRange(0, name.length)];
+    if (match.numberOfRanges == 1) {
+        return name.length > 0 && name.length <= maxLength;
+    } else {
+        return NO;
+    }
+}
+
++ (BOOL)isValidEventName: (NSString *)name {
+    static NSRegularExpression *regex = nil;
+    @synchronized(self) {
+        if (regex == nil) {
+            NSError *error;
+            regex = [[NSRegularExpression regularExpressionWithPattern:@"^[A-Z][A-Z0-9._-]+$"
+                                                               options:NSRegularExpressionCaseInsensitive
+                                                                 error:&error] retain];
+            if (error != nil) {
+                NSLog(@"Error compiling regex: %@", [error localizedDescription]);
+            }
+        }
+    }
+    return [self isMatch:name regex:regex inSize:MAX_EVENT_NAME];
+}
+
++ (BOOL)isValidSystemEventName: (NSString *)name {
+    static NSRegularExpression *regex = nil;
+    @synchronized(self) {
+        if (regex == nil) {
+            NSError *error;
+            regex = [[NSRegularExpression regularExpressionWithPattern:@"^_[A-Z][A-Z0-9._-]+$"
+                                                               options:NSRegularExpressionCaseInsensitive
+                                                                 error:&error] retain];
+            if (error != nil) {
+                NSLog(@"Error compiling regex: %@", [error localizedDescription]);
+            }
+        }
+    }
+    return [self isMatch:name regex:regex inSize:MAX_EVENT_NAME];
 }
 
 #pragma mark * Device info
@@ -361,18 +407,18 @@ static Logbook *sharedInstance = nil;
 
 - (void)track:(NSString *)event
 {
+    if (![Logbook isValidEventName:event]) {
+        NSLog(@"%@ track called with an invalid event parameter %@. Skipping.", self, event);
+        return;
+    }
+    
     @synchronized(self) {
         if (self.projectDeleted) {
             LogbookLog(@"%@ project has been deleted. skipped.", self);
             return;
         }
         
-        if (event == nil || [event length] == 0) {
-            NSLog(@"%@ track called with an empty event parameter. Skipping.", self);
-            return;
-        }
         NSDate *now = [NSDate date];
-
         NSMutableDictionary *e = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                      @"logbk-ios", LB_LIB_NAME,
                                      VERSION, LB_LIB_VERSION,
