@@ -32,6 +32,7 @@
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
 @property(nonatomic,assign) BOOL projectDeleted;
 
++ (NSString *)randomAppUserId;
 + (BOOL)isValidEventName: (NSString *)name;
 + (BOOL)isValidSystemEventName: (NSString *)name;
 + (NSData *)JSONSerializeObject:(id)obj;
@@ -80,6 +81,12 @@
 + (NSString *)getJSON:(id)obj {
     NSData *data = [Logbook JSONSerializeObject:obj];
     return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+}
+
+- (void)testRandomAppUserId {
+    XCTAssertNotEqualObjects([Logbook randomAppUserId], [Logbook randomAppUserId]);
+    
+    XCTAssertEqual([Logbook randomAppUserId].length, 36UL);
 }
 
 - (void)testJSONSerializeObject {

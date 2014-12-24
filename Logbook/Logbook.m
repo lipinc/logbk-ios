@@ -75,7 +75,6 @@ static int const MAX_EVENT_NAME = 32;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
 @property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
 #endif
-+(NSString *)genRandStringLength:(int)len;
 @end
 
 @implementation Logbook
@@ -84,13 +83,9 @@ static Logbook *sharedInstance = nil;
 
 #pragma mark * Utility
 
-+(NSString *) genRandStringLength: (int) len {
-    static NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    NSMutableString *randomString = [NSMutableString stringWithCapacity: len];
-    for (int i=0; i<len; i++) {
-        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
-    }
-    return randomString;
++ (NSString *)randomAppUserId
+{
+    return [[NSUUID UUID] UUIDString];
 }
 
 + (BOOL)isMatch:(NSString *)name regex:(NSRegularExpression *)regex inSize:(NSUInteger)maxLength {
@@ -377,7 +372,7 @@ static Logbook *sharedInstance = nil;
         [self unarchive];
         
         if (self.randUser == nil || [self.randUser length] == 0) {
-            self.randUser = [self randomAppUserId];
+            self.randUser = [Logbook randomAppUserId];
             LogbookLog(@"Assigned randomly generated app user id %@", self.randUser);
             [self archiveProperties];
         }
@@ -399,11 +394,6 @@ static Logbook *sharedInstance = nil;
 }
 
 #pragma mark * Tracking
-
-- (NSString *)randomAppUserId
-{
-    return [Logbook genRandStringLength:40];
-}
 
 - (void)track:(NSString *)event
 {
@@ -445,7 +435,7 @@ static Logbook *sharedInstance = nil;
 - (void)reset
 {
     @synchronized(self) {
-        self.randUser = [self randomAppUserId];
+        self.randUser = [Logbook randomAppUserId];
         self.user = nil;
         self.eventsQueue = [NSMutableArray array];
         self.projectDeleted = NO;
