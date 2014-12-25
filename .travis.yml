@@ -1,0 +1,7 @@
+language: objective-c
+xcode_project: HelloLogbook/HelloLogbook.xcodeproj
+xcode_scheme: HelloLogbook
+xcode_sdk:
+  - iphonesimulator7.0
+  - iphonesimulator7.1
+  - iphonesimulator8.1

@@ -86,7 +86,7 @@
 - (void)testRandomAppUserId {
     XCTAssertNotEqualObjects([Logbook randomAppUserId], [Logbook randomAppUserId]);
     
-    XCTAssertEqual([Logbook randomAppUserId].length, 36UL);
+    XCTAssertEqual([Logbook randomAppUserId].length, 36U);
 }
 
 - (void)testJSONSerializeObject {
