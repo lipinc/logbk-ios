@@ -111,7 +111,7 @@ static Logbook *sharedInstance = nil;
     static NSRegularExpression *regex = nil;
     @synchronized(self) {
         if (regex == nil) {
-            NSError *error;
+            NSError *error = nil;
             regex = [[NSRegularExpression regularExpressionWithPattern:@"^[A-Z][A-Z0-9._-]+$"
                                                                options:NSRegularExpressionCaseInsensitive
                                                                  error:&error] retain];
@@ -127,7 +127,7 @@ static Logbook *sharedInstance = nil;
     static NSRegularExpression *regex = nil;
     @synchronized(self) {
         if (regex == nil) {
-            NSError *error;
+            NSError *error = nil;
             regex = [[NSRegularExpression regularExpressionWithPattern:@"^_[A-Z][A-Z0-9._-]+$"
                                                                options:NSRegularExpressionCaseInsensitive
                                                                  error:&error] retain];
