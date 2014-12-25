@@ -22,11 +22,8 @@
 
 @interface ViewController ()
 
-@property(nonatomic, retain) IBOutlet UISegmentedControl *genderControl;
-@property(nonatomic, retain) IBOutlet UISegmentedControl *weaponControl;
-@property(nonatomic, retain) IBOutlet UISwitch *transactionControl;
-
 - (IBAction)trackEvent:(id)sender;
+@property (retain, nonatomic) IBOutlet UITextField *textField;
 
 @end
 
@@ -34,8 +31,7 @@
 
 - (void)dealloc
 {
-    self.genderControl = nil;
-    self.weaponControl = nil;
+    [_textField release];
     [super dealloc];
 }
 
@@ -49,6 +45,7 @@
 
 - (void)viewDidUnload
 {
+    [self setTextField:nil];
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
@@ -61,7 +58,7 @@
 - (IBAction)trackEvent:(id)sender
 {
     Logbook *logbook = [Logbook sharedInstance];
-    [logbook track:@"Player Create"];
+    [logbook track:self.textField.text];
 }
 
 @end

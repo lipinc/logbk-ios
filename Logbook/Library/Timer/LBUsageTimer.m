@@ -73,8 +73,12 @@
         self.usageTimerStarted = now;
     }
 
-    if (!self.fired) {
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:(self.seconds - self.elapsed)
+    if (self.fired) {
+        LogbookDebug(@"Usage timer already fired. Not scheduled.");
+    } else {
+        NSTimeInterval remaining = self.seconds - self.elapsed;
+        LogbookDebug(@"Usage timer remaining: %f", remaining);
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:remaining
                                                       target:self
                                                     selector:@selector(fire:)
                                                     userInfo:self.userInfo
