@@ -28,7 +28,6 @@
 		286760BF1611982600B1BEC8 /* Logbook.m in Sources */ = {isa = PBXBuildFile; fileRef = 286760BA1611982600B1BEC8 /* Logbook.m */; };
 		2892541D16548047003DAFFE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892541C16548047003DAFFE /* SystemConfiguration.framework */; };
 		2892541F16548283003DAFFE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892541E16548283003DAFFE /* CoreTelephony.framework */; };
-		7EF8782B1A4A7BF1001491BF /* LBUsageTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EF8782A1A4A7BF1001491BF /* LBUsageTimer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,8 +73,6 @@
 		286760BA1611982600B1BEC8 /* Logbook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logbook.m; sourceTree = "<group>"; };
 		2892541C16548047003DAFFE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		2892541E16548283003DAFFE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
-		7EF878291A4A7BF1001491BF /* LBUsageTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBUsageTimer.h; sourceTree = "<group>"; };
-		7EF8782A1A4A7BF1001491BF /* LBUsageTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBUsageTimer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,7 +191,6 @@
 		286760AE1611982600B1BEC8 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				7EF878281A4A7BC3001491BF /* Timer */,
 				286760AF1611982600B1BEC8 /* JSON */,
 				286760B61611982600B1BEC8 /* NSData_Base64 */,
 			);
@@ -221,15 +217,6 @@
 				286760B81611982600B1BEC8 /* NSData+LBBase64.m */,
 			);
 			path = NSData_Base64;
-			sourceTree = "<group>";
-		};
-		7EF878281A4A7BC3001491BF /* Timer */ = {
-			isa = PBXGroup;
-			children = (
-				7EF878291A4A7BF1001491BF /* LBUsageTimer.h */,
-				7EF8782A1A4A7BF1001491BF /* LBUsageTimer.m */,
-			);
-			path = Timer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -348,7 +335,6 @@
 				286760BC1611982600B1BEC8 /* LBCJSONSerializer.m in Sources */,
 				286760BD1611982600B1BEC8 /* LBCSerializedJSONData.m in Sources */,
 				286760BE1611982600B1BEC8 /* NSData+LBBase64.m in Sources */,
-				7EF8782B1A4A7BF1001491BF /* LBUsageTimer.m in Sources */,
 				286760BF1611982600B1BEC8 /* Logbook.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

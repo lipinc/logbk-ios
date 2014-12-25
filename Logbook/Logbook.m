@@ -31,7 +31,6 @@
 #import "LBCJSONDataSerializer.h"
 #import "Logbook.h"
 #import "NSData+LBBase64.h"
-#import "LBUsageTimer.h"
 
 #define VERSION @"1.0.0"
 
@@ -61,7 +60,6 @@ static int const MAX_EVENT_NAME = 32;
 // Followings are better to be configured.
 static NSString * const TIME_SPENT_EVENT = @"_timeSpent";
 static NSTimeInterval const USAGE_TIMER_INTERVAL = 10;
-static NSTimeInterval const USAGE_TIMER_RESET_INTERVAL = 60 * 60;
 
 @interface Logbook ()
 
@@ -76,11 +74,13 @@ static NSTimeInterval const USAGE_TIMER_RESET_INTERVAL = 60 * 60;
 @property(nonatomic,retain) NSMutableData *eventsResponseData;
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
 @property(nonatomic,assign) BOOL projectDeleted;
-@property(nonatomic,retain) LBUsageTimer *usageTimer;
+@property(nonatomic,retain) NSTimer *usageTimer;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
 @property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
 #endif
+
+- (void)trackAccess;
 @end
 
 @implementation Logbook
@@ -382,13 +382,6 @@ static Logbook *sharedInstance = nil;
             LogbookLog(@"Assigned randomly generated app user id %@", self.randUser);
             [self archiveProperties];
         }
-
-        self.usageTimer = [LBUsageTimer timerWithTimeInterval:USAGE_TIMER_INTERVAL
-                                                resetInterval:USAGE_TIMER_RESET_INTERVAL
-                                                       target:self
-                                                     selector:@selector(trackUsage:)
-                                                     userInfo:nil];
-
     }
     return self;
 }
@@ -463,10 +456,6 @@ static Logbook *sharedInstance = nil;
     [self trackSystem:@"_access"];
 }
 
-- (void)trackUsage:(LBUsageTimer *)timer {
-    [self trackSystem:TIME_SPENT_EVENT];
-}
-
 - (void)reset
 {
     @synchronized(self) {
@@ -476,16 +465,6 @@ static Logbook *sharedInstance = nil;
         self.projectDeleted = NO;
         [self archive];
     }
-}
-
-#pragma mark * Usage timer
-
-- (void)resumeUsageTimer {
-    [self.usageTimer resume];
-}
-
-- (void)pauseUsageTimer {
-    [self.usageTimer pause];
 }
 
 #pragma mark * Network control
@@ -758,6 +737,12 @@ static Logbook *sharedInstance = nil;
     LogbookDebug(@"%@ application did become active", self);
     @synchronized(self) {
         [self startFlushTimer];
+        [self trackAccess];
+        self.usageTimer = [NSTimer scheduledTimerWithTimeInterval:USAGE_TIMER_INTERVAL
+                                                           target:self
+                                                         selector:@selector(usageTimerFired:)
+                                                         userInfo:nil
+                                                          repeats:NO];
     }
 }
 
@@ -766,6 +751,8 @@ static Logbook *sharedInstance = nil;
     LogbookDebug(@"%@ application will resign active", self);
     @synchronized(self) {
         [self stopFlushTimer];
+        [self.usageTimer invalidate];
+        self.usageTimer = nil;
     }
 }
 
@@ -820,6 +807,14 @@ static Logbook *sharedInstance = nil;
         }
     }
 #endif
+}
+
+
+#pragma mark * Usage timer callback
+
+- (void)usageTimerFired:(NSTimer *)timer {
+    LogbookDebug(@"Usage timer fired");
+    [self trackSystem:TIME_SPENT_EVENT];
 }
 
 #pragma mark * NSURLConnection callbacks

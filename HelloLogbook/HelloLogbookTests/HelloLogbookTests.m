@@ -41,7 +41,7 @@
 - (void)archive;
 - (NSString *)eventsFilePath;
 - (NSString *)propertiesFilePath;
-
+- (void)trackAccess;
 @end
 
 

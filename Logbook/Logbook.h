@@ -205,18 +205,6 @@
  @method
  
  @abstract
- Tracks an access event.
- */
-- (void)trackAccess;
-
-- (void)resumeUsageTimer;
-
-- (void)pauseUsageTimer;
-
-/*!
- @method
- 
- @abstract
  Clears all stored properties and distinct IDs. Useful if your app's user logs out.
  */
 - (void)reset;

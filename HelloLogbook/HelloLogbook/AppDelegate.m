@@ -88,14 +88,11 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     self.startTime = [NSDate date];
-    [self.logbook trackAccess];
-    [self.logbook resumeUsageTimer];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     NSLog(@"%@ will resign active", self);
-    [self.logbook pauseUsageTimer];
 }
 
 #pragma mark * Background task tracking test
