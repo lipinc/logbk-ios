@@ -31,6 +31,7 @@
 #import "LBCJSONDataSerializer.h"
 #import "Logbook.h"
 #import "NSData+LBBase64.h"
+#import "LBUsageTimer.h"
 
 #define VERSION @"1.0.0"
 
@@ -57,6 +58,10 @@ static NSString * const LB_USER_KEY = @"user";
 static NSString * const LB_LIB_NAME = @"libName";
 static NSString * const LB_LIB_VERSION = @"libVersion";
 static int const MAX_EVENT_NAME = 32;
+// Followings are better to be configured.
+static NSString * const TIME_SPENT_EVENT = @"_timeSpent";
+static NSTimeInterval const USAGE_TIMER_INTERVAL = 10;
+static NSTimeInterval const USAGE_TIMER_RESET_INTERVAL = 60 * 60;
 
 @interface Logbook ()
 
@@ -71,6 +76,7 @@ static int const MAX_EVENT_NAME = 32;
 @property(nonatomic,retain) NSMutableData *eventsResponseData;
 @property(nonatomic,retain) NSDateFormatter *dateFormatter;
 @property(nonatomic,assign) BOOL projectDeleted;
+@property(nonatomic,retain) LBUsageTimer *usageTimer;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
 @property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
@@ -377,6 +383,12 @@ static Logbook *sharedInstance = nil;
             [self archiveProperties];
         }
 
+        self.usageTimer = [LBUsageTimer timerWithTimeInterval:USAGE_TIMER_INTERVAL
+                                                resetInterval:USAGE_TIMER_RESET_INTERVAL
+                                                       target:self
+                                                     selector:@selector(trackUsage:)
+                                                     userInfo:nil];
+
     }
     return self;
 }
@@ -451,6 +463,10 @@ static Logbook *sharedInstance = nil;
     [self trackSystem:@"_access"];
 }
 
+- (void)trackUsage:(LBUsageTimer *)timer {
+    [self trackSystem:TIME_SPENT_EVENT];
+}
+
 - (void)reset
 {
     @synchronized(self) {
@@ -460,6 +476,16 @@ static Logbook *sharedInstance = nil;
         self.projectDeleted = NO;
         [self archive];
     }
+}
+
+#pragma mark * Usage timer
+
+- (void)resumeUsageTimer {
+    [self.usageTimer resume];
+}
+
+- (void)pauseUsageTimer {
+    [self.usageTimer pause];
 }
 
 #pragma mark * Network control
@@ -896,6 +922,7 @@ static Logbook *sharedInstance = nil;
     self.eventsBatch = nil;
     self.eventsConnection = nil;
     self.eventsResponseData = nil;
+    self.usageTimer = nil;
     
     [super dealloc];
 }

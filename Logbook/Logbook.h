@@ -209,6 +209,10 @@
  */
 - (void)trackAccess;
 
+- (void)resumeUsageTimer;
+
+- (void)pauseUsageTimer;
+
 /*!
  @method
  
