@@ -147,17 +147,17 @@ static Logbook *sharedInstance = nil;
 
     UIDevice *device = [UIDevice currentDevice];
 
-    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"app_version"];
-    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"app_release"];
+    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"appVersion"];
+    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"appRelease"];
 
     [properties setValue:@"Apple" forKey:@"manufacturer"];
     [properties setValue:[device systemName] forKey:@"os"];
-    [properties setValue:[device systemVersion] forKey:@"os_version"];
+    [properties setValue:[device systemVersion] forKey:@"osVersion"];
     [properties setValue:[Logbook deviceModel] forKey:@"model"];
 
     CGSize size = [UIScreen mainScreen].bounds.size;
-    [properties setValue:[NSNumber numberWithInt:(int)size.height] forKey:@"screen_height"];
-    [properties setValue:[NSNumber numberWithInt:(int)size.width] forKey:@"screen_width"];
+    [properties setValue:[NSNumber numberWithInt:(int)size.height] forKey:@"screenHeight"];
+    [properties setValue:[NSNumber numberWithInt:(int)size.width] forKey:@"screenWidth"];
 
     [properties setValue:[NSNumber numberWithBool:[Logbook wifiAvailable]] forKey:@"wifi"];
 

@@ -213,14 +213,14 @@
     XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
     XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
     
-    XCTAssertNotNil([e objectForKey:@"app_version"], @"app_version not set");
-    XCTAssertNotNil([e objectForKey:@"app_release"], @"app_release not set");
+    XCTAssertNotNil([e objectForKey:@"appVersion"], @"app_version not set");
+    XCTAssertNotNil([e objectForKey:@"appRelease"], @"app_release not set");
     XCTAssertEqualObjects([e objectForKey:@"manufacturer"], @"Apple", @"incorrect manufacturer");
     XCTAssertNotNil([e objectForKey:@"model"], @"model not set");
     XCTAssertNotNil([e objectForKey:@"os"], @"os not set");
-    XCTAssertNotNil([e objectForKey:@"os_version"], @"os_version not set");
-    XCTAssertNotNil([e objectForKey:@"screen_height"], @"screen_height not set");
-    XCTAssertNotNil([e objectForKey:@"screen_width"], @"screen_width not set");
+    XCTAssertNotNil([e objectForKey:@"osVersion"], @"os_version not set");
+    XCTAssertNotNil([e objectForKey:@"screenHeight"], @"screen_height not set");
+    XCTAssertNotNil([e objectForKey:@"screenWidth"], @"screen_width not set");
     XCTAssertNotNil([e objectForKey:@"wifi"], @"wifi not set");
 }
 
