@@ -68,6 +68,17 @@
 
 /*!
  @property
+
+ @abstract
+ The endpoint of tracking.
+
+ @discussion
+ Defaults to /v1/track
+ */
+@property(nonatomic,copy) NSString *trackEndpoint;
+
+/*!
+ @property
  
  @abstract
  Flush timer's interval.

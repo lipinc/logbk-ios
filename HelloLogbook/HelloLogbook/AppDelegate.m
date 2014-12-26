@@ -24,7 +24,7 @@
 #import "ViewController.h"
 
 // IMPORTANT!!! replace with your tracking code
-#define TRACKING_CODE @"YOUR_TRACKING_CODE"
+static NSString * const TRACKING_CODE = @"YOUR_TRACKING_CODE";
 
 @implementation AppDelegate
 
@@ -113,7 +113,7 @@
 
         // track some events
         Logbook *logbook = [Logbook sharedInstance];
-        [logbook track:@"Background Event"];
+        [logbook track:@"BackgroundEvent"];
 
         NSLog(@"%@ ending background task %lu", self, (unsigned long)self.bgTask);
         [application endBackgroundTask:self.bgTask];

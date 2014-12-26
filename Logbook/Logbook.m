@@ -368,6 +368,7 @@ static Logbook *sharedInstance = nil;
         self.showNetworkActivityIndicator = YES;
         self.sendDeviceInfo = NO;
         self.serverURL = @"https://tracker.logbk.net";
+        self.trackEndpoint = @"/v1/track";
         
         self.projectDeleted = NO;
 
@@ -563,12 +564,11 @@ static Logbook *sharedInstance = nil;
     }
     
     NSString *data = [Logbook encodeAPIData:self.eventsBatch];
-    NSString *postBody = [NSString stringWithFormat:@"data=%@", data];
+    NSString *postBody = [NSString stringWithFormat:@"code=%@&data=%@", self.apiToken, data];
     
     LogbookDebug(@"%@ flushing %lu of %lu queued events: %@", self, (unsigned long)self.eventsBatch.count, (unsigned long)self.eventsQueue.count, self.eventsQueue);
 
-    NSString *endpoint = [@"/track/" stringByAppendingString:self.apiToken];
-    self.eventsConnection = [self apiConnectionWithEndpoint:endpoint andBody:postBody];
+    self.eventsConnection = [self apiConnectionWithEndpoint:self.trackEndpoint andBody:postBody];
 
     [self updateNetworkActivityIndicator];
 }
