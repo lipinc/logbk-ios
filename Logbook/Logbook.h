@@ -120,7 +120,7 @@
  Controls whether to send device info as parameters.
  
  @discussion
- Defaults to NO.
+ Defaults to YES.
  */
 @property(nonatomic,assign) BOOL sendDeviceInfo;
 

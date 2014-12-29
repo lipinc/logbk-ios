@@ -366,7 +366,7 @@ static Logbook *sharedInstance = nil;
         self.flushInterval = flushInterval;
         self.flushOnBackground = YES;
         self.showNetworkActivityIndicator = YES;
-        self.sendDeviceInfo = NO;
+        self.sendDeviceInfo = YES;
         self.serverURL = @"https://tracker.logbk.net";
         self.trackEndpoint = @"/v1/track";
         
