@@ -135,7 +135,7 @@
  Using a delegate is optional. See the documentation for LogbookDelegate
  below for more information.
  */
-@property(nonatomic,assign) id<LogbookDelegate> delegate; // allows fine grain control over uploading (optional)
+@property(nonatomic,weak) id<LogbookDelegate> delegate; // allows fine grain control over uploading (optional)
 
 /*!
  @method

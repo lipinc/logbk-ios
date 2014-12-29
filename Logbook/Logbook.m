@@ -67,14 +67,14 @@ static NSTimeInterval const USAGE_TIMER_INTERVAL = 10;
 @property(nonatomic,copy) NSString *randUser;
 @property(nonatomic,copy) NSString *user;
 @property(nonatomic,copy)   NSString *apiToken;
-@property(nonatomic,retain) NSTimer *timer;
-@property(nonatomic,retain) NSMutableArray *eventsQueue;
-@property(nonatomic,retain) NSArray *eventsBatch;
-@property(nonatomic,retain) NSURLConnection *eventsConnection;
-@property(nonatomic,retain) NSMutableData *eventsResponseData;
-@property(nonatomic,retain) NSDateFormatter *dateFormatter;
+@property(nonatomic,strong) NSTimer *timer;
+@property(nonatomic,strong) NSMutableArray *eventsQueue;
+@property(nonatomic,strong) NSArray *eventsBatch;
+@property(nonatomic,strong) NSURLConnection *eventsConnection;
+@property(nonatomic,strong) NSMutableData *eventsResponseData;
+@property(nonatomic,strong) NSDateFormatter *dateFormatter;
 @property(nonatomic,assign) BOOL projectDeleted;
-@property(nonatomic,retain) NSTimer *usageTimer;
+@property(nonatomic,strong) NSTimer *usageTimer;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
 @property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
@@ -112,9 +112,9 @@ static Logbook *sharedInstance = nil;
     @synchronized(self) {
         if (regex == nil) {
             NSError *error = nil;
-            regex = [[NSRegularExpression regularExpressionWithPattern:@"^[A-Z][A-Z0-9._-]+$"
+            regex = [NSRegularExpression regularExpressionWithPattern:@"^[A-Z][A-Z0-9._-]+$"
                                                                options:NSRegularExpressionCaseInsensitive
-                                                                 error:&error] retain];
+                                                                 error:&error];
             if (error != nil) {
                 NSLog(@"Error compiling regex: %@", [error localizedDescription]);
             }
@@ -128,9 +128,9 @@ static Logbook *sharedInstance = nil;
     @synchronized(self) {
         if (regex == nil) {
             NSError *error = nil;
-            regex = [[NSRegularExpression regularExpressionWithPattern:@"^_[A-Z][A-Z0-9._-]+$"
+            regex = [NSRegularExpression regularExpressionWithPattern:@"^_[A-Z][A-Z0-9._-]+$"
                                                                options:NSRegularExpressionCaseInsensitive
-                                                                 error:&error] retain];
+                                                                 error:&error];
             if (error != nil) {
                 NSLog(@"Error compiling regex: %@", [error localizedDescription]);
             }
@@ -163,7 +163,6 @@ static Logbook *sharedInstance = nil;
 
     CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier *carrier = [networkInfo subscriberCellularProvider];
-    [networkInfo release];
 
     if (carrier.carrierName.length) {
         [properties setValue:carrier.carrierName forKey:@"carrier"];
@@ -287,7 +286,6 @@ static Logbook *sharedInstance = nil;
         [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
         [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
         NSString *s = [formatter stringFromDate:obj];
-        [formatter release];
         return s;
     } else if ([obj isKindOfClass:[NSURL class]]) {
         return [obj absoluteString];
@@ -305,13 +303,13 @@ static Logbook *sharedInstance = nil;
     NSData *data = [Logbook JSONSerializeObject:array];
     if (data) {
         b64String = [data lb_base64EncodedString];
-        b64String = (id)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+        b64String = (id)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
                                                                 (CFStringRef)b64String,
                                                                 NULL,
                                                                 CFSTR("!*'();:@&=+$,/?%#[]"),
-                                                                kCFStringEncodingUTF8);
+                                                                kCFStringEncodingUTF8));
     }
-    return [b64String autorelease];
+    return b64String;
 }
 
 + (void)assertPropertyTypes:(NSDictionary *)properties
@@ -359,7 +357,7 @@ static Logbook *sharedInstance = nil;
         NSLog(@"%@ warning empty api token", self);
     }
     if (self = [self init]) {
-        self.dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+        self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter  setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
         self.dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
         self.apiToken = apiToken;
@@ -515,8 +513,9 @@ static Logbook *sharedInstance = nil;
     }
 
     @synchronized(self) {
-        if ([self.delegate respondsToSelector:@selector(logbookWillFlush:)]) {
-            if (![self.delegate logbookWillFlush:self]) {
+        id<LogbookDelegate> delegate = self.delegate;
+        if ([delegate respondsToSelector:@selector(logbookWillFlush:)]) {
+            if (![delegate logbookWillFlush:self]) {
                 LogbookDebug(@"%@ delegate deferred flush", self);
                 return;
             }
@@ -877,7 +876,6 @@ static Logbook *sharedInstance = nil;
             } else if ([response intValue] == 0) {
                 NSLog(@"%@ track api error: %@", self, response);
             }
-            [response release];
 
             [self.eventsQueue removeObjectsInArray:self.eventsBatch];
             [self archiveEvents];
@@ -906,20 +904,9 @@ static Logbook *sharedInstance = nil;
     [self stopFlushTimer];
     [self removeApplicationObservers];
     
-    self.randUser = nil;
-    self.user = nil;
-    self.serverURL = nil;
     self.delegate = nil;
     
-    self.apiToken = nil;
-    self.timer = nil;
-    self.eventsQueue = nil;
-    self.eventsBatch = nil;
-    self.eventsConnection = nil;
-    self.eventsResponseData = nil;
-    self.usageTimer = nil;
     
-    [super dealloc];
 }
 
 @end
