@@ -33,12 +33,12 @@
 
 @implementation LBCJSONSerializer
 
-+ (id)serializer
++ (instancetype)serializer
 {
 return([[self alloc] init]);
 }
 
-- (id)init
+- (instancetype)init
 {
 if ((self = [super init]) != NULL)
 	{

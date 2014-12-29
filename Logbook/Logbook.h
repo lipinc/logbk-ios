@@ -190,7 +190,7 @@
  @param trackingCode        your project tracking code
  @param startFlushTimer whether to start the background flush timer
  */
-- (id)initWithCode:(NSString *)trackingCode andFlushInterval:(NSUInteger)flushInterval;
+- (instancetype)initWithCode:(NSString *)trackingCode andFlushInterval:(NSUInteger)flushInterval;
 
 /*!
  @property

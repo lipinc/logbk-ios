@@ -28,6 +28,6 @@ char *LB_NewBase64Encode(
 @interface NSData (LB_Base64)
 
 + (NSData *)lb_dataFromBase64String:(NSString *)aString;
-- (NSString *)lb_base64EncodedString;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *lb_base64EncodedString;
 
 @end

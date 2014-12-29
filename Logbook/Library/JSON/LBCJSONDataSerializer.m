@@ -52,7 +52,7 @@ static NSData *kTrue = nil;
     }
 }
 
-+ (id)serializer {
++ (instancetype)serializer {
     return [[self alloc] init];
 }
 
@@ -80,11 +80,9 @@ static NSData *kTrue = nil;
 
     if (theResult == nil) {
         if (outError) {
-            NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         [NSString stringWithFormat:
+            NSDictionary *theUserInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:
                                           @"Cannot serialize data of type '%@'. The following types are supported: NSNull, NSNumber, NSString, NSArray, NSDictionary, NSData.",
-                                          NSStringFromClass([inObject class])], NSLocalizedDescriptionKey,
-                                         nil];
+                                          NSStringFromClass([inObject class])]};
             *outError = [NSError errorWithDomain:@"MixpanelLib" code:-1 userInfo:theUserInfo];
         }
     }
@@ -183,7 +181,7 @@ static NSData *kTrue = nil;
     NSEnumerator *theEnumerator = [theKeys objectEnumerator];
     NSString *theKey = nil;
     while ((theKey = [theEnumerator nextObject]) != nil) {
-        id theValue = [inDictionary objectForKey:theKey];
+        id theValue = inDictionary[theKey];
 
         NSData *theKeyData = [self serializeString:theKey error:outError];
         if (theKeyData == nil) {

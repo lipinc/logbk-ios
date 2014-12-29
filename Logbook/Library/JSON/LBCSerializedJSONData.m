@@ -33,7 +33,7 @@
 
 @synthesize data;
 
-- (id)initWithData:(NSData *)inData;
+- (instancetype)initWithData:(NSData *)inData;
 {
 if ((self = [self init]) != NULL)
 	{

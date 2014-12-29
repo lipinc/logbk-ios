@@ -147,8 +147,8 @@ static Logbook *sharedInstance = nil;
 
     UIDevice *device = [UIDevice currentDevice];
 
-    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"appVersion"];
-    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"appRelease"];
+    [properties setValue:[[NSBundle mainBundle] infoDictionary][@"CFBundleVersion"] forKey:@"appVersion"];
+    [properties setValue:[[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] forKey:@"appRelease"];
 
     [properties setValue:@"Apple" forKey:@"manufacturer"];
     [properties setValue:[device systemName] forKey:@"os"];
@@ -156,10 +156,10 @@ static Logbook *sharedInstance = nil;
     [properties setValue:[Logbook deviceModel] forKey:@"model"];
 
     CGSize size = [UIScreen mainScreen].bounds.size;
-    [properties setValue:[NSNumber numberWithInt:(int)size.height] forKey:@"screenHeight"];
-    [properties setValue:[NSNumber numberWithInt:(int)size.width] forKey:@"screenWidth"];
+    [properties setValue:@((int)size.height) forKey:@"screenHeight"];
+    [properties setValue:@((int)size.width) forKey:@"screenWidth"];
 
-    [properties setValue:[NSNumber numberWithBool:[Logbook wifiAvailable]] forKey:@"wifi"];
+    [properties setValue:@([Logbook wifiAvailable]) forKey:@"wifi"];
 
     CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier *carrier = [networkInfo subscriberCellularProvider];
@@ -179,7 +179,7 @@ static Logbook *sharedInstance = nil;
     char *answer = malloc(size);
     sysctlbyname("hw.machine", answer, &size, NULL, 0);
     
-    NSString *results = [NSString stringWithCString:answer encoding:NSUTF8StringEncoding];
+    NSString *results = @(answer);
     
     free(answer);
     return results;
@@ -274,8 +274,8 @@ static Logbook *sharedInstance = nil;
             } else {
                 stringKey = [NSString stringWithString:key];
             }
-            id v = [Logbook JSONSerializableObjectForObject:[obj objectForKey:key]];
-            [d setObject:v forKey:stringKey];
+            id v = [Logbook JSONSerializableObjectForObject:obj[key]];
+            d[stringKey] = v;
         }
         return [NSDictionary dictionaryWithDictionary:d];
     }
@@ -317,12 +317,12 @@ static Logbook *sharedInstance = nil;
     for (id k in properties) {
         NSAssert([k isKindOfClass: [NSString class]], @"%@ property keys must be NSString. got: %@ %@", self, [k class], k);
         // would be convenient to do: id v = [properties objectForKey:k]; ..but, when the NSAssert's are stripped out in release, it becomes an unused variable error
-        NSAssert([[properties objectForKey:k] isKindOfClass:[NSString class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSNumber class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSNull class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSDate class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSURL class]],
-                 @"%@ property values must be NSString, NSNumber, NSNull, NSDate or NSURL. got: %@ %@", self, [[properties objectForKey:k] class], [properties objectForKey:k]);
+        NSAssert([properties[k] isKindOfClass:[NSString class]] ||
+                 [properties[k] isKindOfClass:[NSNumber class]] ||
+                 [properties[k] isKindOfClass:[NSNull class]] ||
+                 [properties[k] isKindOfClass:[NSDate class]] ||
+                 [properties[k] isKindOfClass:[NSURL class]],
+                 @"%@ property values must be NSString, NSNumber, NSNull, NSDate or NSURL. got: %@ %@", self, [properties[k] class], properties[k]);
     }
 }
 
@@ -348,7 +348,7 @@ static Logbook *sharedInstance = nil;
     }
 }
 
-- (id)initWithCode:(NSString *)apiToken andFlushInterval:(NSUInteger)flushInterval
+- (instancetype)initWithCode:(NSString *)apiToken andFlushInterval:(NSUInteger)flushInterval
 {
     if (apiToken == nil) {
         apiToken = @"";
@@ -417,7 +417,7 @@ static Logbook *sharedInstance = nil;
                                      nil];
         // user can't be set by dictionaryWithObjectsAndKeys: because it's nil-able.
         if (self.user != nil) {
-            [e setObject:self.user forKey:LB_USER_KEY];
+            e[LB_USER_KEY] = self.user;
         }
         if (self.sendDeviceInfo) {
             [e addEntriesFromDictionary:[Logbook deviceInfoProperties]];
@@ -636,7 +636,7 @@ static Logbook *sharedInstance = nil;
         NSMutableDictionary *properties = [NSMutableDictionary dictionary];
         [properties setValue:self.randUser forKey:@"randUser"];
         [properties setValue:self.user forKey:@"user"];
-        [properties setValue:[NSNumber numberWithBool:self.projectDeleted] forKey:@"projectDeleted"];
+        [properties setValue:@(self.projectDeleted) forKey:@"projectDeleted"];
         LogbookDebug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
         if (![NSKeyedArchiver archiveRootObject:properties toFile:filePath]) {
             NSLog(@"%@ unable to archive properties data", self);
@@ -682,9 +682,9 @@ static Logbook *sharedInstance = nil;
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     }
     if (properties) {
-        self.randUser = [properties objectForKey:@"randUser"];
-        self.user = [properties objectForKey:@"user"];
-        self.projectDeleted = [(NSNumber *)[properties objectForKey:@"projectDeleted"] boolValue];
+        self.randUser = properties[@"randUser"];
+        self.user = properties[@"user"];
+        self.projectDeleted = [(NSNumber *)properties[@"projectDeleted"] boolValue];
     }
 }
 

@@ -36,11 +36,11 @@
 + (BOOL)isValidEventName: (NSString *)name;
 + (BOOL)isValidSystemEventName: (NSString *)name;
 + (NSData *)JSONSerializeObject:(id)obj;
-- (NSString *)randomAppUserId;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *randomAppUserId;
 - (NSString *)defaultAppUserIdType;
 - (void)archive;
-- (NSString *)eventsFilePath;
-- (NSString *)propertiesFilePath;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *eventsFilePath;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *propertiesFilePath;
 - (void)trackAccess;
 @end
 
@@ -183,22 +183,22 @@
     [self.logbook track:@"SomethingHappened"];
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqualObjects([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
-    XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
-    XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
-    XCTAssertNotNil([e objectForKey:@"libVersion"], @"lib_version not set");
-    XCTAssertEqualObjects([e objectForKey:@"libName"], @"logbk-ios", @"incorrect lib");
+    XCTAssertEqualObjects(e[@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertNotNil(e[@"randUser"], @"randUser not set");
+    XCTAssertNotNil(e[@"time"], @"time not set");
+    XCTAssertNotNil(e[@"libVersion"], @"lib_version not set");
+    XCTAssertEqualObjects(e[@"libName"], @"logbk-ios", @"incorrect lib");
 }
 
 - (void)testTrackAccess {
     [self.logbook trackAccess];
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqualObjects([e objectForKey:@"event"], @"_access", @"incorrect event name");
-    XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
-    XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
-    XCTAssertNotNil([e objectForKey:@"libVersion"], @"lib_version not set");
-    XCTAssertEqualObjects([e objectForKey:@"libName"], @"logbk-ios", @"incorrect lib");
+    XCTAssertEqualObjects(e[@"event"], @"_access", @"incorrect event name");
+    XCTAssertNotNil(e[@"randUser"], @"randUser not set");
+    XCTAssertNotNil(e[@"time"], @"time not set");
+    XCTAssertNotNil(e[@"libVersion"], @"lib_version not set");
+    XCTAssertEqualObjects(e[@"libName"], @"logbk-ios", @"incorrect lib");
 }
 
 - (void)testTrackDeviceInfo
@@ -208,19 +208,19 @@
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
 
-    XCTAssertEqualObjects([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
-    XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
-    XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
+    XCTAssertEqualObjects(e[@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertNotNil(e[@"randUser"], @"randUser not set");
+    XCTAssertNotNil(e[@"time"], @"time not set");
     
-    XCTAssertNotNil([e objectForKey:@"appVersion"], @"app_version not set");
-    XCTAssertNotNil([e objectForKey:@"appRelease"], @"app_release not set");
-    XCTAssertEqualObjects([e objectForKey:@"manufacturer"], @"Apple", @"incorrect manufacturer");
-    XCTAssertNotNil([e objectForKey:@"model"], @"model not set");
-    XCTAssertNotNil([e objectForKey:@"os"], @"os not set");
-    XCTAssertNotNil([e objectForKey:@"osVersion"], @"os_version not set");
-    XCTAssertNotNil([e objectForKey:@"screenHeight"], @"screen_height not set");
-    XCTAssertNotNil([e objectForKey:@"screenWidth"], @"screen_width not set");
-    XCTAssertNotNil([e objectForKey:@"wifi"], @"wifi not set");
+    XCTAssertNotNil(e[@"appVersion"], @"app_version not set");
+    XCTAssertNotNil(e[@"appRelease"], @"app_release not set");
+    XCTAssertEqualObjects(e[@"manufacturer"], @"Apple", @"incorrect manufacturer");
+    XCTAssertNotNil(e[@"model"], @"model not set");
+    XCTAssertNotNil(e[@"os"], @"os not set");
+    XCTAssertNotNil(e[@"osVersion"], @"os_version not set");
+    XCTAssertNotNil(e[@"screenHeight"], @"screen_height not set");
+    XCTAssertNotNil(e[@"screenWidth"], @"screen_width not set");
+    XCTAssertNotNil(e[@"wifi"], @"wifi not set");
 }
 
 - (void)testTrackWithDeletedProject
@@ -346,9 +346,9 @@
     self.logbook.sendDeviceInfo = NO;
     [self.logbook track:@"SomethingHappened"];
     NSDictionary *e1 = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqualObjects([e1 objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
-    XCTAssertNotNil([e1 objectForKey:@"randUser"], @"randUser not set");
-    XCTAssertNotNil([e1 objectForKey:@"time"], @"time not set");
+    XCTAssertEqualObjects(e1[@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertNotNil(e1[@"randUser"], @"randUser not set");
+    XCTAssertNotNil(e1[@"time"], @"time not set");
 }
 
 @end

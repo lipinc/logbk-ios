@@ -66,7 +66,7 @@ static NSString * const TRACKING_CODE = @"YOUR_TRACKING_CODE";
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     // Show alert for push notifications recevied while the app is running
-    NSString *message = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+    NSString *message = userInfo[@"aps"][@"alert"];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
                                                     message:message
                                                    delegate:nil
