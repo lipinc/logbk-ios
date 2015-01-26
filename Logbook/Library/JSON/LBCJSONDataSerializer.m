@@ -38,22 +38,22 @@ static NSData *kTrue = nil;
 @implementation LBCJSONDataSerializer
 
 + (void)initialize {
-    NSAutoreleasePool *thePool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
 
-    @synchronized(@"LBCJSONDataSerializer") {
-        if (kNULL == nil)
-            kNULL = [[NSData alloc] initWithBytesNoCopy:"null" length:4 freeWhenDone:NO];
-        if (kFalse == nil)
-            kFalse = [[NSData alloc] initWithBytesNoCopy:"false" length:5 freeWhenDone:NO];
-        if (kTrue == nil)
-            kTrue = [[NSData alloc] initWithBytesNoCopy:"true" length:4 freeWhenDone:NO];
+        @synchronized(@"LBCJSONDataSerializer") {
+            if (kNULL == nil)
+                kNULL = [[NSData alloc] initWithBytesNoCopy:"null" length:4 freeWhenDone:NO];
+            if (kFalse == nil)
+                kFalse = [[NSData alloc] initWithBytesNoCopy:"false" length:5 freeWhenDone:NO];
+            if (kTrue == nil)
+                kTrue = [[NSData alloc] initWithBytesNoCopy:"true" length:4 freeWhenDone:NO];
+        }
+
     }
-
-    [thePool release];
 }
 
-+ (id)serializer {
-    return [[[self alloc] init] autorelease];
++ (instancetype)serializer {
+    return [[self alloc] init];
 }
 
 - (NSData *)serializeObject:(id)inObject error:(NSError **)outError {
@@ -70,7 +70,7 @@ static NSData *kTrue = nil;
     } else if ([inObject isKindOfClass:[NSDictionary class]]) {
         theResult = [self serializeDictionary:inObject error:outError];
     } else if ([inObject isKindOfClass:[NSData class]]) {
-        NSString *theString = [[[NSString alloc] initWithData:inObject encoding:NSUTF8StringEncoding] autorelease];
+        NSString *theString = [[NSString alloc] initWithData:inObject encoding:NSUTF8StringEncoding];
         theResult = [self serializeString:theString error:outError];
     } else if ([inObject isKindOfClass:[LBCSerializedJSONData class]]) {
         theResult = [inObject data];
@@ -80,11 +80,9 @@ static NSData *kTrue = nil;
 
     if (theResult == nil) {
         if (outError) {
-            NSDictionary *theUserInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         [NSString stringWithFormat:
+            NSDictionary *theUserInfo = @{NSLocalizedDescriptionKey: [NSString stringWithFormat:
                                           @"Cannot serialize data of type '%@'. The following types are supported: NSNull, NSNumber, NSString, NSArray, NSDictionary, NSData.",
-                                          NSStringFromClass([inObject class])], NSLocalizedDescriptionKey,
-                                         nil];
+                                          NSStringFromClass([inObject class])]};
             *outError = [NSError errorWithDomain:@"MixpanelLib" code:-1 userInfo:theUserInfo];
         }
     }
@@ -138,7 +136,7 @@ static NSData *kTrue = nil;
 }
 
 - (NSData *)serializeString:(NSString *)inString error:(NSError **)outError {
-    NSMutableString *theMutableCopy = [[inString mutableCopy] autorelease];
+    NSMutableString *theMutableCopy = [inString mutableCopy];
     [theMutableCopy replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:0 range:NSMakeRange(0, [theMutableCopy length])];
     [theMutableCopy replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:0 range:NSMakeRange(0, [theMutableCopy length])];
     [theMutableCopy replaceOccurrencesOfString:@"/" withString:@"\\/" options:0 range:NSMakeRange(0, [theMutableCopy length])];
@@ -183,7 +181,7 @@ static NSData *kTrue = nil;
     NSEnumerator *theEnumerator = [theKeys objectEnumerator];
     NSString *theKey = nil;
     while ((theKey = [theEnumerator nextObject]) != nil) {
-        id theValue = [inDictionary objectForKey:theKey];
+        id theValue = inDictionary[theKey];
 
         NSData *theKeyData = [self serializeString:theKey error:outError];
         if (theKeyData == nil) {

@@ -33,12 +33,12 @@
 
 @implementation LBCJSONSerializer
 
-+ (id)serializer
++ (instancetype)serializer
 {
-return([[[self alloc] init] autorelease]);
+return([[self alloc] init]);
 }
 
-- (id)init
+- (instancetype)init
 {
 if ((self = [super init]) != NULL)
 	{
@@ -49,10 +49,8 @@ return(self);
 
 - (void)dealloc
 {
-[serializer release];
 serializer = NULL;
 //
-[super dealloc];
 }
 
 - (NSString *)serializeObject:(id)inObject error:(NSError **)outError
@@ -60,7 +58,7 @@ serializer = NULL;
 NSData *theData = [serializer serializeObject:inObject error:outError];
 if (theData == NULL)
 	return(NULL);
-return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
+return([[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding]);
 }
 
 - (NSString *)serializeArray:(NSArray *)inArray error:(NSError **)outError
@@ -68,7 +66,7 @@ return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] au
 NSData *theData = [serializer serializeArray:inArray error:outError];
 if (theData == NULL)
 	return(NULL);
-return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
+return([[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding]);
 }
 
 - (NSString *)serializeDictionary:(NSDictionary *)inDictionary error:(NSError **)outError
@@ -76,6 +74,6 @@ return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] au
 NSData *theData = [serializer serializeDictionary:inDictionary error:outError];
 if (theData == NULL)
 	return(NULL);
-return([[[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding] autorelease]);
+return([[NSString alloc] initWithData:theData encoding:NSUTF8StringEncoding]);
 }
 @end

@@ -23,17 +23,12 @@
 @interface ViewController ()
 
 - (IBAction)trackEvent:(id)sender;
-@property (retain, nonatomic) IBOutlet UITextField *textField;
+@property (strong, nonatomic) IBOutlet UITextField *textField;
 
 @end
 
 @implementation ViewController
 
-- (void)dealloc
-{
-    [_textField release];
-    [super dealloc];
-}
 
 - (void)viewDidLoad
 {
@@ -41,18 +36,6 @@
     self.view.backgroundColor = [UIColor colorWithPatternImage: [UIImage imageNamed:@"grid.png"]];
     UIScrollView *tempScrollView = (UIScrollView *)self.view;
     tempScrollView.contentSize = CGSizeMake(320, 342);
-}
-
-- (void)viewDidUnload
-{
-    [self setTextField:nil];
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return YES;
 }
 
 - (IBAction)trackEvent:(id)sender

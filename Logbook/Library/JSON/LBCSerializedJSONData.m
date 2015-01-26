@@ -33,7 +33,7 @@
 
 @synthesize data;
 
-- (id)initWithData:(NSData *)inData;
+- (instancetype)initWithData:(NSData *)inData;
 {
 if ((self = [self init]) != NULL)
 	{
@@ -42,13 +42,6 @@ if ((self = [self init]) != NULL)
 return(self);
 }
 
-- (void)dealloc
-{
-[data release];
-data = NULL;
-//
-[super dealloc];
-}
 
 
 @end

@@ -36,18 +36,18 @@
 + (BOOL)isValidEventName: (NSString *)name;
 + (BOOL)isValidSystemEventName: (NSString *)name;
 + (NSData *)JSONSerializeObject:(id)obj;
-- (NSString *)randomAppUserId;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *randomAppUserId;
 - (NSString *)defaultAppUserIdType;
 - (void)archive;
-- (NSString *)eventsFilePath;
-- (NSString *)propertiesFilePath;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *eventsFilePath;
+@property (NS_NONATOMIC_IOSONLY, readonly, copy) NSString *propertiesFilePath;
 - (void)trackAccess;
 @end
 
 
 @interface HelloLogbookTests ()  <LogbookDelegate>
 
-@property(nonatomic,retain) Logbook *logbook;
+@property(nonatomic,strong) Logbook *logbook;
 
 @end
 
@@ -56,7 +56,7 @@
 - (void)setUp
 {
     [super setUp];
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
     [self.logbook reset];
 }
 
@@ -80,7 +80,7 @@
 
 + (NSString *)getJSON:(id)obj {
     NSData *data = [Logbook JSONSerializeObject:obj];
-    return [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 }
 
 - (void)testRandomAppUserId {
@@ -94,7 +94,6 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
     NSDate *date = [dateFormatter dateFromString:@"2012-09-28 19:14:36 PDT"];
-    [dateFormatter release];
     
     NSNull *null = [NSNull null];
     NSURL *url = [NSURL URLWithString:@"http://example.com/"];
@@ -173,9 +172,9 @@
 - (void)testRandomUserId
 {
     [self removeArchiveFiles];
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
     NSString *prev = self.logbook.randUser;
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
     XCTAssertEqualObjects(self.logbook.randUser, prev, @"randomly generated user id should be kept");
 }
 
@@ -184,22 +183,22 @@
     [self.logbook track:@"SomethingHappened"];
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqualObjects([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
-    XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
-    XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
-    XCTAssertNotNil([e objectForKey:@"libVersion"], @"lib_version not set");
-    XCTAssertEqualObjects([e objectForKey:@"libName"], @"logbk-ios", @"incorrect lib");
+    XCTAssertEqualObjects(e[@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertNotNil(e[@"randUser"], @"randUser not set");
+    XCTAssertNotNil(e[@"time"], @"time not set");
+    XCTAssertNotNil(e[@"libVersion"], @"lib_version not set");
+    XCTAssertEqualObjects(e[@"libName"], @"logbk-ios", @"incorrect lib");
 }
 
 - (void)testTrackAccess {
     [self.logbook trackAccess];
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqualObjects([e objectForKey:@"event"], @"_access", @"incorrect event name");
-    XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
-    XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
-    XCTAssertNotNil([e objectForKey:@"libVersion"], @"lib_version not set");
-    XCTAssertEqualObjects([e objectForKey:@"libName"], @"logbk-ios", @"incorrect lib");
+    XCTAssertEqualObjects(e[@"event"], @"_access", @"incorrect event name");
+    XCTAssertNotNil(e[@"randUser"], @"randUser not set");
+    XCTAssertNotNil(e[@"time"], @"time not set");
+    XCTAssertNotNil(e[@"libVersion"], @"lib_version not set");
+    XCTAssertEqualObjects(e[@"libName"], @"logbk-ios", @"incorrect lib");
 }
 
 - (void)testTrackDeviceInfo
@@ -209,19 +208,19 @@
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"event not queued");
     NSDictionary *e = self.logbook.eventsQueue.lastObject;
 
-    XCTAssertEqualObjects([e objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
-    XCTAssertNotNil([e objectForKey:@"randUser"], @"randUser not set");
-    XCTAssertNotNil([e objectForKey:@"time"], @"time not set");
+    XCTAssertEqualObjects(e[@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertNotNil(e[@"randUser"], @"randUser not set");
+    XCTAssertNotNil(e[@"time"], @"time not set");
     
-    XCTAssertNotNil([e objectForKey:@"appVersion"], @"app_version not set");
-    XCTAssertNotNil([e objectForKey:@"appRelease"], @"app_release not set");
-    XCTAssertEqualObjects([e objectForKey:@"manufacturer"], @"Apple", @"incorrect manufacturer");
-    XCTAssertNotNil([e objectForKey:@"model"], @"model not set");
-    XCTAssertNotNil([e objectForKey:@"os"], @"os not set");
-    XCTAssertNotNil([e objectForKey:@"osVersion"], @"os_version not set");
-    XCTAssertNotNil([e objectForKey:@"screenHeight"], @"screen_height not set");
-    XCTAssertNotNil([e objectForKey:@"screenWidth"], @"screen_width not set");
-    XCTAssertNotNil([e objectForKey:@"wifi"], @"wifi not set");
+    XCTAssertNotNil(e[@"appVersion"], @"app_version not set");
+    XCTAssertNotNil(e[@"appRelease"], @"app_release not set");
+    XCTAssertEqualObjects(e[@"manufacturer"], @"Apple", @"incorrect manufacturer");
+    XCTAssertNotNil(e[@"model"], @"model not set");
+    XCTAssertNotNil(e[@"os"], @"os not set");
+    XCTAssertNotNil(e[@"osVersion"], @"os_version not set");
+    XCTAssertNotNil(e[@"screenHeight"], @"screen_height not set");
+    XCTAssertNotNil(e[@"screenWidth"], @"screen_width not set");
+    XCTAssertNotNil(e[@"wifi"], @"wifi not set");
 }
 
 - (void)testTrackWithDeletedProject
@@ -246,7 +245,7 @@
     XCTAssertTrue(self.logbook.eventsQueue.count == 0, @"events queue failed to reset");
     XCTAssertFalse(self.logbook.projectDeleted, @"project deleted failed to reset");
     
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
     XCTAssertEqualObjects(self.logbook.randUser, randUserAfterReset, @"distinct id failed to reset after archive");
     XCTAssertTrue(self.logbook.eventsQueue.count == 0, @"events queue failed to reset after archive");
     XCTAssertFalse(self.logbook.projectDeleted, @"project deleted failed to reset");
@@ -254,9 +253,9 @@
 
 - (void)testFlushTimer
 {
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
     XCTAssertNil(self.logbook.timer, @"intializing with a flush interval of 0 still started timer");
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:60] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:60];
     XCTAssertNotNil(self.logbook.timer, @"intializing with a flush interval of 60 did not start timer");
 }
 
@@ -264,7 +263,7 @@
 {
     NSString *origRandUser = self.logbook.randUser;
     [self.logbook archive];
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
     XCTAssertEqualObjects(self.logbook.randUser, origRandUser, @"default distinct id archive failed");
     XCTAssertTrue(self.logbook.eventsQueue.count == 0, @"default events queue archive failed");
     XCTAssertFalse(self.logbook.projectDeleted, @"default project deleted archive failed");
@@ -274,7 +273,7 @@
     self.logbook.projectDeleted = YES;
 
     [self.logbook archive];
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
 
     XCTAssertEqualObjects(self.logbook.user, @"d1", @"custom distinct archive failed");
     XCTAssertTrue(self.logbook.eventsQueue.count == 1, @"pending events queue archive failed");
@@ -291,7 +290,7 @@
     XCTAssertFalse([fileManager fileExistsAtPath:[self.logbook eventsFilePath]], @"events archive file not removed");
     XCTAssertFalse([fileManager fileExistsAtPath:[self.logbook propertiesFilePath]], @"properties archive file not removed");
 
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
     XCTAssertNotNil(self.logbook.randUser, @"default distinct id from no file failed");
     XCTAssertFalse([self.logbook.randUser isEqualToString:origRandUser], @"default distinct id from no file failed");
     XCTAssertNotNil(self.logbook.eventsQueue, @"default events queue from no file is nil");
@@ -307,7 +306,7 @@
     XCTAssertTrue([fileManager fileExistsAtPath:[self.logbook eventsFilePath]], @"garbage events archive file not found");
     XCTAssertTrue([fileManager fileExistsAtPath:[self.logbook propertiesFilePath]], @"garbage properties archive file not found");
 
-    self.logbook = [[[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0] autorelease];
+    self.logbook = [[Logbook alloc] initWithCode:TEST_TOKEN andFlushInterval:0];
     XCTAssertNotNil(self.logbook.randUser, @"default distinct id from no file failed");
     XCTAssertFalse([self.logbook.randUser isEqualToString:origRandUser], @"default distinct id from no file failed");
     XCTAssertNotNil(self.logbook.eventsQueue, @"default events queue from garbage is nil");
@@ -336,7 +335,7 @@
     NSDate *d1 = [NSDate dateWithTimeIntervalSince1970:0];
     XCTAssertEqualObjects([self.logbook.dateFormatter stringFromDate:d1], @"1970-01-01T00:00:00Z", @"dateFormatter should format in ISO8601");
     
-    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
     NSDate *d2 = [dateFormatter dateFromString:@"2012-09-28 19:14:36 PDT"];
     XCTAssertEqualObjects([self.logbook.dateFormatter stringFromDate:d2], @"2012-09-29T02:14:36Z", @"dateFormatter should format in UTC");
@@ -347,9 +346,9 @@
     self.logbook.sendDeviceInfo = NO;
     [self.logbook track:@"SomethingHappened"];
     NSDictionary *e1 = self.logbook.eventsQueue.lastObject;
-    XCTAssertEqualObjects([e1 objectForKey:@"event"], @"SomethingHappened", @"incorrect event name");
-    XCTAssertNotNil([e1 objectForKey:@"randUser"], @"randUser not set");
-    XCTAssertNotNil([e1 objectForKey:@"time"], @"time not set");
+    XCTAssertEqualObjects(e1[@"event"], @"SomethingHappened", @"incorrect event name");
+    XCTAssertNotNil(e1[@"randUser"], @"randUser not set");
+    XCTAssertNotNil(e1[@"time"], @"time not set");
 }
 
 @end

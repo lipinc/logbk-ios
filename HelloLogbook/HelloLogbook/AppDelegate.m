@@ -28,17 +28,10 @@ static NSString * const TRACKING_CODE = @"YOUR_TRACKING_CODE";
 
 @implementation AppDelegate
 
-- (void)dealloc
-{
-    [_startTime release];
-    [_window release];
-    [_viewController release];
-    [super dealloc];
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     // Override point for customization after application launch.
     
@@ -48,7 +41,7 @@ static NSString * const TRACKING_CODE = @"YOUR_TRACKING_CODE";
     // Set the upload interval to 20 seconds for demonstration purposes. This would be overkill for most applications.
     self.logbook.flushInterval = 20; // defaults to 60 seconds
 
-    self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
+    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
@@ -73,14 +66,13 @@ static NSString * const TRACKING_CODE = @"YOUR_TRACKING_CODE";
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     // Show alert for push notifications recevied while the app is running
-    NSString *message = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+    NSString *message = userInfo[@"aps"][@"alert"];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@""
                                                     message:message
                                                    delegate:nil
                                           cancelButtonTitle:@"OK"
                                           otherButtonTitles:nil];
     [alert show];
-    [alert release];
 }
 
 #pragma mark * Session timing example

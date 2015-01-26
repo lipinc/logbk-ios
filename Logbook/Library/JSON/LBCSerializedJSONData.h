@@ -33,8 +33,8 @@
 	NSData *data;
 }
 
-@property (readonly, nonatomic, retain) NSData *data;
+@property (readonly, nonatomic, strong) NSData *data;
 
-- (id)initWithData:(NSData *)inData;
+- (instancetype)initWithData:(NSData *)inData;
 
 @end

@@ -135,7 +135,7 @@
  Using a delegate is optional. See the documentation for LogbookDelegate
  below for more information.
  */
-@property(nonatomic,assign) id<LogbookDelegate> delegate; // allows fine grain control over uploading (optional)
+@property(nonatomic,weak) id<LogbookDelegate> delegate; // allows fine grain control over uploading (optional)
 
 /*!
  @method
@@ -190,7 +190,7 @@
  @param trackingCode        your project tracking code
  @param startFlushTimer whether to start the background flush timer
  */
-- (id)initWithCode:(NSString *)trackingCode andFlushInterval:(NSUInteger)flushInterval;
+- (instancetype)initWithCode:(NSString *)trackingCode andFlushInterval:(NSUInteger)flushInterval;
 
 /*!
  @property

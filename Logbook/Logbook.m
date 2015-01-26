@@ -32,7 +32,7 @@
 #import "Logbook.h"
 #import "NSData+LBBase64.h"
 
-#define VERSION @"1.0.0"
+#define VERSION @"1.1.0"
 
 #ifndef IFT_ETHER
 #define IFT_ETHER 0x6 // ethernet CSMACD
@@ -67,14 +67,14 @@ static NSTimeInterval const USAGE_TIMER_INTERVAL = 10;
 @property(nonatomic,copy) NSString *randUser;
 @property(nonatomic,copy) NSString *user;
 @property(nonatomic,copy)   NSString *apiToken;
-@property(nonatomic,retain) NSTimer *timer;
-@property(nonatomic,retain) NSMutableArray *eventsQueue;
-@property(nonatomic,retain) NSArray *eventsBatch;
-@property(nonatomic,retain) NSURLConnection *eventsConnection;
-@property(nonatomic,retain) NSMutableData *eventsResponseData;
-@property(nonatomic,retain) NSDateFormatter *dateFormatter;
+@property(nonatomic,strong) NSTimer *timer;
+@property(nonatomic,strong) NSMutableArray *eventsQueue;
+@property(nonatomic,strong) NSArray *eventsBatch;
+@property(nonatomic,strong) NSURLConnection *eventsConnection;
+@property(nonatomic,strong) NSMutableData *eventsResponseData;
+@property(nonatomic,strong) NSDateFormatter *dateFormatter;
 @property(nonatomic,assign) BOOL projectDeleted;
-@property(nonatomic,retain) NSTimer *usageTimer;
+@property(nonatomic,strong) NSTimer *usageTimer;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
 @property(nonatomic,assign) UIBackgroundTaskIdentifier taskId;
@@ -112,9 +112,9 @@ static Logbook *sharedInstance = nil;
     @synchronized(self) {
         if (regex == nil) {
             NSError *error = nil;
-            regex = [[NSRegularExpression regularExpressionWithPattern:@"^[A-Z][A-Z0-9._-]+$"
+            regex = [NSRegularExpression regularExpressionWithPattern:@"^[A-Z][A-Z0-9._-]+$"
                                                                options:NSRegularExpressionCaseInsensitive
-                                                                 error:&error] retain];
+                                                                 error:&error];
             if (error != nil) {
                 NSLog(@"Error compiling regex: %@", [error localizedDescription]);
             }
@@ -128,9 +128,9 @@ static Logbook *sharedInstance = nil;
     @synchronized(self) {
         if (regex == nil) {
             NSError *error = nil;
-            regex = [[NSRegularExpression regularExpressionWithPattern:@"^_[A-Z][A-Z0-9._-]+$"
+            regex = [NSRegularExpression regularExpressionWithPattern:@"^_[A-Z][A-Z0-9._-]+$"
                                                                options:NSRegularExpressionCaseInsensitive
-                                                                 error:&error] retain];
+                                                                 error:&error];
             if (error != nil) {
                 NSLog(@"Error compiling regex: %@", [error localizedDescription]);
             }
@@ -147,8 +147,8 @@ static Logbook *sharedInstance = nil;
 
     UIDevice *device = [UIDevice currentDevice];
 
-    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"appVersion"];
-    [properties setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"] forKey:@"appRelease"];
+    [properties setValue:[[NSBundle mainBundle] infoDictionary][@"CFBundleVersion"] forKey:@"appVersion"];
+    [properties setValue:[[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"] forKey:@"appRelease"];
 
     [properties setValue:@"Apple" forKey:@"manufacturer"];
     [properties setValue:[device systemName] forKey:@"os"];
@@ -156,14 +156,13 @@ static Logbook *sharedInstance = nil;
     [properties setValue:[Logbook deviceModel] forKey:@"model"];
 
     CGSize size = [UIScreen mainScreen].bounds.size;
-    [properties setValue:[NSNumber numberWithInt:(int)size.height] forKey:@"screenHeight"];
-    [properties setValue:[NSNumber numberWithInt:(int)size.width] forKey:@"screenWidth"];
+    [properties setValue:@((int)size.height) forKey:@"screenHeight"];
+    [properties setValue:@((int)size.width) forKey:@"screenWidth"];
 
-    [properties setValue:[NSNumber numberWithBool:[Logbook wifiAvailable]] forKey:@"wifi"];
+    [properties setValue:@([Logbook wifiAvailable]) forKey:@"wifi"];
 
     CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
     CTCarrier *carrier = [networkInfo subscriberCellularProvider];
-    [networkInfo release];
 
     if (carrier.carrierName.length) {
         [properties setValue:carrier.carrierName forKey:@"carrier"];
@@ -180,7 +179,7 @@ static Logbook *sharedInstance = nil;
     char *answer = malloc(size);
     sysctlbyname("hw.machine", answer, &size, NULL, 0);
     
-    NSString *results = [NSString stringWithCString:answer encoding:NSUTF8StringEncoding];
+    NSString *results = @(answer);
     
     free(answer);
     return results;
@@ -275,8 +274,8 @@ static Logbook *sharedInstance = nil;
             } else {
                 stringKey = [NSString stringWithString:key];
             }
-            id v = [Logbook JSONSerializableObjectForObject:[obj objectForKey:key]];
-            [d setObject:v forKey:stringKey];
+            id v = [Logbook JSONSerializableObjectForObject:obj[key]];
+            d[stringKey] = v;
         }
         return [NSDictionary dictionaryWithDictionary:d];
     }
@@ -287,7 +286,6 @@ static Logbook *sharedInstance = nil;
         [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
         [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
         NSString *s = [formatter stringFromDate:obj];
-        [formatter release];
         return s;
     } else if ([obj isKindOfClass:[NSURL class]]) {
         return [obj absoluteString];
@@ -305,13 +303,13 @@ static Logbook *sharedInstance = nil;
     NSData *data = [Logbook JSONSerializeObject:array];
     if (data) {
         b64String = [data lb_base64EncodedString];
-        b64String = (id)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+        b64String = (id)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
                                                                 (CFStringRef)b64String,
                                                                 NULL,
                                                                 CFSTR("!*'();:@&=+$,/?%#[]"),
-                                                                kCFStringEncodingUTF8);
+                                                                kCFStringEncodingUTF8));
     }
-    return [b64String autorelease];
+    return b64String;
 }
 
 + (void)assertPropertyTypes:(NSDictionary *)properties
@@ -319,12 +317,12 @@ static Logbook *sharedInstance = nil;
     for (id k in properties) {
         NSAssert([k isKindOfClass: [NSString class]], @"%@ property keys must be NSString. got: %@ %@", self, [k class], k);
         // would be convenient to do: id v = [properties objectForKey:k]; ..but, when the NSAssert's are stripped out in release, it becomes an unused variable error
-        NSAssert([[properties objectForKey:k] isKindOfClass:[NSString class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSNumber class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSNull class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSDate class]] ||
-                 [[properties objectForKey:k] isKindOfClass:[NSURL class]],
-                 @"%@ property values must be NSString, NSNumber, NSNull, NSDate or NSURL. got: %@ %@", self, [[properties objectForKey:k] class], [properties objectForKey:k]);
+        NSAssert([properties[k] isKindOfClass:[NSString class]] ||
+                 [properties[k] isKindOfClass:[NSNumber class]] ||
+                 [properties[k] isKindOfClass:[NSNull class]] ||
+                 [properties[k] isKindOfClass:[NSDate class]] ||
+                 [properties[k] isKindOfClass:[NSURL class]],
+                 @"%@ property values must be NSString, NSNumber, NSNull, NSDate or NSURL. got: %@ %@", self, [properties[k] class], properties[k]);
     }
 }
 
@@ -350,7 +348,7 @@ static Logbook *sharedInstance = nil;
     }
 }
 
-- (id)initWithCode:(NSString *)apiToken andFlushInterval:(NSUInteger)flushInterval
+- (instancetype)initWithCode:(NSString *)apiToken andFlushInterval:(NSUInteger)flushInterval
 {
     if (apiToken == nil) {
         apiToken = @"";
@@ -359,7 +357,7 @@ static Logbook *sharedInstance = nil;
         NSLog(@"%@ warning empty api token", self);
     }
     if (self = [self init]) {
-        self.dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+        self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter  setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
         self.dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
         self.apiToken = apiToken;
@@ -419,7 +417,7 @@ static Logbook *sharedInstance = nil;
                                      nil];
         // user can't be set by dictionaryWithObjectsAndKeys: because it's nil-able.
         if (self.user != nil) {
-            [e setObject:self.user forKey:LB_USER_KEY];
+            e[LB_USER_KEY] = self.user;
         }
         if (self.sendDeviceInfo) {
             [e addEntriesFromDictionary:[Logbook deviceInfoProperties]];
@@ -515,8 +513,9 @@ static Logbook *sharedInstance = nil;
     }
 
     @synchronized(self) {
-        if ([self.delegate respondsToSelector:@selector(logbookWillFlush:)]) {
-            if (![self.delegate logbookWillFlush:self]) {
+        id<LogbookDelegate> delegate = self.delegate;
+        if ([delegate respondsToSelector:@selector(logbookWillFlush:)]) {
+            if (![delegate logbookWillFlush:self]) {
                 LogbookDebug(@"%@ delegate deferred flush", self);
                 return;
             }
@@ -637,7 +636,7 @@ static Logbook *sharedInstance = nil;
         NSMutableDictionary *properties = [NSMutableDictionary dictionary];
         [properties setValue:self.randUser forKey:@"randUser"];
         [properties setValue:self.user forKey:@"user"];
-        [properties setValue:[NSNumber numberWithBool:self.projectDeleted] forKey:@"projectDeleted"];
+        [properties setValue:@(self.projectDeleted) forKey:@"projectDeleted"];
         LogbookDebug(@"%@ archiving properties data to %@: %@", self, filePath, properties);
         if (![NSKeyedArchiver archiveRootObject:properties toFile:filePath]) {
             NSLog(@"%@ unable to archive properties data", self);
@@ -683,9 +682,9 @@ static Logbook *sharedInstance = nil;
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
     }
     if (properties) {
-        self.randUser = [properties objectForKey:@"randUser"];
-        self.user = [properties objectForKey:@"user"];
-        self.projectDeleted = [(NSNumber *)[properties objectForKey:@"projectDeleted"] boolValue];
+        self.randUser = properties[@"randUser"];
+        self.user = properties[@"user"];
+        self.projectDeleted = [(NSNumber *)properties[@"projectDeleted"] boolValue];
     }
 }
 
@@ -877,7 +876,6 @@ static Logbook *sharedInstance = nil;
             } else if ([response intValue] == 0) {
                 NSLog(@"%@ track api error: %@", self, response);
             }
-            [response release];
 
             [self.eventsQueue removeObjectsInArray:self.eventsBatch];
             [self archiveEvents];
@@ -906,20 +904,9 @@ static Logbook *sharedInstance = nil;
     [self stopFlushTimer];
     [self removeApplicationObservers];
     
-    self.randUser = nil;
-    self.user = nil;
-    self.serverURL = nil;
     self.delegate = nil;
     
-    self.apiToken = nil;
-    self.timer = nil;
-    self.eventsQueue = nil;
-    self.eventsBatch = nil;
-    self.eventsConnection = nil;
-    self.eventsResponseData = nil;
-    self.usageTimer = nil;
     
-    [super dealloc];
 }
 
 @end
